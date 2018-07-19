@@ -1,6 +1,8 @@
 import logging
 
-from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -15,21 +17,34 @@ logger = logging.getLogger("tracker_log")
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.exclude(status='Delete')
     serializer_class = ProjectSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('name',)
+    ordering_fields = ('name',)
+    filter_fields = ('owner', 'representative', 'status')
 
 
 class ContractViewSet(viewsets.ModelViewSet):
     queryset = Contract.objects.exclude(status='Delete')
     serializer_class = ContractSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    search_fields = ('role',)
+    filter_fields = ('employee', 'project', 'billing_cycle', 'pay_rate_type', 'status')
 
 
 class TimesheetViewSet(viewsets.ModelViewSet):
     queryset = Timesheet.objects.exclude(status='Delete')
     serializer_class = TimesheetSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    search_fields = ('tasks',)
+    filter_fields = ('contract', 'is_billable', 'status')
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.exclude(status='Delete')
     serializer_class = InvoiceSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    search_fields = ('remark',)
+    filter_fields = ('client', 'status')
 
 
 class ListProjectsOfEmployee(APIView):
@@ -88,3 +103,4 @@ class ListTimesheetsOfProject(APIView):
             serializer = TimesheetSerializer(contract.timesheet.all(), many=True)
             data.extend(serializer.data)
         return Response(data)
+

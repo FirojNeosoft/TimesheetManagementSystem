@@ -10,9 +10,9 @@ router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'employees', EmployeeViewSet)
 router.register(r'clients', ClientViewSet)
-# router.register(r'projects', ProjectViewSet)
-# router.register(r'contracts', ContractViewSet)
-# router.register(r'timesheets', TimesheetViewSet)
+router.register(r'projects', ProjectViewSet)
+router.register(r'contracts', ContractViewSet)
+router.register(r'timesheets', TimesheetViewSet)
 # router.register(r'invoices', InvoiceViewSet)
 
 urlpatterns = [
