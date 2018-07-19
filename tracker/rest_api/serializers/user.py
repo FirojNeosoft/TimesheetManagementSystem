@@ -49,9 +49,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ('first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile',\
+        fields = ('id', 'first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile',\
                   'email', 'skype_id', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
-                  'current_pay_rate', 'passport_no', 'current_visa_status', 'status', 'address')
+                  'current_pay_rate', 'passport_no', 'current_visa_status', 'status', 'address', 'created_at')
+        read_only_fields = ('id', 'created_at', )
 
     @transaction.atomic
     def create(self, validated_data):
@@ -101,7 +102,8 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'status', 'address')
+        fields = ('id', 'first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'status', 'address', 'created_at')
+        read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
     def create(self, validated_data):

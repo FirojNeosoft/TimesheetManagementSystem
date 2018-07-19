@@ -12,12 +12,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     """
 
     owner = serializers.SlugRelatedField(slug_field='email', queryset=Client.objects.all())
-    representative = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.filter(designation='Sales'))
+    representative = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.filter(designation='Sales Executive'))
     located_at = AddressSerializer()
 
     class Meta:
         model = Project
-        fields = ('name', 'description', 'status', 'located_at', 'owner', 'representative')
+        fields = ('id', 'name', 'description', 'status', 'located_at', 'owner', 'representative', 'created_at')
+        read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
     def create(self, validated_data):
@@ -52,13 +53,14 @@ class ContractSerializer(serializers.ModelSerializer):
     Contract Serializer
     """
 
-    employee = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(designation='Sales'))
+    employee = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(designation='Sales Executive'))
     project = serializers.SlugRelatedField(slug_field='name', queryset=Project.objects.all())
 
     class Meta:
         model = Contract
-        fields = ('project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-                  'pay_rate', 'billing_cycle', 'remark', 'status')
+        fields = ('id', 'project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
+                  'pay_rate', 'billing_cycle', 'remark', 'status', 'created_at')
+        read_only_fields = ('id', 'created_at',)
 
 
 class TimesheetSerializer(serializers.ModelSerializer):
@@ -70,7 +72,8 @@ class TimesheetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Timesheet
-        fields = ('contract', 'sign_in', 'sign_out', 'tasks', 'is_billable')
+        fields = ('id', 'contract', 'sign_in', 'sign_out', 'tasks', 'is_billable', 'status', 'created_at')
+        read_only_fields = ('id', 'created_at', 'status',)
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
@@ -93,7 +96,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
-        fields = ('client', 'due_date', 'services', 'total_amount', 'tax', 'discount', 'remark', 'status')
+        fields = ('id', 'client', 'due_date', 'services', 'total_amount', 'tax', 'discount', 'remark', 'status', 'created_at')
+        read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
     def create(self, validated_data):

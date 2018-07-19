@@ -26,24 +26,27 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ContractViewSet(viewsets.ModelViewSet):
     queryset = Contract.objects.exclude(status='Delete')
     serializer_class = ContractSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('role',)
+    ordering_fields = ('created_at',)
     filter_fields = ('employee', 'project', 'billing_cycle', 'pay_rate_type', 'status')
 
 
 class TimesheetViewSet(viewsets.ModelViewSet):
     queryset = Timesheet.objects.exclude(status='Delete')
     serializer_class = TimesheetSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('tasks',)
+    ordering_fields = ('created_at',)
     filter_fields = ('contract', 'is_billable', 'status')
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.exclude(status='Delete')
     serializer_class = InvoiceSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('remark',)
+    ordering_fields = ('created_at',)
     filter_fields = ('client', 'status')
 
 
