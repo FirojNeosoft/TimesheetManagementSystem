@@ -1,4 +1,6 @@
-# This is a flask application and based on blockchain technology.
+REST APIs are provided for an application where manager can track a status of projects, employees and their timesheets.
 
-Deployed on Ethereum Test Network that is provided by web3py package of python.
+Web services are created by Django REST Framework.
+
+
 
