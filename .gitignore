@@ -3,3 +3,4 @@
 *.log
 migrations/
 venv/
+static/

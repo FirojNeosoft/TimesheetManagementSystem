@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+       <div class="page-title">
+            <div class="title_left">
+                <h3>Clients</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <br />
+                            <section class="content">
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <div class="">
+                                    <div class="box-header">
+                                      {% if messages %}
+                                        <ul class="messages">
+                                          {% for message in messages %}
+                                            <li class="{{ message.tags }}">{{ message }}</li>
+                                          {% endfor %}
+                                        </ul>
+                                      {% endif %}
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!--<form method="post">-->
+                                            <!--{% csrf_token %}-->
+                                            <!--<p><label for="id_first_name">First Name:</label>-->
+                                            <!--<input type="text" name="first_name" maxlength="128" required id="id_first_name" class="form-control col-md-7 col-xs-12"/></p>-->
+                                            <!--<p><label for="id_last_name">Last Name:</label>-->
+                                            <!--<input type="text" name="last_name" maxlength="128" required id="id_last_name" /></p>-->
+                                            <!--<p><label for="id_gender">Gender:</label>-->
+                                            <!--<select name="gender" required id="id_gender">-->
+                                              <!--<option value="" selected>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+                                              <!--<option value="M">Male</option>-->
+                                              <!--<option value="F">Female</option>-->
+                                              <!--</select>-->
+                                            <!--</p>-->
+                                            <!--<p><label for="id_address">Address:</label> <select name="address" required id="id_address">-->
+                                                  <!--<option value="" selected>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+
+                                                  <!--<option value="1">India</option>-->
+
+                                                  <!--<option value="2">India</option>-->
+
+                                                  <!--<option value="3">USA</option>-->
+
+                                                  <!--<option value="4">India</option>-->
+
+                                                  <!--<option value="5">India</option>-->
+
+                                                  <!--<option value="6">India</option>-->
+
+                                                  <!--<option value="7">India</option>-->
+
+                                                <!--</select></p>-->
+                                                <!--<p><label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_mobile">Mobile:</label> <input type="text" class="form-control col-md-7 col-xs-12" name="mobile" maxlength="15" required id="id_mobile" /></p>-->
+                                                <!--<p><label for="id_email">Email:</label> <input type="email" name="email" maxlength="254" required id="id_email" /></p>-->
+                                                <!--<p><label for="id_skype_id">Skype Id:</label> <input type="text" name="skype_id" maxlength="128" id="id_skype_id" /></p>-->
+                                                <!--<p><label for="id_status">Status:</label> <select name="status" id="id_status">-->
+                                                  <!--<option value="Active" selected>Active</option>-->
+
+                                                  <!--<option value="Inactive">Inactive</option>-->
+
+                                                  <!--<option value="Delete">Delete</option>-->
+
+                                                <!--</select></p>-->
+                                            <!--<input type="submit" value="Save" />-->
+                                        <!--</form>-->
+                      <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" action="{% url 'add_client' %}">
+                          {% csrf_token %}
+                      <div class="form-group">
+                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_first_name">First Name <span class="required">*</span></label>
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="first_name" maxlength="128" required id="id_first_name" class="form-control col-md-7 col-xs-12"/></p>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_last_name">Last Name <span class="required">*</span></label>
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="last_name" maxlength="128" required id="id_last_name" class="form-control col-md-7 col-xs-12"/></p>
+                        </div>
+                      </div>
+					  <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_gender">Gender<span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                     <select name="gender" required id="id_gender" class="form-control">
+                                              <option value="" selected>---------</option>
+                                              <option value="M">Male</option>
+                                              <option value="F">Female</option>
+                                              </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="id_mobile" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" class="form-control col-md-7 col-xs-12" name="mobile" maxlength="15" required id="id_mobile" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_email">Email</label>
+                       <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="email" name="email" maxlength="254" required id="id_email" class="form-control col-md-7 col-xs-12" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_skype_id">Skype Id</label>
+                       <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="skype_id" maxlength="128" required id="id_skype_id" class="form-control col-md-7 col-xs-12" />
+                        </div>
+                      </div>
+					  <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_status">Status<span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                     <select name="status" required id="id_status" class="form-control">
+                                                      <option value="Active" selected>Active</option>
+
+                                                  <option value="Inactive">Inactive</option>
+                                              </select>
+                        </div></div>
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                          <button class="btn btn-primary" type="button">Cancel</button>
+						  <button class="btn btn-primary" type="reset">Reset</button>
+                          <input type="submit" class="btn btn-success">Submit</input>
+                        </div>
+                      </div>
+
+                    </form>
+                                    </div>
+                                    <!-- /.box-body -->
+                                  </div>
+                                  <!-- /.box -->
+                                </div>
+                                <!-- /.col -->
+                              </div>
+                              <!-- /.row -->
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+   $("#id_first_name").addClass( "form-control" );
+   $("#id_last_name").addClass( "form-control" );
+   $("#id_gender").addClass( "form-control" );
+   $("#id_address").addClass( "form-control" );
+   $("#id_mobile").addClass( "form-control" );
+   $("#id_email").addClass( "form-control" );
+   $("#id_skype_id").addClass( "form-control" );
+   $("#id_status").addClass( "form-control" );
+    });
+</script>
+{% endblock %}

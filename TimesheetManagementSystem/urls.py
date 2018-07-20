@@ -21,8 +21,9 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='TMS APIs')
 
 urlpatterns = [
-    path('', schema_view),
+    path('schema/', schema_view),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('tracker/', include('tracker.rest_api.urls')),
+    path('tracker/', include('tracker.urls')),
+    path('tracker/api/', include('tracker.rest_api.urls')),
 ]

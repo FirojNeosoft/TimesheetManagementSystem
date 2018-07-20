@@ -16,7 +16,7 @@ router.register(r'timesheets', TimesheetViewSet)
 # router.register(r'invoices', InvoiceViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
     # path('api/employees/<int:emp_id>/projects', ListProjectsOfEmployee.as_view()),
     # path('api/employees/<int:emp_id>/timesheets', ListTimesheetsOfEmployee.as_view()),
     # path('api/projects/<int:project_id>/employees', ListEmployeesOfProject.as_view()),
