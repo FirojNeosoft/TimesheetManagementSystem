@@ -5,6 +5,11 @@ from tracker.views import *
 
 
 urlpatterns = [
+    path('employees/', ListEmployeesView.as_view(), name='list_employees'),
+    path('employee/add/', CreateEmployeeView.as_view(), name='add_employee'),
+    path('employee/<int:pk>/edit/', UpdateEmployeeView.as_view(), name='update_employee'),
+    path('employee/<int:pk>/delete/', DeleteEmployeeView.as_view(), name='delete_employee'),
+
     path('clients/', ListClientsView.as_view(), name='list_clients'),
     path('client/add/', CreateClientView.as_view(), name='add_client'),
     path('client/<int:pk>/edit/', UpdateClientView.as_view(), name='update_client'),

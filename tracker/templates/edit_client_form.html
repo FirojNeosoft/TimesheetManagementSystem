@@ -28,18 +28,18 @@
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
-                              <form id="client-form" data-parsley-validate class="form-horizontal form-label-left" method="post" action="{% url 'add_client' %}">
+                              <form id="client-form" data-parsley-validate class="form-horizontal form-label-left" method="post" action="{% url 'update_client' obj.id %}">
                                   {% csrf_token %}
                               <div class="form-group">
                                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_first_name">First Name <span class="required" style='color:red;'>*</span></label>
                                   <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" name="first_name" maxlength="128" required id="id_first_name" class="form-control col-md-7 col-xs-12"/></p>
+                                  <input type="text" value="{{obj.first_name}}" name="first_name" maxlength="128" required id="id_first_name" class="form-control col-md-7 col-xs-12"/></p>
                                 </div>
                               </div>
                               <div class="form-group">
                                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_last_name">Last Name <span class="required" style='color:red;'>*</span></label>
                                   <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" name="last_name" maxlength="128" required id="id_last_name" class="form-control col-md-7 col-xs-12"/></p>
+                                  <input type="text" value="{{obj.last_name}}" name="last_name" maxlength="128" required id="id_last_name" class="form-control col-md-7 col-xs-12"/></p>
                                 </div>
                               </div>
                               <div class="form-group">
@@ -47,58 +47,58 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <select name="gender" required id="id_gender" class="form-control">
-                                      <option value="" selected>---------</option>
-                                      <option value="M">Male</option>
-                                      <option value="F">Female</option>
+                                      <option value="">---------</option>
+                                      <option value="M" {% if obj.gender == "M" %} selected {% endif %}>Male</option>
+                                      <option value="F" {% if obj.gender == "F" %} selected {% endif %}>Female</option>
                                     </select>
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label for="id_addr_line1" class="control-label col-md-3 col-sm-3 col-xs-12">Address</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input id="id_addr_line1" class="form-control col-md-7 col-xs-12" type="text" name="line1" placeholder="Line 1">
+                                  <input id="id_addr_line1" value="{{obj.address.line1}}" class="form-control col-md-7 col-xs-12" type="text" name="line1" placeholder="Line 1">
                                 </div>
                               </div>
                                   <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input id="id_addr_line2" class="form-control col-md-7 col-xs-12" type="text" name="line2" placeholder="Line 2">
+                                  <input id="id_addr_line2" value="{{obj.address.line2}}" class="form-control col-md-7 col-xs-12" type="text" name="line2" placeholder="Line 2">
                                 </div>
                               </div>
                                   <div class="form-group">
                                 <label for="id_location" class="control-label col-md-3 col-sm-3 col-xs-12"></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input id="id_location" class="form-control col-md-7 col-xs-12" type="text" name="location" placeholder="City or Village">
+                                  <input id="id_location" value="{{obj.address.city_or_village}}" class="form-control col-md-7 col-xs-12" type="text" name="location" placeholder="City or Village">
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                  <input id="id_state" class="form-control col-md-7 col-xs-12" placeholder="State" type="text" name="state">
+                                  <input id="id_state" value="{{obj.address.state}}" class="form-control col-md-7 col-xs-12" placeholder="State" type="text" name="state">
                                 </div>
                                  <div class="col-md-2 col-sm-4 col-xs-12">
-                                  <input id="id_country" class="form-control col-md-7 col-xs-12" placeholder="Country" type="text" name="country">
+                                  <input id="id_country" value="{{obj.address.country}}" class="form-control col-md-7 col-xs-12" placeholder="Country" type="text" name="country">
                                 </div>
                                 <div class="col-md-2 col-sm-4 col-xs-12">
-                                  <input id="id_zip" class="form-control col-md-7 col-xs-12" placeholder="ZipCode" type="text"  name="zip">
+                                  <input id="id_zip" value="{{obj.address.zip_code}}" class="form-control col-md-7 col-xs-12" placeholder="ZipCode" type="text"  name="zip">
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label for="id_mobile" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile <span class="required" style='color:red;'>*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" class="form-control col-md-7 col-xs-12" name="mobile" maxlength="15" required id="id_mobile" />
+                                  <input type="text" value="{{obj.mobile}}" class="form-control col-md-7 col-xs-12" name="mobile" maxlength="15" required id="id_mobile" />
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_email">Email <span class="required" style='color:red;'>*</span></label>
                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="email" name="email" maxlength="254" required id="id_email" class="form-control col-md-7 col-xs-12" />
+                                  <input type="email" value="{{obj.email}}" name="email" maxlength="254" required id="id_email" class="form-control col-md-7 col-xs-12" />
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_skype_id">Skype Id</label>
                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" name="skype_id" maxlength="128" id="id_skype_id" class="form-control col-md-7 col-xs-12" />
+                                  <input type="text" value={% if obj.skype_id == None %} "" {% else %} "{{obj.skype_id}}" {% endif %} name="skype_id" maxlength="128" id="id_skype_id" class="form-control col-md-7 col-xs-12" />
                                 </div>
                               </div>
                               <div class="form-group">
@@ -106,8 +106,8 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <select name="status" required id="id_status" class="form-control">
-                                        <option value="Active" selected>Active</option>
-                                        <option value="Inactive">Inactive</option>
+                                        <option value="Active" {% if obj.gender == "Active" %} selected {% endif %}>Active</option>
+                                        <option value="Inactive" {% if obj.gender == "Inactive" %} selected {% endif %}>Inactive</option>
                                     </select>
                                 </div></div>
                                   <!--{{ form.as_p }}-->
