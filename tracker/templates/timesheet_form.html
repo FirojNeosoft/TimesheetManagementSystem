@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Contracts</h3>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <section class="content">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <div class="">
+                            <div class="box-header">
+                              {% if messages %}
+                                <ul class="messages">
+                                  {% for message in messages %}
+                                    <li class="{{ message.tags }}">{{ message }}</li>
+                                  {% endfor %}
+                                </ul>
+                              {% endif %}
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <form method="post">
+                                   {% csrf_token %}
+                                     {{ form.as_p }}
+                                   <input type="submit" value="Save" />
+                                </form>
+                            </div>
+                            <!-- /.box-body -->
+                          </div>
+                          <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+   $("#id_contract").addClass( "form-control" );
+   $("#id_sign_in").addClass( "form-control" );
+   $('#id_sign_in').datepicker();
+   $("#id_sign_out").addClass( "form-control" );
+   $('#id_sign_out').datepicker();
+   $("#id_tasks").addClass( "form-control" );
+   $("#id_status").addClass( "form-control" );
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+       <div class="page-title">
+            <div class="title_left">
+                <h3>Contracts</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <ul class="list-inline pull-right clearfix controls">
+                                <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_contract' %}"> <i class="fa fa-plus"></i> Create New Contract</a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <br />
+                            <div class="table-responsive">
+                                <table id="language_table" class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                      <th>Project</th>
+                                      <th>Employee</th>
+                                      <th>Role</th>
+                                      <th>Status</th>
+                                      <th>Billing Cycle</th>
+                                      <th class="no-sort">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for contract in contract_list %}
+                                      <tr>
+                                        <td>{{ contract.project.name }}</td>
+                                        <td>{{ contract.employee.full_name }}</td>
+                                        <td>{{ contract.role }}</td>
+                                        <td>{{ contract.status }}</td>
+                                        <td>{{ contract.billing_cycle }}</td>
+                                        <td>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_contract' contract.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_contract' contract.id %}" obj_name='' style="padding-left:50px;"></a>
+                                        </td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+

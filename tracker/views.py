@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.views.generic import View
 from django.views.generic import ListView
@@ -7,8 +6,25 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from tracker.models import *
+
+class DashboardView(View):
+    """
+    Dashboard
+    """
+
+    # @login_required
+    def get(self, request):
+        """
+          dashboard
+        """
+        data = { "employees_count" : Employee.objects.exclude(status='Delete').count(),
+        "clients_count" : Client.objects.exclude(status='Delete').count(),
+        "projects_count" : Project.objects.exclude(status='Delete').count(),
+        "contracts_count" : Contract.objects.exclude(status='Delete').count()}
+        return render(request, 'dashboard.html', data)
 
 
 class ListClientsView(ListView):
@@ -127,22 +143,49 @@ class CreateUserView(SuccessMessageMixin, CreateView):
     Create new user
     """
     model = User
-    fields = ['username', 'email', 'password', 'is_staff']
+    fields = ['username', 'password', 'email', 'is_staff']
     template_name = 'user_form.html'
     success_message = "%(username)s was created successfully"
     success_url = reverse_lazy('list_users')
 
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        form = self.get_form()
+        if form.is_valid():
+            user = form.save()
+            user.set_password(request.POST['password'])
+            user.save()
+        else:
+            pass
+        return HttpResponseRedirect(reverse('list_users'))
 
 class UpdateUserView(SuccessMessageMixin, UpdateView):
     """
     Update existing user
     """
     model = User
-    fields = ['username', 'email', 'password', 'is_staff']
+    fields = ['username', 'password', 'email', 'is_staff']
     template_name = 'user_form.html'
     success_message = "%(username)s was updated successfully"
     success_url = reverse_lazy('list_users')
 
+    def post(self, request, pk):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        self.object = User.objects.get(id=pk)
+        form = self.get_form()
+        if form.is_valid():
+            user = form.save()
+            user.set_password(request.POST['password'])
+            user.save()
+        else:
+            pass
+        return HttpResponseRedirect(reverse('list_users'))
 
 class DeleteUserView(DeleteView):
     """
@@ -257,3 +300,124 @@ class DeleteEmployeeView(DeleteView):
     template_name = 'employee_confirm_delete.html'
     success_url = reverse_lazy('list_employees')
 
+
+class ListProjectsView(ListView):
+    """
+    List Projects
+    """
+    model = Project
+    queryset = Project.objects.all()
+    template_name = 'project_list.html'
+
+
+class CreateProjectView(SuccessMessageMixin, CreateView):
+    """
+    Create new project
+    """
+    model = Project
+    fields = ['name', 'description', 'owner', 'representative', 'status']
+    template_name = 'project_form.html'
+    success_message = "%(name)s was created successfully"
+    success_url = reverse_lazy('list_projects')
+
+
+class UpdateProjectView(SuccessMessageMixin, UpdateView):
+    """
+    Update existing project
+    """
+    model = Project
+    fields = ['name', 'description', 'owner', 'representative', 'status']
+    template_name = 'project_form.html'
+    success_message = "%(name)s was updated successfully"
+    success_url = reverse_lazy('list_projects')
+
+
+class DeleteProjectView(DeleteView):
+    """
+    Delete existing project
+    """
+    model = Project
+    template_name = 'project_confirm_delete.html'
+    success_url = reverse_lazy('list_projects')
+
+
+class ListContractsView(ListView):
+    """
+    List Contracts
+    """
+    model = Contract
+    queryset = Contract.objects.all()
+    template_name = 'contract_list.html'
+
+
+class CreateContractView(SuccessMessageMixin, CreateView):
+    """
+    Create new contract
+    """
+    model = Contract
+    fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
+              'pay_rate', 'billing_cycle', 'remark', 'status']
+    template_name = 'contract_form.html'
+    success_message = "contract was created successfully"
+    success_url = reverse_lazy('list_contracts')
+
+
+class UpdateContractView(SuccessMessageMixin, UpdateView):
+    """
+    Update existing contract
+    """
+    model = Contract
+    fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
+              'pay_rate', 'billing_cycle', 'remark', 'status']
+    template_name = 'contract_form.html'
+    success_message = "contract was updated successfully"
+    success_url = reverse_lazy('list_contracts')
+
+
+class DeleteContractView(DeleteView):
+    """
+    Delete existing contract
+    """
+    model = Contract
+    template_name = 'contract_confirm_delete.html'
+    success_url = reverse_lazy('list_contracts')
+
+
+class ListTimesheetsView(ListView):
+    """
+    List Timesheets
+    """
+    model = Timesheet
+    queryset = Timesheet.objects.all()
+    template_name = 'timesheet_list.html'
+
+
+class CreateTimesheetView(SuccessMessageMixin, CreateView):
+    """
+    Create new timesheet
+    """
+    model = Timesheet
+    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'status']
+    template_name = 'timesheet_form.html'
+    success_message = "timesheet was created successfully"
+    success_url = reverse_lazy('list_timesheets')
+
+
+class UpdateTimesheetView(SuccessMessageMixin, UpdateView):
+    """
+    Update existing timesheet
+    """
+    model = Timesheet
+    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'status']
+    template_name = 'timesheet_form.html'
+    success_message = "timesheet was updated successfully"
+    success_url = reverse_lazy('list_timesheets')
+
+
+class DeleteTimesheetView(DeleteView):
+    """
+    Delete existing timesheet
+    """
+    model = Timesheet
+    template_name = 'timesheet_confirm_delete.html'
+    success_url = reverse_lazy('list_timesheets')
