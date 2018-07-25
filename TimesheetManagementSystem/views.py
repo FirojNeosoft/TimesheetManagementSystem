@@ -21,6 +21,7 @@ class LoginView(View):
             login(request, user)
             return HttpResponseRedirect(reverse('dashboard'))
         else:
+            messages.error(request, 'Please check credentials.')
             return HttpResponseRedirect(reverse('login'))
 
 
