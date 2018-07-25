@@ -19,9 +19,9 @@
                           <div class="">
                             <div class="box-header">
                               {% if messages %}
-                                <ul class="messages">
+                                <ul class="messages alert alert-danger">
                                   {% for message in messages %}
-                                    <li class="{{ message.tags }}">{{ message }}</li>
+                                    {{ message }}
                                   {% endfor %}
                                 </ul>
                               {% endif %}

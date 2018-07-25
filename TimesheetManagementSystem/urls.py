@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import LoginView, LogoutView
+from .views import LoginView, LogoutView, ChangePasswordView
 from rest_framework_swagger.views import get_swagger_view
 
 
@@ -25,6 +25,7 @@ schema_view = get_swagger_view(title='TMS APIs')
 urlpatterns = [
     path('login/', LoginView.as_view(), name="login"),
     path('logout/', LogoutView.as_view(), name="logout"),
+    path('change_password/', ChangePasswordView.as_view(), name="change_password"),
     path('schema/', schema_view),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),

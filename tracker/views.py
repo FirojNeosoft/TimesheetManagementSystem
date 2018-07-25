@@ -5,17 +5,17 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from tracker.models import *
 
-class DashboardView(View):
+
+class DashboardView(LoginRequiredMixin, View):
     """
     Dashboard
     """
-
-    # @login_required
     def get(self, request):
         """
           dashboard
@@ -27,7 +27,7 @@ class DashboardView(View):
         return render(request, 'dashboard.html', data)
 
 
-class ListClientsView(ListView):
+class ListClientsView(LoginRequiredMixin, ListView):
     """
     List Clients
     """
@@ -36,7 +36,7 @@ class ListClientsView(ListView):
     template_name = 'client_list.html'
 
 
-class CreateClientView(SuccessMessageMixin, CreateView):
+class CreateClientView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new client
     """
@@ -67,11 +67,12 @@ class CreateClientView(SuccessMessageMixin, CreateView):
                 except:
                     pass
         else:
-            pass
+            messages.error(request, form.errors)
+            return redirect('add_client')
         return HttpResponseRedirect(reverse('list_clients'))
 
 
-class UpdateClientView(SuccessMessageMixin, UpdateView):
+class UpdateClientView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     Update existing client
     """
@@ -116,11 +117,12 @@ class UpdateClientView(SuccessMessageMixin, UpdateView):
                 except:
                     pass
         else:
-            pass
+            messages.error(request, form.errors)
+            return redirect('update_client', pk)
         return HttpResponseRedirect(reverse('list_clients'))
 
 
-class DeleteClientView(DeleteView):
+class DeleteClientView(LoginRequiredMixin, DeleteView):
     """
     Delete existing client
     """
@@ -129,7 +131,7 @@ class DeleteClientView(DeleteView):
     success_url = reverse_lazy('list_clients')
 
 
-class ListUsersView(ListView):
+class ListUsersView(LoginRequiredMixin, ListView):
     """
     List Users
     """
@@ -138,7 +140,7 @@ class ListUsersView(ListView):
     template_name = 'user_list.html'
 
 
-class CreateUserView(SuccessMessageMixin, CreateView):
+class CreateUserView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new user
     """
@@ -162,7 +164,8 @@ class CreateUserView(SuccessMessageMixin, CreateView):
             pass
         return HttpResponseRedirect(reverse('list_users'))
 
-class UpdateUserView(SuccessMessageMixin, UpdateView):
+
+class UpdateUserView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     Update existing user
     """
@@ -172,22 +175,22 @@ class UpdateUserView(SuccessMessageMixin, UpdateView):
     success_message = "%(username)s was updated successfully"
     success_url = reverse_lazy('list_users')
 
-    def post(self, request, pk):
-        """
-        Handle POST requests: instantiate a form instance with the passed
-        POST variables and then check if it's valid.
-        """
-        self.object = User.objects.get(id=pk)
-        form = self.get_form()
-        if form.is_valid():
-            user = form.save()
-            user.set_password(request.POST['password'])
-            user.save()
-        else:
-            pass
-        return HttpResponseRedirect(reverse('list_users'))
+   # def post(self, request, pk):
+    #    """
+     #   Handle POST requests: instantiate a form instance with the passed
+      #  POST variables and then check if it's valid.
+       # """
+        #self.object = User.objects.get(id=pk)
+        #form = self.get_form()
+        #if form.is_valid():
+         #   user = form.save()
+          #  user.set_password(request.POST['password'])
+           # user.save()
+       # else:
+        #    pass
+        #return HttpResponseRedirect(reverse('list_users'))
 
-class DeleteUserView(DeleteView):
+class DeleteUserView(LoginRequiredMixin, DeleteView):
     """
     Delete existing user
     """
@@ -196,7 +199,7 @@ class DeleteUserView(DeleteView):
     success_url = reverse_lazy('list_users')
 
 
-class ListEmployeesView(ListView):
+class ListEmployeesView(LoginRequiredMixin, ListView):
     """
     List Employees
     """
@@ -205,7 +208,7 @@ class ListEmployeesView(ListView):
     template_name = 'employees_list.html'
 
 
-class CreateEmployeeView(SuccessMessageMixin, CreateView):
+class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new employee
     """
@@ -222,7 +225,7 @@ class CreateEmployeeView(SuccessMessageMixin, CreateView):
         POST variables and then check if it's valid.
         """
         form = self.get_form()
-        # import pdb; pdb.set_trace()
+
         if form.is_valid():
             emp = form.save()
             line1 = request.POST['line1']
@@ -238,11 +241,11 @@ class CreateEmployeeView(SuccessMessageMixin, CreateView):
                 except:
                     pass
         else:
-            pass
+            return render(request, 'employee_form.html', {'form': form, 'messages': form.errors})
         return HttpResponseRedirect(reverse('list_employees'))
 
 
-class UpdateEmployeeView(SuccessMessageMixin, UpdateView):
+class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     Update existing employee
     """
@@ -288,11 +291,11 @@ class UpdateEmployeeView(SuccessMessageMixin, UpdateView):
                 except:
                     pass
         else:
-            pass
+            return render(request, 'edit_employee_form.html', {'form': form, 'messages': form.errors})
         return HttpResponseRedirect(reverse('list_employees'))
 
 
-class DeleteEmployeeView(DeleteView):
+class DeleteEmployeeView(LoginRequiredMixin, DeleteView):
     """
     Delete existing employee
     """
@@ -301,7 +304,7 @@ class DeleteEmployeeView(DeleteView):
     success_url = reverse_lazy('list_employees')
 
 
-class ListProjectsView(ListView):
+class ListProjectsView(LoginRequiredMixin, ListView):
     """
     List Projects
     """
@@ -310,7 +313,7 @@ class ListProjectsView(ListView):
     template_name = 'project_list.html'
 
 
-class CreateProjectView(SuccessMessageMixin, CreateView):
+class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new project
     """
@@ -321,7 +324,7 @@ class CreateProjectView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('list_projects')
 
 
-class UpdateProjectView(SuccessMessageMixin, UpdateView):
+class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     """
     Update existing project
     """
@@ -332,7 +335,7 @@ class UpdateProjectView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('list_projects')
 
 
-class DeleteProjectView(DeleteView):
+class DeleteProjectView(LoginRequiredMixin, DeleteView):
     """
     Delete existing project
     """
@@ -341,7 +344,7 @@ class DeleteProjectView(DeleteView):
     success_url = reverse_lazy('list_projects')
 
 
-class ListContractsView(ListView):
+class ListContractsView(LoginRequiredMixin, ListView):
     """
     List Contracts
     """
@@ -350,7 +353,7 @@ class ListContractsView(ListView):
     template_name = 'contract_list.html'
 
 
-class CreateContractView(SuccessMessageMixin, CreateView):
+class CreateContractView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new contract
     """
@@ -362,7 +365,7 @@ class CreateContractView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('list_contracts')
 
 
-class UpdateContractView(SuccessMessageMixin, UpdateView):
+class UpdateContractView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     Update existing contract
     """
@@ -374,7 +377,7 @@ class UpdateContractView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('list_contracts')
 
 
-class DeleteContractView(DeleteView):
+class DeleteContractView(LoginRequiredMixin, DeleteView):
     """
     Delete existing contract
     """
@@ -383,7 +386,7 @@ class DeleteContractView(DeleteView):
     success_url = reverse_lazy('list_contracts')
 
 
-class ListTimesheetsView(ListView):
+class ListTimesheetsView(LoginRequiredMixin, ListView):
     """
     List Timesheets
     """
@@ -392,7 +395,7 @@ class ListTimesheetsView(ListView):
     template_name = 'timesheet_list.html'
 
 
-class CreateTimesheetView(SuccessMessageMixin, CreateView):
+class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new timesheet
     """
@@ -403,7 +406,7 @@ class CreateTimesheetView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('list_timesheets')
 
 
-class UpdateTimesheetView(SuccessMessageMixin, UpdateView):
+class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     Update existing timesheet
     """
@@ -414,7 +417,7 @@ class UpdateTimesheetView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('list_timesheets')
 
 
-class DeleteTimesheetView(DeleteView):
+class DeleteTimesheetView(LoginRequiredMixin, DeleteView):
     """
     Delete existing timesheet
     """
