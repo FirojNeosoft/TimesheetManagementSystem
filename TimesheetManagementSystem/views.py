@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+
 class LoginView(View):
 
     def get(self, request):
@@ -53,6 +54,6 @@ class ChangePasswordView(LoginRequiredMixin, View):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('change_password')
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, 'Error occured while changing password, please enter a proper password.')
+        return redirect('change_password')

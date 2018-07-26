@@ -58,7 +58,7 @@ ROOT_URLCONF = 'TimesheetManagementSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +137,7 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
 # Required choices variables
 GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'))
@@ -211,3 +212,13 @@ LOGGING = {
         },
     },
 }
+
+# SESSION AGE 30 Minutes
+SESSION_COOKIE_AGE = 30*60
+
+#Email Server
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'firoz.nalband@triveniconsulting.com'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True

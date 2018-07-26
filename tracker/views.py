@@ -62,10 +62,12 @@ class CreateClientView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             zip_code = request.POST['zip']
             if city and country and state and zip_code:
                 try:
-                    client.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state, country=country,zip_code=int(zip_code))
+                    client.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
+                                                            country=country,zip_code=int(zip_code))
                     client.save()
                 except:
-                    pass
+                    messages.error(request, "Error occured while saving address of a client.")
+                    return redirect('add_client')
         else:
             messages.error(request, form.errors)
             return redirect('add_client')
@@ -115,7 +117,8 @@ class UpdateClientView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
                     client.address.zip_code=int(zip_code)
                     client.address.save()
                 except:
-                    pass
+                    messages.error(request, "Error occured while saving address of a client.")
+                    return redirect('update_client', pk)
         else:
             messages.error(request, form.errors)
             return redirect('update_client', pk)
@@ -161,7 +164,8 @@ class CreateUserView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             user.set_password(request.POST['password'])
             user.save()
         else:
-            pass
+            messages.error(request, form.errors)
+            return redirect('add_user')
         return HttpResponseRedirect(reverse('list_users'))
 
 
@@ -190,6 +194,7 @@ class UpdateUserView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         #    pass
         #return HttpResponseRedirect(reverse('list_users'))
 
+
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     """
     Delete existing user
@@ -214,7 +219,8 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate','passport_no','current_visa_status','status']
+              'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
+              'passport_no','current_visa_status','status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_employees')
@@ -236,12 +242,15 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             zip_code = request.POST['zip']
             if city and country and state and zip_code:
                 try:
-                    emp.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state, country=country,zip_code=int(zip_code))
+                    emp.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
+                                                         country=country,zip_code=int(zip_code))
                     emp.save()
                 except:
-                    pass
+                    messages.error(request, "Error occured while saving address of an employee.")
+                    return redirect('add_employee')
         else:
-            return render(request, 'employee_form.html', {'form': form, 'messages': form.errors})
+            messages.error(request, form.errors)
+            return redirect('add_employee')
         return HttpResponseRedirect(reverse('list_employees'))
 
 
@@ -251,7 +260,8 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate','passport_no','current_visa_status','status']
+              'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
+              'passport_no','current_visa_status','status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_employees')
@@ -289,9 +299,11 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
                     emp.address.zip_code=int(zip_code)
                     emp.address.save()
                 except:
-                    pass
+                    messages.error(request, "Error occured while saving address of an employee.")
+                    return redirect('update_employee', pk)
         else:
-            return render(request, 'edit_employee_form.html', {'form': form, 'messages': form.errors})
+            messages.error(request, form.errors)
+            return redirect('update_employee', pk)
         return HttpResponseRedirect(reverse('list_employees'))
 
 
