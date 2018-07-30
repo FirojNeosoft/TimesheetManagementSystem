@@ -22,13 +22,12 @@
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="language_table" class="table table-bordered table-striped">
+                                <table id="projects_table" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
                                       <th>Name</th>
                                       <th>Owner</th>
                                       <th>Representative</th>
-                                      <th>Located At</th>
                                       <th>Status</th>
                                       <th class="no-sort">Action</th>
                                     </tr>
@@ -38,8 +37,7 @@
                                       <tr>
                                         <td>{{ project.name }}</td>
                                         <td>{{ project.owner }}</td>
-                                        <td>{{ project.Representative }}</td>
-                                        <td>{{ project.address.city_or_village }}, {{ project.address.state }}, {{ project.address.country }}</td>
+                                        <td>{{ project.representative.full_name }}</td>
                                         <td>{{ project.status }}</td>
                                         <td>
                                           <a class="fa fa-pencil-square-o" href="{% url 'update_project' project.id %}"></a>
@@ -57,3 +55,10 @@
         </div>
 {% endblock %}
 
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#projects_table').DataTable();
+  });
+</script>
+{% endblock %}

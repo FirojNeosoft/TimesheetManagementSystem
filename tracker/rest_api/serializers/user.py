@@ -51,8 +51,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         fields = ('id', 'first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile',\
                   'email', 'skype_id', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
-                  'current_pay_rate', 'passport_no', 'current_visa_status', 'status', 'address', 'created_at')
-        read_only_fields = ('id', 'created_at', )
+                  'current_pay_rate', 'passport_no', 'current_visa_status', 'referral_bonus_points','status',\
+                  'address', 'created_at')
+        read_only_fields = ('id', 'referral_bonus_points', 'created_at',)
 
     @transaction.atomic
     def create(self, validated_data):

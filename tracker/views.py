@@ -1,3 +1,7 @@
+import logging
+
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.views.generic import View
 from django.views.generic import ListView
@@ -10,6 +14,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 from tracker.models import *
+
+logger = logging.getLogger('tracker_log')
 
 
 class DashboardView(LoginRequiredMixin, View):
@@ -65,10 +71,12 @@ class CreateClientView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                     client.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
                                                             country=country,zip_code=int(zip_code))
                     client.save()
-                except:
+                except Exception as e:
+                    logger.error("{}, error occured while saving address of a client.".format(e))
                     messages.error(request, "Error occured while saving address of a client.")
                     return redirect('add_client')
         else:
+            logger.error(form.errors)
             messages.error(request, form.errors)
             return redirect('add_client')
         return HttpResponseRedirect(reverse('list_clients'))
@@ -107,19 +115,28 @@ class UpdateClientView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             country = request.POST['country']
             state = request.POST['state']
             zip_code = request.POST['zip']
+            # import pdb; pdb.set_trace()
             if city and country and state and zip_code:
                 try:
-                    client.address.line1=line1
-                    client.address.line2=line2
-                    client.address.city_or_village=city
-                    client.address.state=state
-                    client.address.country=country
-                    client.address.zip_code=int(zip_code)
-                    client.address.save()
-                except:
+                    if client.address:
+                        client.address.line1=line1
+                        client.address.line2=line2
+                        client.address.city_or_village=city
+                        client.address.state=state
+                        client.address.country=country
+                        client.address.zip_code=int(zip_code)
+                        client.address.save()
+                    else:
+                        client.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city,
+                                                                state=state, country=country, zip_code=int(zip_code))
+                        client.save()
+
+                except Exception as e:
+                    logger.error("{}, error occured while saving address of a client.".format(e))
                     messages.error(request, "Error occured while saving address of a client.")
                     return redirect('update_client', pk)
         else:
+            logger.error(form.errors)
             messages.error(request, form.errors)
             return redirect('update_client', pk)
         return HttpResponseRedirect(reverse('list_clients'))
@@ -164,6 +181,7 @@ class CreateUserView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             user.set_password(request.POST['password'])
             user.save()
         else:
+            logger.error(form.errors)
             messages.error(request, form.errors)
             return redirect('add_user')
         return HttpResponseRedirect(reverse('list_users'))
@@ -245,10 +263,12 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                     emp.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
                                                          country=country,zip_code=int(zip_code))
                     emp.save()
-                except:
+                except Exception as e:
+                    logger.error("{}, error occured while saving address of an employee.".format(e))
                     messages.error(request, "Error occured while saving address of an employee.")
                     return redirect('add_employee')
         else:
+            logger.error(form.errors)
             messages.error(request, form.errors)
             return redirect('add_employee')
         return HttpResponseRedirect(reverse('list_employees'))
@@ -291,17 +311,24 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             zip_code = request.POST['zip']
             if city and country and state and zip_code:
                 try:
-                    emp.address.line1=line1
-                    emp.address.line2=line2
-                    emp.address.city_or_village=city
-                    emp.address.state=state
-                    emp.address.country=country
-                    emp.address.zip_code=int(zip_code)
-                    emp.address.save()
-                except:
+                    if emp.address:
+                        emp.address.line1=line1
+                        emp.address.line2=line2
+                        emp.address.city_or_village=city
+                        emp.address.state=state
+                        emp.address.country=country
+                        emp.address.zip_code=int(zip_code)
+                        emp.address.save()
+                    else:
+                        emp.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city,
+                                                                state=state, country=country, zip_code=int(zip_code))
+                        emp.save()
+                except Exception as e:
+                    logger.error("{}, error occured while saving address of an employee.".format(e))
                     messages.error(request, "Error occured while saving address of an employee.")
                     return redirect('update_employee', pk)
         else:
+            logger.error(form.errors)
             messages.error(request, form.errors)
             return redirect('update_employee', pk)
         return HttpResponseRedirect(reverse('list_employees'))
@@ -436,3 +463,28 @@ class DeleteTimesheetView(LoginRequiredMixin, DeleteView):
     model = Timesheet
     template_name = 'timesheet_confirm_delete.html'
     success_url = reverse_lazy('list_timesheets')
+
+
+class GenericTimesheetView(View):
+
+    def get(self, request):
+        return render(request, 'generic_timesheet.html')
+
+    def post(self, request):
+        try:
+            if request.POST['is_billable']:
+                is_billable = True
+            else:
+                is_billable = False
+
+            for d in request.POST['dates'].split(','):
+                contract = Contract.objects.get(id=request.POST['contract'])
+                start = datetime.strptime(d.strip()+' '+request.POST['start_time'],'%Y-%m-%d %H:%M')
+                end = datetime.strptime(d.strip()+' '+request.POST['end_time'], '%Y-%m-%d %H:%M')
+                Timesheet.objects.create(contract=contract, sign_in=start, sign_out=end, tasks=request.POST['tasks'],\
+                                         is_billable=is_billable, status=request.POST['status'])
+            return redirect('list_timesheets')
+        except Exception as inst:
+            logger.error('Failed to save a timesheets in generic by user {}'.format(request.user.username))
+            messages.error(request, 'Error occured while saving timesheets.')
+            return redirect('add_generic_timesheet')

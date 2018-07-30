@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from tracker.views import *
+from tracker.utils import *
 
 
 urlpatterns = [
@@ -27,7 +28,7 @@ urlpatterns = [
     path('project/<int:pk>/edit/', UpdateProjectView.as_view(), name='update_project'),
     path('project/<int:pk>/delete/', DeleteProjectView.as_view(), name='delete_project'),
 
-
+    path('getcontracts/', GetContractsView.as_view(), name='get_contracts'),
     path('contracts/', ListContractsView.as_view(), name='list_contracts'),
     path('contract/add/', CreateContractView.as_view(), name='add_contract'),
     path('contract/<int:pk>/edit/', UpdateContractView.as_view(), name='update_contract'),
@@ -37,4 +38,6 @@ urlpatterns = [
     path('timesheet/add/', CreateTimesheetView.as_view(), name='add_timesheet'),
     path('timesheet/<int:pk>/edit/', UpdateTimesheetView.as_view(), name='update_timesheet'),
     path('timesheet/<int:pk>/delete/', DeleteTimesheetView.as_view(), name='delete_timesheet'),
+
+    path('generictimesheet/add/', GenericTimesheetView.as_view(), name='add_generic_timesheet'),
 ]

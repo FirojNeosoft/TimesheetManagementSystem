@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
-                        <div class="x_title">
+                        <div class="">
                             <ul class="list-inline pull-right clearfix controls">
                                 <li>
                                     <a class="btn btn-primary download-excel" href="{% url 'add_employee' %}"> <i class="fa fa-plus"></i> Create New Employee</a>
@@ -22,7 +22,7 @@
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="language_table" class="table table-bordered table-striped">
+                                <table id="emps_table" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
                                       <th>Name</th>
@@ -59,3 +59,10 @@
         </div>
 {% endblock %}
 
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#emps_table').DataTable();
+  });
+</script>
+{% endblock %}

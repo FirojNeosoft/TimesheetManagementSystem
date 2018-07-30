@@ -51,7 +51,7 @@
                               <div class="form-group">
                                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_birth_date">Birthdate </label>
                                   <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" value="{{obj.birth_date}}" name="birth_date" maxlength="128" id="id_birth_date" class="form-control col-md-7 col-xs-12"/></p>
+                                  <input type="text" value="{{obj.birth_date|date:'Y-m-d'}}" name="birth_date" maxlength="128" id="id_birth_date" class="form-control col-md-7 col-xs-12"/></p>
                                 </div>
                               </div>
                               <div class="form-group">
@@ -68,7 +68,7 @@
                               <div class="form-group">
                                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_joined_date">Joint Date </label>
                                   <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text"  value="{{obj.joined_date}}" name="joined_date" maxlength="128" id="id_joined_date" class="form-control col-md-7 col-xs-12"/></p>
+                                  <input type="text"  value="{{obj.joined_date|date:'Y-m-d'}}" name="joined_date" maxlength="128" id="id_joined_date" class="form-control col-md-7 col-xs-12"/></p>
                                 </div>
                               </div>
                               <div class="form-group">
@@ -210,9 +210,9 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-$('#id_joined_date').datepicker();
+$('#id_joined_date').datepicker({'dateFormat': 'yy-mm-dd'});
 
-$('#id_birth_date').datepicker();
+$('#id_birth_date').datepicker({'dateFormat': 'yy-mm-dd'});
     });
 </script>
 {% endblock %}

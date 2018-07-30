@@ -11,10 +11,13 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
-                        <div class="x_title">
-                            <ul class="list-inline pull-right clearfix controls">
+                        <div class="">
+                            <ul class="list-inline pull-right controls">
                                 <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'add_timesheet' %}"> <i class="fa fa-plus"></i> Create New Timesheet</a>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_timesheet' %}"> <i class="fa fa-plus"></i> Create New For Single Date</a>
+                                </li>
+                                <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_generic_timesheet' %}"> <i class="fa fa-plus"></i> Create New For Multiple Dates</a>
                                 </li>
                             </ul>
                             <div class="clearfix"></div>
@@ -22,7 +25,7 @@
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="language_table" class="table table-bordered table-striped">
+                                <table id="timesheets_table" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
                                       <th>Contract</th>
@@ -57,3 +60,10 @@
         </div>
 {% endblock %}
 
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#timesheets_table').DataTable();
+  });
+</script>
+{% endblock %}

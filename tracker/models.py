@@ -3,6 +3,9 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class Address(models.Model):
     """
@@ -52,6 +55,7 @@ class Employee(models.Model):
     current_pay_rate = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     passport_no = models.CharField('Passport No', max_length=128, blank=True, null=True)
     current_visa_status = models.CharField(max_length=12,  blank=True, null=True)
+    referral_bonus_points = models.IntegerField(blank=False, null=False, default=0)
     status = models.CharField(max_length=10, choices=settings.EMPLOYEE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -242,3 +246,11 @@ class Invoice(models.Model):
         """
         self.status = 'Delete'
         self.save()
+
+
+@receiver(post_save, sender=Contract)
+def add_referral_points(sender, instance, created, **kwargs):
+    if created:
+        bonus_points = instance.project.representative.referral_bonus_points
+        instance.project.representative.referral_bonus_points = bonus_points+1
+        instance.project.representative.save()
