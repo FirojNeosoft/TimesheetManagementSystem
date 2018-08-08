@@ -22,10 +22,22 @@
                             </ul>
                             <div class="clearfix"></div>
                         </div>
+                        <div class="box-header" >
+                          {% if messages %}
+                            <ul class="messages">
+                              {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissable">
+                                  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                {{ message }}
+                                </div>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </div>
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="timesheets_table" class="table table-bordered table-striped">
+                                <table id="timesheets_table" class="cell-border">
                                     <thead>
                                     <tr>
                                       <th>Contract</th>
