@@ -252,21 +252,54 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
         if form.is_valid():
             emp = form.save()
-            line1 = request.POST['line1']
-            line2 = request.POST['line2']
-            city = request.POST['location']
-            country = request.POST['country']
-            state = request.POST['state']
-            zip_code = request.POST['zip']
-            if city and country and state and zip_code:
+
+            if request.POST['location'] and request.POST['country'] and request.POST['state'] and request.POST['zip']:
                 try:
-                    emp.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
-                                                         country=country,zip_code=int(zip_code))
+                    emp.address = Address.objects.create(line1=request.POST['line1'], line2=request.POST['line2'],\
+                                                         city_or_village=request.POST['location'], state=request.POST['state'],\
+                                                         country=request.POST['country'],zip_code=int(request.POST['zip']))
                     emp.save()
                 except Exception as e:
                     logger.error("{}, error occured while saving address of an employee.".format(e))
                     messages.error(request, "Error occured while saving address of an employee.")
                     return redirect('add_employee')
+
+            if request.POST['relative_first_name'] and request.POST['relative_last_name'] and \
+                                                             request.POST['relative_mobile'] and request.POST['relation']:
+                try:
+                    emp.emergency_contact = EmergencyContact.objects.create(first_name=request.POST['relative_first_name'], \
+                                                                     last_name=request.POST['relative_last_name'], \
+                                                    relation=request.POST['relation'], mobile=request.POST['mobile'],)
+                    emp.save()
+                except Exception as e:
+                    logger.error("{}, error occured while saving emergency contact of an employee.".format(e))
+                    messages.error(request, "Error occured while saving emergency contact of an employee.")
+                    return redirect('add_employee')
+
+            if request.POST['bank_name'] and request.POST['bank_routing_no'] and \
+                                                request.POST['account_no'] and request.POST['account_type']:
+                try:
+                    emp.bank_account_info = BankAccountInfo.objects.create(bank_name=request.POST['bank_name'], \
+                                                                           bank_routing_no=request.POST['bank_routing_no'], \
+                                                    account_no=request.POST['account_no'], account_type=request.POST['account_type'],)
+                    emp.save()
+                except Exception as e:
+                    logger.error("{}, error occured while saving bank information of an employee.".format(e))
+                    messages.error(request, "Error occured while saving bank information of an employee.")
+                    return redirect('add_employee')
+
+            if request.POST['filling_status'] and request.POST['withholding_allowance']:
+                try:
+                    emp.tax_info = EmpTaxInfo.objects.create(filling_status=request.POST['filling_status'], \
+                                                            withholding_allowance=request.POST['withholding_allowance'], \
+                                                            additional_withholding=request.POST['additional_withholding'],\
+                                                            is_withholding_declare='is_withholding_declare' in request.POST)
+                    emp.save()
+                except Exception as e:
+                    logger.error("{}, error occured while saving tax information of an employee.".format(e))
+                    messages.error(request, "Error occured while saving tax information of an employee.")
+                    return redirect('add_employee')
+
         else:
             logger.error(form.errors)
             messages.error(request, form.errors)
@@ -301,32 +334,91 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         """
         self.object = Employee.objects.get(id=pk)
         form = self.get_form()
+
         if form.is_valid():
             emp = form.save()
-            line1 = request.POST['line1']
-            line2 = request.POST['line2']
-            city = request.POST['location']
-            country = request.POST['country']
-            state = request.POST['state']
-            zip_code = request.POST['zip']
-            if city and country and state and zip_code:
+
+            if request.POST['location'] and request.POST['country'] and request.POST['state'] and request.POST['zip']:
                 try:
                     if emp.address:
-                        emp.address.line1=line1
-                        emp.address.line2=line2
-                        emp.address.city_or_village=city
-                        emp.address.state=state
-                        emp.address.country=country
-                        emp.address.zip_code=int(zip_code)
+                        emp.address.line1= request.POST['line1']
+                        emp.address.line2= request.POST['line2']
+                        emp.address.city_or_village= request.POST['location']
+                        emp.address.state= request.POST['state']
+                        emp.address.country= request.POST['country']
+                        emp.address.zip_code= int(request.POST['zip'])
                         emp.address.save()
                     else:
-                        emp.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city,
-                                                                state=state, country=country, zip_code=int(zip_code))
+                        emp.address = Address.objects.create(line1=request.POST['line1'], line2=request.POST['line2'], \
+                                                             city_or_village=request.POST['location'],
+                                                             state=request.POST['state'], \
+                                                             country=request.POST['country'],
+                                                             zip_code=int(request.POST['zip']))
                         emp.save()
                 except Exception as e:
                     logger.error("{}, error occured while saving address of an employee.".format(e))
                     messages.error(request, "Error occured while saving address of an employee.")
                     return redirect('update_employee', pk)
+
+            if request.POST['relative_first_name'] and request.POST['relative_last_name'] and \
+                                                             request.POST['relative_mobile'] and request.POST['relation']:
+                try:
+                    if emp.emergency_contact:
+                        emp.emergency_contact.first_name= request.POST['relative_first_name']
+                        emp.emergency_contact.last_name= request.POST['relative_last_name']
+                        emp.emergency_contact.relation= request.POST['relation']
+                        emp.emergency_contact.mobile= request.POST['relative_mobile']
+                        emp.emergency_contact.save()
+                    else:
+                        emp.emergency_contact = EmergencyContact.objects.create(
+                            first_name=request.POST['relative_first_name'], \
+                            last_name=request.POST['relative_last_name'], \
+                            relation=request.POST['relation'], mobile=request.POST['mobile'], )
+                        emp.save()
+                except Exception as e:
+                    logger.error("{}, error occured while saving emergency contact of an employee.".format(e))
+                    messages.error(request, "Error occured while saving emergency contact of an employee.")
+                    return redirect('update_employee', pk)
+
+        if request.POST['bank_name'] and request.POST['bank_routing_no'] and \
+                request.POST['account_no'] and request.POST['account_type']:
+            try:
+                if emp.bank_account_info:
+                    emp.bank_account_info.bank_name = request.POST['bank_name']
+                    emp.bank_account_info.bank_routing_no = request.POST['bank_routing_no']
+                    emp.bank_account_info.account_no = request.POST['account_no']
+                    emp.bank_account_info.account_type = request.POST['account_type']
+                    emp.bank_account_info.save()
+                else:
+                    emp.bank_account_info = BankAccountInfo.objects.create(bank_name=request.POST['bank_name'], \
+                                                                           bank_routing_no=request.POST['bank_routing_no'], \
+                                                                           account_no=request.POST['account_no'],
+                                                                           account_type=request.POST['account_type'], )
+                    emp.save()
+            except Exception as e:
+                logger.error("{}, error occured while saving bank information of an employee.".format(e))
+                messages.error(request, "Error occured while saving bank information of an employee.")
+                return redirect('update_employee', pk)
+
+        if request.POST['filling_status'] and request.POST['withholding_allowance']:
+            try:
+                if emp.tax_info:
+                    emp.tax_info.filling_status = request.POST['filling_status']
+                    emp.tax_info.withholding_allowance = request.POST['withholding_allowance']
+                    emp.tax_info.additional_withholding = request.POST['additional_withholding']
+                    emp.tax_info.is_withholding_declare = 'is_withholding_declare' in request.POST
+                    emp.tax_info.save()
+                else:
+                    emp.tax_info = EmpTaxInfo.objects.create(filling_status=request.POST['filling_status'], \
+                                                            withholding_allowance=request.POST['withholding_allowance'], \
+                                                            additional_withholding=request.POST['additional_withholding'],\
+                                                            is_withholding_declare= 'is_withholding_declare' in request.POST,)
+                    emp.save()
+            except Exception as e:
+                logger.error("{}, error occured while saving tax information of an employee.".format(e))
+                messages.error(request, "Error occured while saving tax information of an employee.")
+                return redirect('update_employee', pk)
+
         else:
             logger.error(form.errors)
             messages.error(request, form.errors)
@@ -423,6 +515,46 @@ class DeleteContractView(LoginRequiredMixin, DeleteView):
     model = Contract
     template_name = 'contract_confirm_delete.html'
     success_url = reverse_lazy('list_contracts')
+
+
+class ListTasksView(LoginRequiredMixin, ListView):
+    """
+    List Tasks
+    """
+    model = TaskAllocation
+    queryset = TaskAllocation.objects.exclude(status='Delete')
+    template_name = 'tasks_list.html'
+
+
+class CreateTaskView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    Create new task
+    """
+    model = TaskAllocation
+    fields = ['title', 'description', 'due_date','emp', 'status']
+    template_name = 'task_form.html'
+    success_message = "task was created successfully"
+    success_url = reverse_lazy('list_tasks')
+
+
+class UpdateTaskView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    Update existing task
+    """
+    model = TaskAllocation
+    fields = ['title', 'description', 'due_date', 'emp', 'status']
+    template_name = 'task_form.html'
+    success_message = "task was updated successfully"
+    success_url = reverse_lazy('list_tasks')
+
+
+class DeleteTaskView(LoginRequiredMixin, DeleteView):
+    """
+    Delete existing task
+    """
+    model = TaskAllocation
+    template_name = 'task_confirm_delete.html'
+    success_url = reverse_lazy('list_tasks')
 
 
 class ListTimesheetsView(LoginRequiredMixin, ListView):

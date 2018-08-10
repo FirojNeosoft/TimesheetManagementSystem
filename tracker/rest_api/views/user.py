@@ -28,7 +28,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     search_fields = ('first_name', 'last_name', 'mobile', 'email', 'skype_id')
     ordering_fields = ('first_name', 'last_name', 'email', 'skype_id')
     filter_fields = ('gender', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
-                  'current_visa_status', 'status')
+                     'current_visa_status', 'status')
 
 
 class ClientViewSet(viewsets.ModelViewSet):

@@ -113,6 +113,89 @@
                                   <input id="id_zip" value="{{obj.address.zip_code}}" class="form-control col-md-7 col-xs-12" placeholder="ZipCode" type="text"  name="zip">
                                 </div>
                               </div>
+
+
+
+                              <div class="form-group">
+                                <label for="id_alt_mobile" class="control-label col-md-3 col-sm-3 col-xs-12">Emergency Contact</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_relative_first_name" value="{{obj.emergency_contact.first_name}}" class="form-control col-md-7 col-xs-12" type="text" name="relative_first_name" placeholder="First Name">
+                                </div>
+                              </div>
+                                  <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_relative_last_name" value="{{obj.emergency_contact.last_name}}" class="form-control col-md-7 col-xs-12" type="text" name="relative_last_name" placeholder="Last Name">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                               <div class="col-md-3 col-sm-4 col-xs-12">
+                                  <input id="id_relation" value="{{obj.emergency_contact.relation}}" class="form-control col-md-7 col-xs-12" type="text" name="relation" placeholder="Relation">
+                                </div>
+                                 <div class="col-md-3 col-sm-4 col-xs-12">
+                                  <input id="id_alt_mobile" value="{{obj.emergency_contact.mobile}}" class="form-control col-md-7 col-xs-12" placeholder="Mobile" type="text" name="relative_mobile">
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="id_bank_routing_no" class="control-label col-md-3 col-sm-3 col-xs-12">Bank Account Information</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_bank_name" value="{{obj.bank_account_info.bank_name}}" class="form-control col-md-7 col-xs-12" type="text" name="bank_name" placeholder="Bank Name">
+                                </div>
+                              </div>
+                                  <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_bank_routing_no" value="{{obj.bank_account_info.bank_routing_no}}" class="form-control col-md-7 col-xs-12" type="text" name="bank_routing_no" placeholder="Bank Routing Number">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                               <div class="col-md-3 col-sm-4 col-xs-12">
+                                  <input id="id_account_no" value="{{obj.bank_account_info.account_no}}" class="form-control col-md-7 col-xs-12" type="text" name="account_no" placeholder="Account No">
+                                </div>
+                                 <div class="col-md-3 col-sm-4 col-xs-12">
+                                     <select name="account_type" required id="id_account_type" class="form-control col-md-7 col-xs-12">
+                                        <option value="Saving" {% if obj.bank_account_info.account_type == "Saving" %} selected {% endif %}>Saving</option>
+                                        <option value="Checking" {% if obj.bank_account_info.account_type == "Checking" %} selected {% endif %}>Checking</option>
+                                        <option value="Others" {% if obj.bank_account_info.account_type == "Others" %} selected {% endif %}>Others</option>
+                                    </select>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="id_bank_routing_no" class="control-label col-md-3 col-sm-3 col-xs-12">Tax Information</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_withholding_allowance" value="{{obj.tax_info.withholding_allowance}}" class="form-control col-md-7 col-xs-12" type="text" name="withholding_allowance" placeholder="Withholding Allowance">
+                                </div>
+                              </div>
+                                  <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_additional_withholding" value="{{obj.tax_info.additional_withholding}}" class="form-control col-md-7 col-xs-12" type="text" name="additional_withholding" placeholder="Additional Withholding">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                               <div class="col-md-3 col-sm-4 col-xs-12">
+                                   <select name="filling_status" required id="id_filling_status" class="form-control col-md-7 col-xs-12">
+                                        <option value="Single Return" {% if obj.tax_info.filling_status == "Single Return" %} selected {% endif %}>Single Return</option>
+                                        <option value="Joint Return" {% if obj.tax_info.filling_status == "Joint Return" %} selected {% endif %}>Joint Return</option>
+                                        <option value="Exempt" {% if obj.tax_info.filling_status == "Exempt" %} selected {% endif %}>Exempt</option>
+                                    </select>
+
+                                </div>
+                                 <div class="col-md-3 col-sm-4 col-xs-12">
+                                   <input name="is_withholding_declare" id="id_is_withholding_declare" {% if obj.tax_info.is_withholding_declare %} checked {% endif %} type="checkbox">
+                                   <label for="id_is_withholding_declare" class="">Is Withholding Declare</label>
+                                </div>
+                              </div>
+
+
+
+
+
                               <div class="form-group">
                                 <label for="id_mobile" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile <span class="required" style='color:red;'>*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">

@@ -76,6 +76,21 @@ class TimesheetSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created_at', 'status',)
 
 
+class TaskAllocationSerializer(serializers.ModelSerializer):
+    """
+    TaskAllocation Serializer
+    """
+
+    emp = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(status='Delete'), \
+                                       allow_null=True)
+
+
+    class Meta:
+        model = TaskAllocation
+        fields = ('id', 'emp', 'due_date', 'title', 'description', 'status', 'created_at')
+        read_only_fields = ('id', 'created_at', 'status',)
+
+
 class InvoiceItemSerializer(serializers.ModelSerializer):
     """
     InvoiceItem Serializer

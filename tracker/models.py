@@ -30,6 +30,55 @@ class Address(models.Model):
         self.save()
 
 
+class EmergencyContact(models.Model):
+    """
+    EmergencyContact model
+    """
+    first_name = models.CharField('First Name', max_length=128, blank=False, null=False)
+    last_name = models.CharField('Last Name', max_length=128, blank=False, null=False)
+    relation = models.CharField('Relation', max_length=32, blank=False, null=False)
+    mobile = models.CharField('Mobile', validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format:\
+                                  '+999999999'. Up to 15 digits allowed.")], max_length=15,\
+                                  blank=False, null=False)
+
+    def __str__(self):
+        return '%s(%s)' % (self.mobile, self.relation)
+
+    @property
+    def full_name(self):
+        "Returns the person's full name."
+        return '%s %s' % (self.first_name, self.last_name)
+
+
+class BankAccountInfo(models.Model):
+    """
+    BankAccountInfo model
+    """
+    bank_name = models.CharField('Bank Name', max_length=128, blank=False, null=False)
+    bank_routing_no = models.CharField('Routing No', max_length=128, blank=False, null=False)
+    account_no = models.CharField('Account No', max_length=32, blank=False, null=False)
+    account_type = models.CharField(max_length=10, choices=settings.BANK_ACC_TYPE)
+
+    def __str__(self):
+        return '%s(Account No- %s)' % (self.bank_name, self.account_no)
+
+
+class EmpTaxInfo(models.Model):
+    """
+    Employee Tax Info model
+    """
+    filling_status = models.CharField('Filling Status', max_length=15, choices=settings.TAX_RETURN_TYPE)
+    withholding_allowance = models.DecimalField('Withholding Allowance', max_digits=10, decimal_places=2, blank=False,\
+                                                null=False, default=0)
+    additional_withholding = models.DecimalField('Additional Withholding', max_digits=10, decimal_places=2, blank=False,\
+                                                 null=False, default=0)
+    is_withholding_declare = models.BooleanField('Is Withholding Declare', default=False)
+
+    def __str__(self):
+        return self.filling_status
+
+
 class Employee(models.Model):
     """
     Employee model
@@ -40,7 +89,7 @@ class Employee(models.Model):
     birth_date = models.DateField('Birth Date', blank=True, null=True)
     gender = models.CharField(max_length=1, choices=settings.GENDER_CHOICES, blank=False, null=False)
     # photo = models.ImageField(upload_to='emp_photos/', default='emp_photos/no-photo.jpeg')
-    address = models.ForeignKey('Address', related_name='employee', blank=False, null=True, on_delete=models.CASCADE)
+    address = models.ForeignKey('Address', related_name='employee', blank=False, null=True, on_delete=models.SET_NULL)
     joined_date = models.DateField('Joint Date', blank=True, null=True)
     mobile = models.CharField('Mobile', validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format:\
@@ -56,6 +105,12 @@ class Employee(models.Model):
     passport_no = models.CharField('Passport No', max_length=128, blank=True, null=True)
     current_visa_status = models.CharField(max_length=12,  blank=True, null=True)
     referral_bonus_points = models.IntegerField(blank=False, null=False, default=0)
+    emergency_contact = models.OneToOneField('EmergencyContact', related_name='employee', blank=False, null=True,\
+                                             on_delete=models.SET_NULL)
+    bank_account_info = models.OneToOneField('BankAccountInfo', related_name='employee', blank=False, null=True,\
+                                             on_delete=models.SET_NULL)
+    tax_info = models.OneToOneField('EmpTaxInfo', related_name='employee', blank=False, null=True,\
+                                    on_delete=models.SET_NULL)
     status = models.CharField(max_length=10, choices=settings.EMPLOYEE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -198,6 +253,31 @@ class Timesheet(models.Model):
     def delete(self):
         """
         Delete timesheet
+        """
+        self.status = 'Delete'
+        self.save()
+
+
+class TaskAllocation(models.Model):
+    """
+    TaskAllocation model
+    """
+    emp = models.ForeignKey('Employee', related_name='task_allocation', blank=True, null=True, on_delete=models.SET_NULL)
+    due_date = models.DateField('Due Date', blank=True, null=True)
+    title = models.CharField('Title', max_length=64, blank=False, null=False)
+    description = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=15, choices=settings.PROJECT_STATUS, default='In progress')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Task Allocation"
+
+    def __str__(self):
+        return self.title
+
+    def delete(self):
+        """
+        Delete task
         """
         self.status = 'Delete'
         self.save()

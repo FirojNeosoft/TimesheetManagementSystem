@@ -150,6 +150,9 @@ PAY_RATE_TYPE = (('Hourly', 'Hourly'), ('Daily', 'Daily'), ('Weekly', 'Weekly'),
                  ('Monthly', 'Monthly'), ('Yearly', 'Yearly'))
 TIMESHEET_STATUS = (('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected'), ('Delete', 'Delete'))
 INVOICE_STATUS = (('Paid', 'Paid'), ('Unpaid', 'Unpaid'), ('Delete', 'Delete'))
+BANK_ACC_TYPE = (('Saving', 'Saving'), ('Checking', 'Checking'), ('Others', 'Others'))
+TAX_RETURN_TYPE = (('Single Return', 'Single Return'), ('Joint Return', 'Joint Return'),\
+                   ('Exempt', 'Exempt'))
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -213,8 +216,8 @@ LOGGING = {
     },
 }
 
-# SESSION AGE 30 Minutes
-SESSION_COOKIE_AGE = 30*60
+# SESSION AGE 60 Minutes
+# SESSION_COOKIE_AGE = 60*60
 
 #Email Server
 EMAIL_HOST = 'smtp.gmail.com'

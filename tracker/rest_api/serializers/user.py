@@ -41,25 +41,65 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('line1', 'line2', 'city_or_village', 'state', 'country', 'zip_code')
 
 
+class EmpTaxInfoSerializer(serializers.ModelSerializer):
+    """
+    EmpTaxInfo Serializer
+    """
+
+    class Meta:
+        model = EmpTaxInfo
+        fields = ('filling_status', 'withholding_allowance', 'additional_withholding', 'is_withholding_declare')
+
+
+class BankAccountInfoSerializer(serializers.ModelSerializer):
+    """
+    BankAccountInfo Serializer
+    """
+
+    class Meta:
+        model = BankAccountInfo
+        fields = ('bank_name', 'bank_routing_no', 'account_no', 'account_type')
+
+
+class EmergencyContactSerializer(serializers.ModelSerializer):
+    """
+    EmergencyContact Serializer
+    """
+
+    class Meta:
+        model = EmergencyContact
+        fields = ('first_name', 'last_name', 'relation', 'mobile')
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
     """
     Employee Serializer
     """
     address = AddressSerializer()
+    emergency_contact = EmergencyContactSerializer()
+    bank_account_info = BankAccountInfoSerializer()
+    tax_info = EmpTaxInfoSerializer()
 
     class Meta:
         model = Employee
         fields = ('id', 'first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile',\
                   'email', 'skype_id', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
                   'current_pay_rate', 'passport_no', 'current_visa_status', 'referral_bonus_points','status',\
-                  'address', 'created_at')
+                  'address', 'emergency_contact', 'bank_account_info', 'tax_info', 'created_at')
         read_only_fields = ('id', 'referral_bonus_points', 'created_at',)
 
     @transaction.atomic
     def create(self, validated_data):
+        # import pdb; pdb.set_trace()
         address_data = validated_data.pop('address')
+        emergency_contact_data = validated_data.pop('emergency_contact')
+        bank_acc_data = validated_data.pop('bank_account_info')
+        tax_data = validated_data.pop('tax_info')
         emp = Employee.objects.create(**validated_data)
         emp.address = Address.objects.create(**address_data)
+        emp.emergency_contact = EmergencyContact.objects.create(**emergency_contact_data)
+        emp.bank_account_info = BankAccountInfo.objects.create(**bank_acc_data)
+        emp.tax_info = EmpTaxInfo.objects.create(**tax_data)
         emp.save()
         return emp
 
@@ -92,6 +132,27 @@ class EmployeeSerializer(serializers.ModelSerializer):
         address.country = address_data.get('country', address.country)
         address.zip_code = address_data.get('zip_code', address.zip_code)
         address.save()
+        emergency_contact_data = validated_data.pop('emergency_contact')
+        emergency_contact = instance.emergency_contact
+        emergency_contact.first_name = emergency_contact_data.get('first_name', emergency_contact.first_name)
+        emergency_contact.last_name = emergency_contact_data.get('last_name', emergency_contact.last_name)
+        emergency_contact.relation = emergency_contact_data.get('relation', emergency_contact.relation)
+        emergency_contact.mobile = emergency_contact_data.get('mobile', emergency_contact.mobile)
+        emergency_contact.save()
+        bank_account_info_data = validated_data.pop('bank_account_info')
+        bank_account_info = instance.bank_account_info
+        bank_account_info.bank_name = bank_account_info_data.get('bank_name', bank_account_info.bank_name)
+        bank_account_info.bank_routing_no = bank_account_info_data.get('bank_routing_no', bank_account_info.bank_routing_no)
+        bank_account_info.account_no = bank_account_info_data.get('account_no', bank_account_info.account_no)
+        bank_account_info.account_type = bank_account_info_data.get('account_type', bank_account_info.account_type)
+        bank_account_info.save()
+        tax_info_data = validated_data.pop('tax_info')
+        tax_info = instance.tax_info
+        tax_info.filling_status = tax_info_data.get('filling_status', tax_info.filling_status)
+        tax_info.withholding_allowance = tax_info_data.get('withholding_allowance', tax_info.withholding_allowance)
+        tax_info.additional_withholding = tax_info_data.get('additional_withholding', tax_info.additional_withholding)
+        tax_info.is_withholding_declare = tax_info_data.get('is_withholding_declare', tax_info.is_withholding_declare)
+        tax_info.save()
         return instance
 
 

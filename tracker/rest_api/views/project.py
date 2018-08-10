@@ -41,6 +41,15 @@ class TimesheetViewSet(viewsets.ModelViewSet):
     filter_fields = ('contract', 'is_billable', 'status')
 
 
+class TaskAllocationViewSet(viewsets.ModelViewSet):
+    queryset = TaskAllocation.objects.exclude(status='Delete')
+    serializer_class = TaskAllocationSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('title', 'description')
+    ordering_fields = ('created_at', 'due_date')
+    filter_fields = ('emp', 'status')
+
+
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.exclude(status='Delete')
     serializer_class = InvoiceSerializer
