@@ -28,7 +28,7 @@
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
-                                <form method="post">
+                                <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
                                      {{ form.as_p }}
                                     <div class="ln_solid"></div>

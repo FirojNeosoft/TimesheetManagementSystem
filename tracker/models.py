@@ -111,6 +111,7 @@ class Employee(models.Model):
                                              on_delete=models.SET_NULL)
     tax_info = models.OneToOneField('EmpTaxInfo', related_name='employee', blank=False, null=True,\
                                     on_delete=models.SET_NULL)
+    document = models.FileField('Document', upload_to='upload_docs/employee/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.EMPLOYEE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -149,6 +150,7 @@ class Client(models.Model):
                                   unique=True, blank=False, null=False)
     email = models.EmailField('Email', blank=False, null=False, unique=True)
     skype_id = models.CharField('skype Id', max_length=128, blank=True, null=True)
+    document = models.FileField('Document', upload_to='upload_docs/client/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -181,6 +183,7 @@ class Project(models.Model):
     owner = models.ForeignKey('Client', related_name='project', blank=False, null=True, on_delete=models.CASCADE)
     representative = models.ForeignKey('Employee', related_name='project', blank=False, null=True, on_delete=models.SET_NULL)
     located_at = models.ForeignKey('Address', related_name='project', blank=True, null=True, on_delete=models.SET_NULL)
+    document = models.FileField('Document', upload_to='upload_docs/project/', null=True, blank=True)
     status = models.CharField(max_length=12, choices=settings.PROJECT_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -213,6 +216,7 @@ class Contract(models.Model):
     pay_rate = models.DecimalField('Pay Rate', max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     billing_cycle = models.CharField('Billing Cycle', max_length=10, choices=settings.PAY_RATE_TYPE)
     remark = models.TextField(null=True, blank=True)
+    document = models.FileField('Document', upload_to='upload_docs/contract/', null=True, blank=True)
     status = models.CharField(max_length=12, choices=settings.PROJECT_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -240,6 +244,7 @@ class Timesheet(models.Model):
     sign_out = models.DateTimeField('Sign Out')
     tasks = models.TextField(null=True, blank=True)
     is_billable = models.BooleanField('Is Billable', default=True)
+    document = models.FileField('Document', upload_to='upload_docs/timesheet/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.TIMESHEET_STATUS, default='Pending')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -266,6 +271,7 @@ class TaskAllocation(models.Model):
     due_date = models.DateField('Due Date', blank=True, null=True)
     title = models.CharField('Title', max_length=64, blank=False, null=False)
     description = models.TextField(null=True, blank=True)
+    document = models.FileField('Document', upload_to='upload_docs/task/', null=True, blank=True)
     status = models.CharField(max_length=15, choices=settings.PROJECT_STATUS, default='In progress')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -314,6 +320,7 @@ class Invoice(models.Model):
     tax = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     discount = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     remark = models.TextField(null=True, blank=True)
+    document = models.FileField('Document', upload_to='upload_docs/invoice/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.INVOICE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 

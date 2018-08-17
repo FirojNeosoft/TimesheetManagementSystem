@@ -13,9 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
 
 from .views import LoginView, LogoutView, ChangePasswordView
 from rest_framework_swagger.views import get_swagger_view
@@ -36,5 +38,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('tracker/', include('tracker.urls')),
     path('tracker/api/', include('tracker.rest_api.urls')),
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

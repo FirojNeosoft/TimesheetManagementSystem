@@ -84,7 +84,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         fields = ('id', 'first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile',\
                   'email', 'skype_id', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
-                  'current_pay_rate', 'passport_no', 'current_visa_status', 'referral_bonus_points','status',\
+                  'current_pay_rate', 'passport_no', 'current_visa_status', 'referral_bonus_points','status', 'document',\
                   'address', 'emergency_contact', 'bank_account_info', 'tax_info', 'created_at')
         read_only_fields = ('id', 'referral_bonus_points', 'created_at',)
 
@@ -122,6 +122,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         instance.passport_no = validated_data.get('passport_no', instance.passport_no)
         instance.current_visa_status = validated_data.get('current_visa_status', instance.current_visa_status)
         instance.status = validated_data.get('status', instance.status)
+        instance.document = validated_data.get('document', instance.document)
         instance.save()
         address_data = validated_data.pop('address')
         address = instance.address
@@ -164,7 +165,8 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('id', 'first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'status', 'address', 'created_at')
+        fields = ('id', 'first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'document',\
+                  'status', 'address', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
@@ -184,6 +186,7 @@ class ClientSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.skype_id = validated_data.get('skype_id', instance.skype_id)
         instance.status = validated_data.get('status', instance.status)
+        instance.document = validated_data.get('document', instance.document)
         instance.save()
         address_data = validated_data.pop('address')
         address = instance.address

@@ -2,6 +2,7 @@ import logging
 
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.views.generic import View
 from django.views.generic import ListView
@@ -47,7 +48,7 @@ class CreateClientView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new client
     """
     model = Client
-    fields = ['first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'status']
+    fields = ['first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'document', 'status']
     template_name = 'client_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_clients')
@@ -87,7 +88,7 @@ class UpdateClientView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing client
     """
     model = Client
-    fields = ['first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'status']
+    fields = ['first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'document', 'status']
     template_name = 'edit_client_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_clients')
@@ -98,7 +99,11 @@ class UpdateClientView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         POST variables and then check if it's valid.
         """
         obj = Client.objects.get(id=pk)
-        return render(request, 'edit_client_form.html', {'obj': obj})
+        if obj.document:
+            file_url = request.build_absolute_uri('/')[:-1]+obj.document.url
+        else:
+            file_url=''
+        return render(request, 'edit_client_form.html', {'obj': obj, 'file_url':file_url})
 
     def post(self, request, pk):
         """
@@ -238,7 +243,7 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
               'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
-              'passport_no','current_visa_status','status']
+              'passport_no','current_visa_status', 'document', 'status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_employees')
@@ -249,7 +254,6 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         POST variables and then check if it's valid.
         """
         form = self.get_form()
-
         if form.is_valid():
             emp = form.save()
 
@@ -314,8 +318,8 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
               'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
-              'passport_no','current_visa_status','status']
-    template_name = 'employee_form.html'
+              'passport_no','current_visa_status', 'document', 'status']
+    template_name = 'edit_employee_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_employees')
 
@@ -325,7 +329,11 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         POST variables and then check if it's valid.
         """
         obj = Employee.objects.get(id=pk)
-        return render(request, 'edit_employee_form.html', {'obj': obj})
+        if obj.document:
+            file_url = request.build_absolute_uri('/')[:-1]+obj.document.url
+        else:
+            file_url=''
+        return render(request, 'edit_employee_form.html', {'obj': obj, 'file_url':file_url})
 
     def post(self, request, pk):
         """
@@ -449,7 +457,7 @@ class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'representative', 'status']
+    fields = ['name', 'description', 'owner', 'representative', 'document', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was created successfully"
     success_url = reverse_lazy('list_projects')
@@ -460,7 +468,7 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     Update existing project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'representative', 'status']
+    fields = ['name', 'description', 'owner', 'representative', 'document', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was updated successfully"
     success_url = reverse_lazy('list_projects')
@@ -490,7 +498,7 @@ class CreateContractView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Contract
     fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-              'pay_rate', 'billing_cycle', 'remark', 'status']
+              'pay_rate', 'billing_cycle', 'remark', 'document', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was created successfully"
     success_url = reverse_lazy('list_contracts')
@@ -502,7 +510,7 @@ class UpdateContractView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Contract
     fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-              'pay_rate', 'billing_cycle', 'remark', 'status']
+              'pay_rate', 'billing_cycle', 'remark', 'document', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was updated successfully"
     success_url = reverse_lazy('list_contracts')
@@ -531,7 +539,7 @@ class CreateTaskView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new task
     """
     model = TaskAllocation
-    fields = ['title', 'description', 'due_date','emp', 'status']
+    fields = ['title', 'description', 'due_date','emp', 'document', 'status']
     template_name = 'task_form.html'
     success_message = "task was created successfully"
     success_url = reverse_lazy('list_tasks')
@@ -542,7 +550,7 @@ class UpdateTaskView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing task
     """
     model = TaskAllocation
-    fields = ['title', 'description', 'due_date', 'emp', 'status']
+    fields = ['title', 'description', 'due_date', 'emp', 'document', 'status']
     template_name = 'task_form.html'
     success_message = "task was updated successfully"
     success_url = reverse_lazy('list_tasks')
@@ -571,7 +579,7 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new timesheet
     """
     model = Timesheet
-    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'status']
+    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'document', 'status']
     template_name = 'timesheet_form.html'
     success_message = "timesheet was created successfully"
     success_url = reverse_lazy('list_timesheets')
@@ -582,7 +590,7 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing timesheet
     """
     model = Timesheet
-    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'status']
+    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'document', 'status']
     template_name = 'timesheet_form.html'
     success_message = "timesheet was updated successfully"
     success_url = reverse_lazy('list_timesheets')
@@ -613,8 +621,12 @@ class GenericTimesheetView(View):
                 contract = Contract.objects.get(id=request.POST['contract'])
                 start = datetime.strptime(d.strip()+' '+request.POST['start_time'],'%Y-%m-%d %H:%M')
                 end = datetime.strptime(d.strip()+' '+request.POST['end_time'], '%Y-%m-%d %H:%M')
-                Timesheet.objects.create(contract=contract, sign_in=start, sign_out=end, tasks=request.POST['tasks'],\
+                t = Timesheet.objects.create(contract=contract, sign_in=start, sign_out=end, tasks=request.POST['tasks'],\
                                          is_billable=is_billable, status=request.POST['status'])
+                doc = request.FILES['document']
+                if doc:
+                    t.document = doc
+                    t.save()
             return redirect('list_timesheets')
         except Exception as inst:
             logger.error('Failed to save a timesheets in generic by user {}'.format(request.user.username))

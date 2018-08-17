@@ -28,7 +28,7 @@
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
-                                <form method="post">
+                                <form method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
 
                                      <p><label for="id_contract">Contract:</label> <select name="contract" required id="id_contract">
@@ -40,6 +40,7 @@
                                         <p><label for="id_end_time">End Time:</label> <input type="text" name="end_time" required id="id_end_time" /></p>
                                         <p><label for="id_tasks">Tasks:</label> <textarea name="tasks" cols="40" rows="10" id="id_tasks"></textarea></p>
                                         <p><label for="id_is_billable">Is Billable:</label> <input type="checkbox" name="is_billable" id="id_is_billable" checked /></p>
+                                        <p><label for="id_document">Document:</label> <input type="file" value="{{obj.document}}" name="document" id="id_document"/></p>
                                         <p><label for="id_status">Status:</label> <select name="status" id="id_status">
                                           <option value="Pending" selected>Pending</option>
                                           <option value="Approved">Approved</option>

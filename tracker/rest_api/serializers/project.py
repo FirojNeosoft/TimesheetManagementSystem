@@ -17,7 +17,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'name', 'description', 'status', 'located_at', 'owner', 'representative', 'created_at')
+        fields = ('id', 'name', 'description', 'status', 'located_at', 'owner', 'representative', 'document', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
@@ -35,6 +35,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         instance.status = validated_data.get('status', instance.status)
         instance.owner = validated_data.get('owner', instance.owner)
         instance.representative = validated_data.get('representative', instance.representative)
+        instance.document = validated_data.get('document', instance.document)
         instance.save()
         address_data = validated_data.pop('located_at')
         address = instance.located_at
@@ -59,7 +60,7 @@ class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = ('id', 'project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-                  'pay_rate', 'billing_cycle', 'remark', 'status', 'created_at')
+                  'pay_rate', 'billing_cycle', 'remark', 'document', 'status', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
 
@@ -72,7 +73,7 @@ class TimesheetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Timesheet
-        fields = ('id', 'contract', 'sign_in', 'sign_out', 'tasks', 'is_billable', 'status', 'created_at')
+        fields = ('id', 'contract', 'sign_in', 'sign_out', 'tasks', 'is_billable', 'document', 'status', 'created_at')
         read_only_fields = ('id', 'created_at', 'status',)
 
 
@@ -87,7 +88,7 @@ class TaskAllocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskAllocation
-        fields = ('id', 'emp', 'due_date', 'title', 'description', 'status', 'created_at')
+        fields = ('id', 'emp', 'due_date', 'title', 'description', 'document', 'status', 'created_at')
         read_only_fields = ('id', 'created_at', 'status',)
 
 
@@ -111,7 +112,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
-        fields = ('id', 'client', 'due_date', 'services', 'total_amount', 'tax', 'discount', 'remark', 'status', 'created_at')
+        fields = ('id', 'client', 'due_date', 'services', 'total_amount', 'tax', 'discount', 'remark', 'document',\
+                  'status', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
@@ -133,6 +135,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
         instance.remark = validated_data.get('remark', instance.remark)
         instance.status = validated_data.get('status', instance.status)
         instance.client = validated_data.get('client', instance.client)
+        instance.document = validated_data.get('document', instance.document)
         instance.save()
         instance.services.clear()
         for service in services:
