@@ -45,4 +45,14 @@ urlpatterns = [
     path('task/add/', CreateTaskView.as_view(), name='add_task'),
     path('task/<int:pk>/edit/', UpdateTaskView.as_view(), name='update_task'),
     path('task/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
+
+    path('vendors/', ListVendorsView.as_view(), name='list_vendors'),
+    path('vendor/add/', CreateVendorView.as_view(), name='add_vendor'),
+    path('vendor/<int:pk>/edit/', UpdateVendorView.as_view(), name='update_vendor'),
+    path('vendor/<int:pk>/delete/', DeleteVendorView.as_view(), name='delete_vendor'),
+
+    path('referrals/', ListReferralsView.as_view(), name='list_referrals'),
+    path('referral/add/', CreateReferralView.as_view(), name='add_referral'),
+    path('referral/<int:pk>/edit/', UpdateReferralView.as_view(), name='update_referral'),
+    path('referral/<int:pk>/delete/', DeleteReferralView.as_view(), name='delete_referral'),
 ]

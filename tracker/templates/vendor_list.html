@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+       <div class="page-title">
+            <div class="title_left">
+                <h3>Vendors</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="">
+                            <ul class="list-inline pull-right controls">
+                                <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_vendor' %}"> <i class="fa fa-plus"></i> Create New Vendor</a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="box-header" >
+                          {% if messages %}
+                            <ul class="messages">
+                              {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissable">
+                                  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                {{ message }}
+                                </div>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </div>
+                        <div class="x_content">
+                            <br />
+                            <div class="table-responsive">
+                                <table id="vendors_table" class="cell-border">
+                                    <thead>
+                                    <tr>
+                                      <th>Organization Name</th>
+                                      <th>Name Of Contact Person</th>
+                                      <th>Designation</th>
+                                      <th>Mobile</th>
+                                      <th>Email</th>
+                                      <th>Address</th>
+                                      <th>Status</th>
+                                      <th class="no-sort">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for vendor in vendor_list %}
+                                      <tr>
+                                        <td>{{ vendor.organization_name }}</td>
+                                        <td>{{ vendor.contact_person_name }}</td>
+                                        <td>{{ vendor.designation }}</td>
+                                        <td>{{ vendor.mobile }}</td>
+                                        <td>{{ vendor.email }}</td>
+                                        <td>{{ vendor.address.city_or_village }}, {{ vendor.address.state }}, {{ vendor.address.country }}</td>
+                                        <td>{{ vendor.status }}</td>
+                                        <td>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_vendor' vendor.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_vendor' vendor.id %}" obj_name='' style="padding-left:50px;"></a>
+                                        </td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#vendors_table').DataTable();
+  });
+</script>
+{% endblock %}

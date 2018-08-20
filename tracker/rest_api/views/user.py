@@ -40,3 +40,19 @@ class ClientViewSet(viewsets.ModelViewSet):
     filter_fields = ('gender', 'status')
 
 
+class VendorViewSet(viewsets.ModelViewSet):
+    queryset = Vendor.objects.exclude(status='Delete')
+    serializer_class = VendorSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('organization_name', 'contact_person_name', 'mobile', 'email',)
+    ordering_fields = ('organization_name', 'contact_person_name', 'email',)
+    filter_fields = ('status',)
+
+
+class ReferralViewSet(viewsets.ModelViewSet):
+    queryset = Referral.objects.exclude(status='Delete')
+    serializer_class = ReferralSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('first_name', 'last_name', 'mobile', 'email',)
+    ordering_fields = ('first_name', 'last_name', 'email',)
+    filter_fields = ('status',)

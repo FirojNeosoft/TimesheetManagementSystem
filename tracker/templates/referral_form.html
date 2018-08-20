@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Referrals</h3>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <section class="content">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <div class="">
+                            <div class="box-header">
+                              {% if messages %}
+                                <ul class="messages alert alert-danger">
+                                  {% for message in messages %}
+                                    {{ message }}
+                                  {% endfor %}
+                                </ul>
+                              {% endif %}
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <form method="post" enctype="multipart/form-data">
+                                   {% csrf_token %}
+                                     {{ form.as_p }}
+
+                                    <div class="form-group">
+                                        <label for="id_addr_line1" class="control-label">Address</label>
+                                    </div>
+
+                              <div class="form-group">
+
+                                <div class="col-md-4">
+                                  <input id="id_addr_line1" class="form-control" type="text" name="line1" placeholder="Line 1">
+                                </div>
+                                               <div class="col-md-4">
+                                  <input id="id_addr_line2" class="form-control" type="text" name="line2" placeholder="Line 2">
+                                </div>
+                                              <div class="col-md-4">
+                                  <input id="id_location" class="form-control" type="text" name="location" placeholder="City or Village">
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                               <div class="col-md-4">
+                                  <input id="id_state" class="form-control" placeholder="State" type="text" name="state">
+                                </div>
+                                 <div class="col-md-4">
+                                  <input id="id_country" class="form-control" placeholder="Country" type="text" name="country">
+                                </div>
+                                <div class="col-md-4">
+                                  <input id="id_zip" class="form-control" placeholder="ZipCode" type="text"  name="zip">
+                                </div>
+                              </div>
+
+                               <div class="ln_solid"></div>
+                              <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                  <a href="{% url 'list_referrals' %}" class='btn btn-primary' >Cancel</a>
+                                  <button class="btn btn-primary" type="reset">Reset</button>
+                                  <input type="submit" class="btn btn-success"/>
+                                </div>
+                              </div>
+                                </form>
+                            </div>
+                            <!-- /.box-body -->
+                          </div>
+                          <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+   $("#id_emp").addClass( "form-control" );
+   $("label[for='id_emp']").html("Employee");
+   $("#id_first_name").addClass( "form-control" );
+   $("#id_last_name").addClass( "form-control" );
+   $("#id_email").addClass( "form-control" );
+   $("#id_mobile").addClass( "form-control" );
+   $("#id_status").addClass( "form-control" );
+    });
+</script>
+{% endblock %}

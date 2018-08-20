@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+       <div class="page-title">
+            <div class="title_left">
+                <h3>Referrals</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <ul class="list-inline pull-right clearfix controls">
+                                <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_referral' %}"> <i class="fa fa-plus"></i> Create New Referral</a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="box-header" >
+                          {% if messages %}
+                            <ul class="messages">
+                              {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissable">
+                                  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                {{ message }}
+                                </div>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </div>
+                        <div class="x_content">
+                            <br />
+                            <div class="table-responsive">
+                                <table id="referrals_table" class="cell-border">
+                                    <thead>
+                                    <tr>
+                                      <th>Name</th>
+                                      <th>Email</th>
+                                      <th>Mobile</th>
+                                      <th>Address</th>
+                                      <th>Status</th>
+                                      <th class="no-sort">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for referral in referral_list %}
+                                      <tr>
+                                        <td>{{ referral.full_name }}</td>
+                                        <td>{{ referral.email }}</td>
+                                        <td>{{ referral.mobile }}</td>
+                                        <td>{{ referral.address.city_or_village }}, {{ referral.address.state }}, {{ referral.address.country }}</td>
+                                        <td>{{ referral.status }}</td>
+                                        <td>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_referral' referral.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_referral' referral.id %}" obj_name='' style="padding-left:50px;"></a>
+                                        </td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#referrals_table').DataTable();
+  });
+</script>
+{% endblock %}

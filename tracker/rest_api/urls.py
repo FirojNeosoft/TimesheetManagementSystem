@@ -15,6 +15,8 @@ router.register(r'contracts', ContractViewSet)
 router.register(r'timesheets', TimesheetViewSet)
 router.register(r'tasks', TaskAllocationViewSet)
 #router.register(r'invoices', InvoiceViewSet)
+router.register(r'vendors', VendorViewSet)
+router.register(r'referrals', ReferralViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

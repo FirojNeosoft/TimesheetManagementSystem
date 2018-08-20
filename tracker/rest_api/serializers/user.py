@@ -198,3 +198,90 @@ class ClientSerializer(serializers.ModelSerializer):
         address.zip_code = address_data.get('zip_code', address.zip_code)
         address.save()
         return instance
+
+
+class VendorSerializer(serializers.ModelSerializer):
+    """
+    Vendor Serializer
+    """
+    address = AddressSerializer()
+
+    class Meta:
+        model = Vendor
+        fields = ('id', 'organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'document',\
+                  'status', 'address', 'created_at')
+        read_only_fields = ('id', 'created_at',)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        address_data = validated_data.pop('address')
+        vendor = Vendor.objects.create(**validated_data)
+        vendor.address = Address.objects.create(**address_data)
+        vendor.save()
+        return vendor
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.organization_name = validated_data.get('organization_name', instance.organization_name)
+        instance.contact_person_name = validated_data.get('contact_person_name', instance.contact_person_name)
+        instance.designation = validated_data.get('designation', instance.designation)
+        instance.mobile = validated_data.get('mobile', instance.mobile)
+        instance.email = validated_data.get('email', instance.email)
+        instance.remark = validated_data.get('remark', instance.remark)
+        instance.status = validated_data.get('status', instance.status)
+        instance.document = validated_data.get('document', instance.document)
+        instance.save()
+        address_data = validated_data.pop('address')
+        address = instance.address
+        address.line1 = address_data.get('line1', address.line1)
+        address.line2 = address_data.get('line2', address.line2)
+        address.city_or_village = address_data.get('city_or_village', address.city_or_village)
+        address.state = address_data.get('state', address.state)
+        address.country = address_data.get('country', address.country)
+        address.zip_code = address_data.get('zip_code', address.zip_code)
+        address.save()
+        return instance
+
+
+class ReferralSerializer(serializers.ModelSerializer):
+    """
+    Referral Serializer
+    """
+    address = AddressSerializer()
+    emp = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(status='Delete'), \
+                                       allow_null=True)
+
+    class Meta:
+        model = Referral
+        fields = ('id', 'first_name', 'last_name', 'mobile', 'email', 'document', 'emp',\
+                  'status', 'address', 'created_at')
+        read_only_fields = ('id', 'created_at',)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        address_data = validated_data.pop('address')
+        referral = Referral.objects.create(**validated_data)
+        referral.address = Address.objects.create(**address_data)
+        referral.save()
+        return referral
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.mobile = validated_data.get('mobile', instance.mobile)
+        instance.email = validated_data.get('email', instance.email)
+        instance.status = validated_data.get('status', instance.status)
+        instance.document = validated_data.get('document', instance.document)
+        instance.emp = validated_data.get('emp', instance.emp)
+        instance.save()
+        address_data = validated_data.pop('address')
+        address = instance.address
+        address.line1 = address_data.get('line1', address.line1)
+        address.line2 = address_data.get('line2', address.line2)
+        address.city_or_village = address_data.get('city_or_village', address.city_or_village)
+        address.state = address_data.get('state', address.state)
+        address.country = address_data.get('country', address.country)
+        address.zip_code = address_data.get('zip_code', address.zip_code)
+        address.save()
+        return instance

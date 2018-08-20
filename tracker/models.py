@@ -16,7 +16,7 @@ class Address(models.Model):
     city_or_village = models.CharField(max_length=128, blank=False, null=False)
     state = models.CharField(max_length=128, blank=False, null=False)
     country = models.CharField(max_length=128, blank=False, null=False)
-    zip_code = models.PositiveIntegerField(blank=False, null=False)
+    zip_code = models.PositiveIntegerField('Zip Code', blank=False, null=False)
     status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
 
     def __str__(self):
@@ -330,6 +330,77 @@ class Invoice(models.Model):
     def delete(self):
         """
         Delete Invoice
+        """
+        self.status = 'Delete'
+        self.save()
+
+
+class Vendor(models.Model):
+    """
+    vendor model
+    """
+    organization_name = models.CharField('Organization Name', max_length=128, blank=True, null=True)
+    contact_person_name = models.CharField('Name Of Contact Person', max_length=128, blank=True, null=True)
+    designation = models.CharField(max_length=64, blank=True, null=True)
+    address = models.ForeignKey('Address', related_name='vendor', blank=True, null=True, on_delete=models.SET_NULL)
+    mobile = models.CharField('Mobile', validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format:\
+                                  '+999999999'. Up to 15 digits allowed.")], max_length=15,\
+                                  unique=True, blank=False, null=False)
+    email = models.EmailField('Email', blank=False, null=False, unique=True)
+    remark = models.TextField(null=True, blank=True)
+    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=True, blank=True)
+    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Vendor"
+        verbose_name_plural = "Vendors"
+
+    def __str__(self):
+        return '%s(%s)' % (self.organization_name, self.contact_person_name)
+
+    def delete(self):
+        """
+        Delete vendor
+        """
+        self.status = 'Delete'
+        self.save()
+
+
+class Referral(models.Model):
+    """
+    Referral model
+    """
+    first_name = models.CharField('First Name', max_length=128, blank=False, null=False)
+    last_name = models.CharField('Last Name', max_length=128, blank=False, null=False)
+    address = models.ForeignKey('Address', related_name='referral', blank=False, null=True, on_delete=models.SET_NULL)
+    mobile = models.CharField('Mobile', validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format:\
+                                  '+999999999'. Up to 15 digits allowed.")], max_length=15,\
+                                  unique=True, blank=False, null=False)
+    email = models.EmailField('Email', blank=False, null=False, unique=True)
+    document = models.FileField('Document', upload_to='upload_docs/referral/', null=True, blank=True)
+    emp = models.ForeignKey('Employee', related_name='referral', blank=True, null=True,
+                            on_delete=models.SET_NULL)
+    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Referral"
+        verbose_name_plural = "Referrals"
+
+    def __str__(self):
+        return '%s %s' % (self.first_name, self.last_name)
+
+    @property
+    def full_name(self):
+        "Returns the person's full name."
+        return '%s %s' % (self.first_name, self.last_name)
+
+    def delete(self):
+        """
+        Delete referral
         """
         self.status = 'Delete'
         self.save()

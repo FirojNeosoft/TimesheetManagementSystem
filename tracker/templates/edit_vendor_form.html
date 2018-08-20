@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Vendors</h3>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <section class="content">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <div class="">
+                            <div class="box-header">
+                              {% if messages %}
+                                <ul class="messages alert alert-danger">
+                                  {% for message in messages %}
+                                    {{ message }}
+                                  {% endfor %}
+                                </ul>
+                              {% endif %}
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                              <form id="client-form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data" method="post" action="{% url 'update_vendor' obj.id %}">
+                                  {% csrf_token %}
+                              <div class="form-group">
+                                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_organization_name">Organization Name </label>
+                                  <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input type="text" value="{{obj.organization_name}}" name="organization_name" maxlength="128" required id="id_organization_name" class="form-control col-md-7 col-xs-12"/></p>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_contact_person_name">Name Of Contact Person</label>
+                                  <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input type="text" value="{{obj.contact_person_name}}" name="contact_person_name" maxlength="128" required id="id_contact_person_name" class="form-control col-md-7 col-xs-12"/></p>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_designation">Designation</label>
+                               <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input type="text" value="{{obj.designation}}" name="designation" maxlength="64" id="id_designation" class="form-control col-md-7 col-xs-12" />
+                                </div>
+                              </div>
+                                             <div class="form-group">
+                                <label for="id_addr_line1" class="control-label col-md-3 col-sm-3 col-xs-12">Address</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_addr_line1" value="{{obj.address.line1}}" class="form-control col-md-7 col-xs-12" type="text" name="line1" placeholder="Line 1">
+                                </div>
+                              </div>
+                                  <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_addr_line2" value="{{obj.address.line2}}" class="form-control col-md-7 col-xs-12" type="text" name="line2" placeholder="Line 2">
+                                </div>
+                              </div>
+                                  <div class="form-group">
+                                <label for="id_location" class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input id="id_location" value="{{obj.address.city_or_village}}" class="form-control col-md-7 col-xs-12" type="text" name="location" placeholder="City or Village">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                               <div class="col-md-2 col-sm-4 col-xs-12">
+                                  <input id="id_state" value="{{obj.address.state}}" class="form-control col-md-7 col-xs-12" placeholder="State" type="text" name="state">
+                                </div>
+                                 <div class="col-md-2 col-sm-4 col-xs-12">
+                                  <input id="id_country" value="{{obj.address.country}}" class="form-control col-md-7 col-xs-12" placeholder="Country" type="text" name="country">
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                  <input id="id_zip" value="{{obj.address.zip_code}}" class="form-control col-md-7 col-xs-12" placeholder="ZipCode" type="text"  name="zip">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label for="id_mobile" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile <span class="required" style='color:red;'>*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input type="text" value="{{obj.mobile}}" class="form-control col-md-7 col-xs-12" name="mobile" maxlength="15" required id="id_mobile" />
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_email">Email <span class="required" style='color:red;'>*</span></label>
+                               <div class="col-md-6 col-sm-6 col-xs-12">
+                                  <input type="email" value="{{obj.email}}" name="email" maxlength="254" required id="id_email" class="form-control col-md-7 col-xs-12" />
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_document">Document</label>
+                                  <div class="col-md-6 col-sm-6 col-xs-12">
+                                      {% if obj.document %}
+                                      <a href="{{file_url}}">Currently:{{ obj.document.url }}</a>
+                                      <input name="document-clear" id="document-clear_id" type="checkbox">Clear
+                                      {% endif %}
+                                  <input type="file" value="{{obj.document}}" name="document" id="id_document"/></p>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_status">Status <span class="required" style='color:red;'>*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="status" required id="id_status" class="form-control">
+                                        <option value="Active" {% if obj.gender == "Active" %} selected {% endif %}>Active</option>
+                                        <option value="Inactive" {% if obj.gender == "Inactive" %} selected {% endif %}>Inactive</option>
+                                    </select>
+                                </div></div>
+                                  <!--{{ form.as_p }}-->
+                              <div class="ln_solid"></div>
+                              <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                  <a href="{% url 'list_vendors' %}" class='btn btn-primary' >Cancel</a>
+                                  <button class="btn btn-primary" type="reset">Reset</button>
+                                  <input type="submit" class="btn btn-success"/>
+                                </div>
+                              </div>
+                            </form>
+                            </div>
+                            <!-- /.box-body -->
+                          </div>
+                          <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
