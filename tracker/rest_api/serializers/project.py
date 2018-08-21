@@ -56,11 +56,12 @@ class ContractSerializer(serializers.ModelSerializer):
 
     employee = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(designation='Sales Executive'))
     project = serializers.SlugRelatedField(slug_field='name', queryset=Project.objects.all())
+    referral = serializers.SlugRelatedField(slug_field='email', queryset=Referral.objects.exclude(status='Delete'))
 
     class Meta:
         model = Contract
         fields = ('id', 'project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-                  'pay_rate', 'billing_cycle', 'remark', 'document', 'status', 'created_at')
+                  'pay_rate', 'billing_cycle', 'remark', 'document', 'referral', 'status', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
 

@@ -215,6 +215,8 @@ class Contract(models.Model):
     pay_rate_type = models.CharField('Pay Rate Type', max_length=10, choices=settings.PAY_RATE_TYPE)
     pay_rate = models.DecimalField('Pay Rate', max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     billing_cycle = models.CharField('Billing Cycle', max_length=10, choices=settings.PAY_RATE_TYPE)
+    referral = models.ForeignKey('Referral', related_name='contract', blank=True, null=True,
+                            on_delete=models.SET_NULL)
     remark = models.TextField(null=True, blank=True)
     document = models.FileField('Document', upload_to='upload_docs/contract/', null=True, blank=True)
     status = models.CharField(max_length=12, choices=settings.PROJECT_STATUS)

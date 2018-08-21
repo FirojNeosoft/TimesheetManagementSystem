@@ -27,7 +27,7 @@ class ContractViewSet(viewsets.ModelViewSet):
     queryset = Contract.objects.exclude(status='Delete')
     serializer_class = ContractSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('role',)
+    search_fields = ('role', 'referral')
     ordering_fields = ('created_at',)
     filter_fields = ('employee', 'project', 'billing_cycle', 'pay_rate_type', 'status')
 

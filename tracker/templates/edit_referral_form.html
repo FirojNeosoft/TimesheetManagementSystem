@@ -32,21 +32,21 @@
                                    {% csrf_token %}
                                      {{ form.as_p }}
                                 <p><label for="id_addr_line1" class="control-label">Address</label></p>
-                                <p><input id="id_addr_line1" class="form-control" type="text" name="line1" placeholder="Line 1"></p>
+                                <p><input id="id_addr_line1" value="{{obj.address.line1}}" class="form-control" type="text" name="line1" placeholder="Line 1"></p>
 
 
-                                <p><input id="id_addr_line2" class="form-control" type="text" name="line2" placeholder="Line 2"></p>
+                                <p><input id="id_addr_line2" value="{{obj.address.line2}}" class="form-control" type="text" name="line2" placeholder="Line 2"></p>
 
 
-                                <p><input id="id_location" class="form-control" type="text" name="location" placeholder="City or Village"></p>
+                                <p><input id="id_location" value="{{obj.address.city_or_village}}" class="form-control" type="text" name="location" placeholder="City or Village"></p>
 
-                                <p><input id="id_state" class="form-control" placeholder="State" type="text" name="state"></p>
-
-
-                                <p><input id="id_country" class="form-control" placeholder="Country" type="text" name="country"></p>
+                                <p><input id="id_state" value="{{obj.address.state}}" class="form-control" placeholder="State" type="text" name="state"></p>
 
 
-                                <p><input id="id_zip" class="form-control" placeholder="ZipCode" type="text"  name="zip"></p>
+                                <p><input id="id_country" value="{{obj.address.country}}" class="form-control" placeholder="Country" type="text" name="country"></p>
+
+
+                                <p><input id="id_zip" value="{{obj.address.zip_code}}" class="form-control" placeholder="ZipCode" type="text"  name="zip"></p>
 
 
                               <div class="form-group">

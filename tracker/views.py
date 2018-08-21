@@ -498,7 +498,7 @@ class CreateContractView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Contract
     fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-              'pay_rate', 'billing_cycle', 'remark', 'document', 'status']
+              'pay_rate', 'billing_cycle', 'referral', 'remark', 'document', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was created successfully"
     success_url = reverse_lazy('list_contracts')
@@ -510,7 +510,7 @@ class UpdateContractView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Contract
     fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-              'pay_rate', 'billing_cycle', 'remark', 'document', 'status']
+              'pay_rate', 'billing_cycle', 'referral', 'remark', 'document', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was updated successfully"
     success_url = reverse_lazy('list_contracts')
@@ -774,100 +774,100 @@ class CreateReferralView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'referral_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_referrals')
-    #
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     Handle POST requests: instantiate a form instance with the passed
-    #     POST variables and then check if it's valid.
-    #     """
-    #     form = self.get_form()
-    #     if form.is_valid():
-    #         client = form.save()
-    #         line1 = request.POST['line1']
-    #         line2 = request.POST['line2']
-    #         city = request.POST['location']
-    #         country = request.POST['country']
-    #         state = request.POST['state']
-    #         zip_code = request.POST['zip']
-    #         if city and country and state and zip_code:
-    #             try:
-    #                 client.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
-    #                                                         country=country,zip_code=int(zip_code))
-    #                 client.save()
-    #             except Exception as e:
-    #                 logger.error("{}, error occured while saving address of a client.".format(e))
-    #                 messages.error(request, "Error occured while saving address of a client.")
-    #                 return redirect('add_client')
-    #     else:
-    #         logger.error(form.errors)
-    #         messages.error(request, form.errors)
-    #         return redirect('add_client')
-    #     return HttpResponseRedirect(reverse('list_clients'))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        form = self.get_form()
+        if form.is_valid():
+            referral = form.save()
+            line1 = request.POST['line1']
+            line2 = request.POST['line2']
+            city = request.POST['location']
+            country = request.POST['country']
+            state = request.POST['state']
+            zip_code = request.POST['zip']
+            if city and country and state and zip_code:
+                try:
+                    referral.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city, state=state,\
+                                                            country=country,zip_code=int(zip_code))
+                    referral.save()
+                except Exception as e:
+                    logger.error("{}, error occured while saving address of a referral.".format(e))
+                    messages.error(request, "Error occured while saving address of a referral.")
+                    return redirect('add_referral')
+        else:
+            logger.error(form.errors)
+            messages.error(request, form.errors)
+            return redirect('add_referral')
+        return HttpResponseRedirect(reverse('list_referrals'))
 
 
 class UpdateReferralView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     Update existing referral
     """
-    pass
-    # model = Referral
-    # fields = ['first_name', 'last_name', 'gender', 'mobile', 'email', 'skype_id', 'document', 'status']
-    # template_name = 'edit_client_form.html'
-    # success_message = "%(first_name)s was updated successfully"
-    # success_url = reverse_lazy('list_clients')
-    #
-    # def get(self, request, pk):
-    #     """
-    #     Handle POST requests: instantiate a form instance with the passed
-    #     POST variables and then check if it's valid.
-    #     """
-    #     obj = Client.objects.get(id=pk)
-    #     if obj.document:
-    #         file_url = request.build_absolute_uri('/')[:-1]+obj.document.url
-    #     else:
-    #         file_url=''
-    #     return render(request, 'edit_client_form.html', {'obj': obj, 'file_url':file_url})
-    #
-    # def post(self, request, pk):
-    #     """
-    #     Handle POST requests: instantiate a form instance with the passed
-    #     POST variables and then check if it's valid.
-    #     """
-    #     self.object = Client.objects.get(id=pk)
-    #     form = self.get_form()
-    #     if form.is_valid():
-    #         client = form.save()
-    #         line1 = request.POST['line1']
-    #         line2 = request.POST['line2']
-    #         city = request.POST['location']
-    #         country = request.POST['country']
-    #         state = request.POST['state']
-    #         zip_code = request.POST['zip']
-    #         # import pdb; pdb.set_trace()
-    #         if city and country and state and zip_code:
-    #             try:
-    #                 if client.address:
-    #                     client.address.line1=line1
-    #                     client.address.line2=line2
-    #                     client.address.city_or_village=city
-    #                     client.address.state=state
-    #                     client.address.country=country
-    #                     client.address.zip_code=int(zip_code)
-    #                     client.address.save()
-    #                 else:
-    #                     client.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city,
-    #                                                             state=state, country=country, zip_code=int(zip_code))
-    #                     client.save()
-    #
-    #             except Exception as e:
-    #                 logger.error("{}, error occured while saving address of a client.".format(e))
-    #                 messages.error(request, "Error occured while saving address of a client.")
-    #                 return redirect('update_client', pk)
-    #     else:
-    #         logger.error(form.errors)
-    #         messages.error(request, form.errors)
-    #         return redirect('update_client', pk)
-    #     return HttpResponseRedirect(reverse('list_clients'))
+    model = Referral
+    fields = ['first_name', 'last_name', 'mobile', 'email', 'document', 'emp', 'status']
+    template_name = 'edit_referral_form.html'
+    success_message = "%(first_name)s was updated successfully"
+    success_url = reverse_lazy('list_referrals')
+
+    def get(self, request, pk):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        self.object = Referral.objects.get(id=pk)
+        form = self.get_form()
+        if self.object.document:
+            file_url = request.build_absolute_uri('/')[:-1]+self.object.document.url
+        else:
+            file_url=''
+        return render(request, 'edit_referral_form.html', {'form': form, 'obj': self.object, 'file_url':file_url})
+
+    def post(self, request, pk):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        self.object = Referral.objects.get(id=pk)
+        form = self.get_form()
+        if form.is_valid():
+            referral = form.save()
+            line1 = request.POST['line1']
+            line2 = request.POST['line2']
+            city = request.POST['location']
+            country = request.POST['country']
+            state = request.POST['state']
+            zip_code = request.POST['zip']
+            # import pdb; pdb.set_trace()
+            if city and country and state and zip_code:
+                try:
+                    if referral.address:
+                        referral.address.line1=line1
+                        referral.address.line2=line2
+                        referral.address.city_or_village=city
+                        referral.address.state=state
+                        referral.address.country=country
+                        referral.address.zip_code=int(zip_code)
+                        referral.address.save()
+                    else:
+                        referral.address = Address.objects.create(line1=line1, line2=line2, city_or_village=city,
+                                                                state=state, country=country, zip_code=int(zip_code))
+                        referral.save()
+
+                except Exception as e:
+                    logger.error("{}, error occured while saving address of a referral.".format(e))
+                    messages.error(request, "Error occured while saving address of a referral.")
+                    return redirect('update_referral', pk)
+        else:
+            logger.error(form.errors)
+            messages.error(request, form.errors)
+            return redirect('update_referral', pk)
+        return HttpResponseRedirect(reverse('list_referrals'))
 
 
 class DeleteReferralView(LoginRequiredMixin, DeleteView):

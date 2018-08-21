@@ -4,7 +4,7 @@
      <form data-parsley-validate class="form-horizontal form-label-left" method="post">
          {% csrf_token %}
           <div class="form-group">
-              <h4>Are you sure want to delete "{{ object.id }}" ? </h4>
+              <h4>Are you sure want to delete contract of "{{ object.employee.full_name }}" ? </h4>
           </div>
          <div class="ln_solid"></div>
           <div class="form-group">
