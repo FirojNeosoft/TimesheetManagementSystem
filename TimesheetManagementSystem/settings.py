@@ -106,11 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/login/'
-
-LOGIN_REDIRECT_URL = '/login/'
-
-LOGOUT_URL = '/logout/'
+LOGIN_URL = 'sys_login'
+LOGIN_REDIRECT_URL = 'sys_login'
+LOGOUT_URL = 'sys_logout'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -137,7 +135,7 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
 # Required choices variables
 GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'))
@@ -222,6 +220,6 @@ LOGGING = {
 #Email Server
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'firoz.nalband@triveniconsulting.com'
+EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
