@@ -14,13 +14,21 @@ from tracker.rest_api.serializers.project import *
 logger = logging.getLogger("tracker_log")
 
 
+class ProjectActivitySet(viewsets.ModelViewSet):
+    queryset = ProjectActivity.objects.all()
+    serializer_class = ProjectActivitySerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('name',)
+    ordering_fields = ('name',)
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.exclude(status='Delete')
     serializer_class = ProjectSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('name',)
     ordering_fields = ('name',)
-    filter_fields = ('owner', 'representative', 'status')
+    filter_fields = ('owner', 'status')
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -29,21 +37,30 @@ class ContractViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('role', 'referral')
     ordering_fields = ('created_at',)
-    filter_fields = ('employee', 'project', 'billing_cycle', 'pay_rate_type', 'status')
+    filter_fields = ('employee', 'representative', 'client', 'billing_cycle', 'pay_rate_type', 'status')
 
 
 class TimesheetViewSet(viewsets.ModelViewSet):
     queryset = Timesheet.objects.exclude(status='Delete')
     serializer_class = TimesheetSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('tasks',)
+    search_fields = ('contract',)
     ordering_fields = ('created_at',)
-    filter_fields = ('contract', 'is_billable', 'status')
+    filter_fields = ('contract', 'status')
 
 
-class TaskAllocationViewSet(viewsets.ModelViewSet):
-    queryset = TaskAllocation.objects.exclude(status='Delete')
-    serializer_class = TaskAllocationSerializer
+class TimesheetTaskViewSet(viewsets.ModelViewSet):
+    queryset = TimesheetTask.objects.all()
+    serializer_class = TimesheetTaskSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('note',)
+    ordering_fields = ('created_at',)
+    filter_fields = ('project', 'activity')
+
+
+class AssignmentViewSet(viewsets.ModelViewSet):
+    queryset = Assignment.objects.exclude(status='Delete')
+    serializer_class = AssignmentSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('title', 'description')
     ordering_fields = ('created_at', 'due_date')

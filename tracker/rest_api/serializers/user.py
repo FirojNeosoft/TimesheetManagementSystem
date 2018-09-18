@@ -41,13 +41,13 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('line1', 'line2', 'city_or_village', 'state', 'country', 'zip_code')
 
 
-class EmpTaxInfoSerializer(serializers.ModelSerializer):
+class TaxInfoSerializer(serializers.ModelSerializer):
     """
-    EmpTaxInfo Serializer
+    TaxInfo Serializer
     """
 
     class Meta:
-        model = EmpTaxInfo
+        model = TaxInfo
         fields = ('filling_status', 'withholding_allowance', 'additional_withholding', 'is_withholding_declare')
 
 
@@ -78,7 +78,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     emergency_contact = EmergencyContactSerializer()
     bank_account_info = BankAccountInfoSerializer()
-    tax_info = EmpTaxInfoSerializer()
+    tax_info = TaxInfoSerializer()
 
     class Meta:
         model = Employee
@@ -99,7 +99,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         emp.address = Address.objects.create(**address_data)
         emp.emergency_contact = EmergencyContact.objects.create(**emergency_contact_data)
         emp.bank_account_info = BankAccountInfo.objects.create(**bank_acc_data)
-        emp.tax_info = EmpTaxInfo.objects.create(**tax_data)
+        emp.tax_info = TaxInfo.objects.create(**tax_data)
         emp.save()
         return emp
 

@@ -41,10 +41,10 @@ urlpatterns = [
 
     path('generictimesheet/add/', GenericTimesheetView.as_view(), name='add_generic_timesheet'),
 
-    path('tasks/', ListTasksView.as_view(), name='list_tasks'),
-    path('task/add/', CreateTaskView.as_view(), name='add_task'),
-    path('task/<int:pk>/edit/', UpdateTaskView.as_view(), name='update_task'),
-    path('task/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
+    path('assignments/', ListAssignmentsView.as_view(), name='list_assignments'),
+    path('assignment/add/', CreateAssignmentView.as_view(), name='add_assignment'),
+    path('assignment/<int:pk>/edit/', UpdateAssignmentView.as_view(), name='update_assignment'),
+    path('assignment/<int:pk>/delete/', DeleteAssignmentView.as_view(), name='delete_assignment'),
 
     path('vendors/', ListVendorsView.as_view(), name='list_vendors'),
     path('vendor/add/', CreateVendorView.as_view(), name='add_vendor'),

@@ -189,8 +189,6 @@
                                 </div>
                               </div>
 
-
-
                               <div class="form-group">
                                 <label for="id_mobile" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile <span class="required" style='color:red;'>*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -294,9 +292,8 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-$('#id_joined_date').datepicker({'dateFormat': 'yy-mm-dd'});
-
-$('#id_birth_date').datepicker({'dateFormat': 'yy-mm-dd'});
+     $('#id_joined_date').datepicker({'dateFormat': 'yy-mm-dd'});
+     $('#id_birth_date').datepicker({'dateFormat': 'yy-mm-dd'});
     });
 </script>
 {% endblock %}

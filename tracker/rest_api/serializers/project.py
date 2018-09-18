@@ -6,25 +6,45 @@ from tracker.models import *
 from tracker.rest_api.serializers.user import *
 
 
+class ProjectActivitySerializer(serializers.ModelSerializer):
+    """
+    ProjectActivity Serializer
+    """
+
+    class Meta:
+        model = ProjectActivity
+        fields = ('id', 'name',)
+        read_only_fields = ('id',)
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     """
     Project Serializer
     """
 
     owner = serializers.SlugRelatedField(slug_field='email', queryset=Client.objects.all())
-    representative = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.filter(designation='Sales Executive'))
+    project_members = serializers.SlugRelatedField(slug_field='email', many=True, queryset=Employee.objects.all())
+    project_activities = serializers.SlugRelatedField(slug_field='name', many=True, queryset=ProjectActivity.objects.all())
     located_at = AddressSerializer()
 
     class Meta:
         model = Project
-        fields = ('id', 'name', 'description', 'status', 'located_at', 'owner', 'representative', 'document', 'created_at')
+        fields = ('id', 'name', 'description', 'project_members', 'project_activities', 'status', 'located_at', 'owner', 'document', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
     @transaction.atomic
     def create(self, validated_data):
         address_data = validated_data.pop('located_at')
+        team_members = validated_data.pop('project_members')
+        tasks = validated_data.pop('project_activities')
         project = Project.objects.create(**validated_data)
         project.located_at = Address.objects.create(**address_data)
+        if team_members:
+            for member in team_members:
+                project.project_members.add(member)
+        if tasks:
+            for task in tasks:
+                project.project_activities.add(task)
         project.save()
         return project
 
@@ -34,8 +54,18 @@ class ProjectSerializer(serializers.ModelSerializer):
         instance.description = validated_data.get('description', instance.description)
         instance.status = validated_data.get('status', instance.status)
         instance.owner = validated_data.get('owner', instance.owner)
-        instance.representative = validated_data.get('representative', instance.representative)
         instance.document = validated_data.get('document', instance.document)
+
+        team_members = validated_data.pop('project_members')
+        tasks = validated_data.pop('project_activities')
+        if team_members:
+            instance.project_members.clear()
+            for member in team_members:
+                instance.project_members.add(member)
+        if tasks:
+            instance.project_activities.clear()
+            for task in tasks:
+                instance.project_activities.add(task)
         instance.save()
         address_data = validated_data.pop('located_at')
         address = instance.located_at
@@ -55,12 +85,15 @@ class ContractSerializer(serializers.ModelSerializer):
     """
 
     employee = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(designation='Sales Executive'))
-    project = serializers.SlugRelatedField(slug_field='name', queryset=Project.objects.all())
+    representative = serializers.SlugRelatedField(slug_field='email',
+                                            queryset=Employee.objects.exclude(status='Delete'))
+    client = serializers.SlugRelatedField(slug_field='email',
+                                            queryset=Client.objects.exclude(status='Delete'))
     referral = serializers.SlugRelatedField(slug_field='email', queryset=Referral.objects.exclude(status='Delete'))
 
     class Meta:
         model = Contract
-        fields = ('id', 'project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
+        fields = ('id', 'representative', 'client', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
                   'pay_rate', 'billing_cycle', 'remark', 'document', 'referral', 'status', 'created_at')
         read_only_fields = ('id', 'created_at',)
 
@@ -70,26 +103,42 @@ class TimesheetSerializer(serializers.ModelSerializer):
     Timesheet Serializer
     """
 
-    contract = serializers.SlugRelatedField(slug_field='id', queryset=Contract.objects.all())
+    contract = serializers.SlugRelatedField(slug_field='id', queryset=Contract.objects.exclude(status='Delete'))
 
     class Meta:
         model = Timesheet
-        fields = ('id', 'contract', 'sign_in', 'sign_out', 'tasks', 'is_billable', 'document', 'status', 'created_at')
+        fields = ('id', 'contract', 'sign_in', 'sign_out', 'document', 'remark', 'status', 'created_at')
         read_only_fields = ('id', 'created_at', 'status',)
 
 
-class TaskAllocationSerializer(serializers.ModelSerializer):
+class TimesheetTaskSerializer(serializers.ModelSerializer):
     """
-    TaskAllocation Serializer
+    TimesheetTask Serializer
+    """
+
+    timesheet = serializers.SlugRelatedField(slug_field='id', queryset=Timesheet.objects.exclude(status='Delete'))
+    project = serializers.SlugRelatedField(slug_field='name', queryset=Project.objects.exclude(status='Delete'))
+    activity = serializers.SlugRelatedField(slug_field='name', queryset=ProjectActivity.objects.all())
+
+    class Meta:
+        model = TimesheetTask
+        fields = ('id', 'timesheet', 'start_time', 'end_time', 'project', 'activity', 'note', 'is_billable', 'created_at')
+        read_only_fields = ('id', 'created_at',)
+
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    """
+    Assignment Serializer
     """
 
     emp = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(status='Delete'), \
                                        allow_null=True)
+    activity = serializers.SlugRelatedField(slug_field='name', queryset=ProjectActivity.objects.all())
 
 
     class Meta:
-        model = TaskAllocation
-        fields = ('id', 'emp', 'due_date', 'title', 'description', 'document', 'status', 'created_at')
+        model = Assignment
+        fields = ('id', 'emp', 'due_date', 'activity', 'note', 'document', 'status', 'created_at')
         read_only_fields = ('id', 'created_at', 'status',)
 
 

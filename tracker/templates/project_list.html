@@ -39,7 +39,6 @@
                                     <tr>
                                       <th>Name</th>
                                       <th>Owner</th>
-                                      <th>Representative</th>
                                       <th>Status</th>
                                       <th class="no-sort">Action</th>
                                     </tr>
@@ -49,7 +48,6 @@
                                       <tr>
                                         <td>{{ project.name }}</td>
                                         <td>{{ project.owner }}</td>
-                                        <td>{{ project.representative.full_name }}</td>
                                         <td>{{ project.status }}</td>
                                         <td>
                                           <a class="fa fa-pencil-square-o" href="{% url 'update_project' project.id %}"></a>

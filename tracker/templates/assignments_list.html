@@ -5,7 +5,7 @@
 {% block body %}
        <div class="page-title">
             <div class="title_left">
-                <h3>Tasks</h3>
+                <h3>Assignments</h3>
             </div>
             <div class="clearfix"></div>
             <div class="row">
@@ -14,7 +14,7 @@
                         <div class="">
                             <ul class="list-inline pull-right controls">
                                 <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'add_task' %}"> <i class="fa fa-plus"></i> Create New Task</a>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_assignment' %}"> <i class="fa fa-plus"></i> Create New Assignment</a>
                                 </li>
                             </ul>
                             <div class="clearfix"></div>
@@ -34,7 +34,7 @@
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="tasks_table" class="cell-border">
+                                <table id="assignments_table" class="cell-border">
                                     <thead>
                                     <tr>
                                       <th>Title</th>
@@ -45,15 +45,15 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for task in taskallocation_list %}
+                                    {% for task in assignment_list %}
                                       <tr>
-                                        <td>{{ task.title }}</td>
+                                        <td>{{ task.activity.name }}</td>
                                         <td>{{ task.due_date }}</td>
                                         <td>{{ task.emp.full_name }}</td>
                                         <td>{{ task.status }}</td>
                                         <td>
-                                          <a class="fa fa-pencil-square-o" href="{% url 'update_task' task.id %}"></a>
-                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_task' task.id %}" obj_name='' style="padding-left:50px;"></a>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_assignment' task.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_assignment' task.id %}" obj_name='' style="padding-left:50px;"></a>
                                         </td>
                                       </tr>
                                     {% endfor %}
@@ -70,7 +70,7 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-  $('#tasks_table').DataTable();
+  $('#assignments_table').DataTable();
   });
 </script>
 {% endblock %}

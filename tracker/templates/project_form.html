@@ -62,8 +62,12 @@
    $("#id_name").addClass( "form-control" );
    $("#id_description").addClass( "form-control" );
    $("#id_owner").addClass( "form-control" );
+   $("#id_project_members").addClass( "form-control" );
+   $("#id_project_activities").addClass( "form-control" );
    $("#id_representative").addClass( "form-control" );
    $("#id_status").addClass( "form-control" );
+   $('select[name="project_members"]').bootstrapDualListbox();
+   $('select[name="project_activities"]').bootstrapDualListbox();
     });
 </script>
 {% endblock %}

@@ -31,6 +31,40 @@
                                 <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
                                      {{ form.as_p }}
+                                    <h4>Tasks</h4>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            {{ tasks.management_form }}
+
+                                            {% for form in tasks.forms %}
+                                                {% if forloop.first %}
+                                                    <thead>
+                                                    <tr>
+                                                        {% for field in form.visible_fields %}
+                                                            <th>{{ field.label|capfirst }}</th>
+                                                        {% endfor %}
+                                                    </tr>
+                                                    </thead>
+                                                {% endif %}
+                                                <tr class="{% cycle row1 row2 %} formset_row">
+                                                    {% for field in form.visible_fields %}
+                                                        <td>
+                                                            {# Include the hidden fields in the form #}
+                                                            {% if forloop.first %}
+                                                                {% for hidden in form.hidden_fields %}
+                                                                    {{ hidden }}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            <br>
+                                                            {{ field.errors.as_ul }}
+                                                            {{ field }}
+
+                                                        </td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
                                 <div class="ln_solid"></div>
                               <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -57,15 +91,41 @@
 {% endblock %}
 
 {% block static %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.min.js"></script>
 <script>
   $(document).ready(function(){
+   $('body').removeClass( "nav-md" ).addClass( "nav-sm" );
    $("#id_contract").addClass( "form-control" );
    $("#id_sign_in").addClass( "form-control" );
    $('#id_sign_in').datetimepicker({format: 'yyyy-mm-dd hh:ii', minuteStep: 15 });
    $("#id_sign_out").addClass( "form-control" );
    $('#id_sign_out').datetimepicker({format: 'yyyy-mm-dd hh:ii', minuteStep: 15});
-   $("#id_tasks").addClass( "form-control" );
+   $("#id_remark").addClass( "form-control" );
+   $("#id_remark").attr( "cols", 40 );
+   $("#id_remark").attr( "rows", 1 );
    $("#id_status").addClass( "form-control" );
     });
+
+    $('.formset_row').formset({
+        addText: 'Add Task',
+        deleteText: 'Remove',
+        prefix: 'timesheet_task'
+    });
+    $('.clock').timepicker({ 'timeFormat': 'HH:mm', 'interval': 15, 'show2400': true });
+    $('.add-row').click(function() {
+            $('.clock').timepicker({ 'timeFormat': 'HH:mm', 'interval': 15, 'show2400': true });
+        });
 </script>
+<style>
+   a[class="add-row"]{
+    color: darkblue;
+    font-size: 125%;
+}
+   a[class="delete-row"]{
+    color: red;
+    font-size: 125%
+}
+</style>
 {% endblock %}

@@ -14,11 +14,11 @@
                         <div class="">
                             <ul class="list-inline pull-right controls">
                                 <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'add_timesheet' %}"> <i class="fa fa-plus"></i> Create New For Single Date</a>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_timesheet' %}"> <i class="fa fa-plus"></i> Create New Timesheet</a>
                                 </li>
-                                <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'add_generic_timesheet' %}"> <i class="fa fa-plus"></i> Create New For Multiple Dates</a>
-                                </li>
+                                <!--<li>-->
+                                    <!--<a class="btn btn-primary download-excel" href="{% url 'add_generic_timesheet' %}"> <i class="fa fa-plus"></i> Create New For Multiple Dates</a>-->
+                                <!--</li>-->
                             </ul>
                             <div class="clearfix"></div>
                         </div>
@@ -43,7 +43,6 @@
                                       <th>Contract</th>
                                       <th>Sign In</th>
                                       <th>Sign Out</th>
-                                      <th>Is Billable</th>
                                       <th>Status</th>
                                       <th class="no-sort">Action</th>
                                     </tr>
@@ -54,7 +53,6 @@
                                         <td>{{ timesheet.contract }}</td>
                                         <td>{{ timesheet.sign_in }}</td>
                                         <td>{{ timesheet.sign_out }}</td>
-                                        <td>{{ timesheet.is_billable }}</td>
                                         <td>{{ timesheet.status }}</td>
                                         <td>
                                           <a class="fa fa-pencil-square-o" href="{% url 'update_timesheet' timesheet.id %}"></a>

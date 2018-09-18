@@ -2,6 +2,7 @@ import logging
 
 from datetime import datetime
 
+from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.views.generic import View
@@ -15,6 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 from tracker.models import *
+from tracker.forms import *
 
 logger = logging.getLogger('tracker_log')
 
@@ -294,7 +296,7 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
             if request.POST['filling_status'] and request.POST['withholding_allowance']:
                 try:
-                    emp.tax_info = EmpTaxInfo.objects.create(filling_status=request.POST['filling_status'], \
+                    emp.tax_info = TaxInfo.objects.create(filling_status=request.POST['filling_status'], \
                                                             withholding_allowance=request.POST['withholding_allowance'], \
                                                             additional_withholding=request.POST['additional_withholding'],\
                                                             is_withholding_declare='is_withholding_declare' in request.POST)
@@ -417,7 +419,7 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
                     emp.tax_info.is_withholding_declare = 'is_withholding_declare' in request.POST
                     emp.tax_info.save()
                 else:
-                    emp.tax_info = EmpTaxInfo.objects.create(filling_status=request.POST['filling_status'], \
+                    emp.tax_info = TaxInfo.objects.create(filling_status=request.POST['filling_status'], \
                                                             withholding_allowance=request.POST['withholding_allowance'], \
                                                             additional_withholding=request.POST['additional_withholding'],\
                                                             is_withholding_declare= 'is_withholding_declare' in request.POST,)
@@ -448,7 +450,7 @@ class ListProjectsView(LoginRequiredMixin, ListView):
     List Projects
     """
     model = Project
-    queryset = Project.objects.all()
+    queryset = Project.objects.exclude(status='Delete')
     template_name = 'project_list.html'
 
 
@@ -457,7 +459,7 @@ class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'representative', 'document', 'status']
+    fields = ['name', 'description', 'owner', 'project_members', 'project_activities', 'document', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was created successfully"
     success_url = reverse_lazy('list_projects')
@@ -468,7 +470,7 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     Update existing project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'representative', 'document', 'status']
+    fields = ['name', 'description', 'owner', 'project_members', 'project_activities', 'document', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was updated successfully"
     success_url = reverse_lazy('list_projects')
@@ -488,7 +490,7 @@ class ListContractsView(LoginRequiredMixin, ListView):
     List Contracts
     """
     model = Contract
-    queryset = Contract.objects.all()
+    queryset = Contract.objects.exclude(status='Delete')
     template_name = 'contract_list.html'
 
 
@@ -497,7 +499,7 @@ class CreateContractView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new contract
     """
     model = Contract
-    fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
+    fields = ['representative', 'client', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
               'pay_rate', 'billing_cycle', 'referral', 'remark', 'document', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was created successfully"
@@ -509,7 +511,7 @@ class UpdateContractView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing contract
     """
     model = Contract
-    fields = ['project', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
+    fields = ['representative', 'client', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
               'pay_rate', 'billing_cycle', 'referral', 'remark', 'document', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was updated successfully"
@@ -525,44 +527,44 @@ class DeleteContractView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('list_contracts')
 
 
-class ListTasksView(LoginRequiredMixin, ListView):
+class ListAssignmentsView(LoginRequiredMixin, ListView):
     """
-    List Tasks
+    List Assignments
     """
-    model = TaskAllocation
-    queryset = TaskAllocation.objects.exclude(status='Delete')
-    template_name = 'tasks_list.html'
+    model = Assignment
+    queryset = Assignment.objects.exclude(status='Delete')
+    template_name = 'assignments_list.html'
 
 
-class CreateTaskView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class CreateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
-    Create new task
+    Create new assignment
     """
-    model = TaskAllocation
-    fields = ['title', 'description', 'due_date','emp', 'document', 'status']
-    template_name = 'task_form.html'
-    success_message = "task was created successfully"
-    success_url = reverse_lazy('list_tasks')
+    model = Assignment
+    fields = ['activity', 'note', 'due_date', 'emp', 'document', 'status']
+    template_name = 'assignment_form.html'
+    success_message = "Assignment was created successfully"
+    success_url = reverse_lazy('list_assignments')
 
 
-class UpdateTaskView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class UpdateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
-    Update existing task
+    Update existing assignment
     """
-    model = TaskAllocation
-    fields = ['title', 'description', 'due_date', 'emp', 'document', 'status']
-    template_name = 'task_form.html'
-    success_message = "task was updated successfully"
-    success_url = reverse_lazy('list_tasks')
+    model = Assignment
+    fields = ['activity', 'note', 'due_date', 'emp', 'document', 'status']
+    template_name = 'assignment_form.html'
+    success_message = "Assignment was updated successfully"
+    success_url = reverse_lazy('list_assignments')
 
 
-class DeleteTaskView(LoginRequiredMixin, DeleteView):
+class DeleteAssignmentView(LoginRequiredMixin, DeleteView):
     """
-    Delete existing task
+    Delete existing assignment
     """
-    model = TaskAllocation
-    template_name = 'task_confirm_delete.html'
-    success_url = reverse_lazy('list_tasks')
+    model = Assignment
+    template_name = 'assignment_confirm_delete.html'
+    success_url = reverse_lazy('list_assignments')
 
 
 class ListTimesheetsView(LoginRequiredMixin, ListView):
@@ -570,7 +572,7 @@ class ListTimesheetsView(LoginRequiredMixin, ListView):
     List Timesheets
     """
     model = Timesheet
-    queryset = Timesheet.objects.all()
+    queryset = Timesheet.objects.exclude(status='Delete')
     template_name = 'timesheet_list.html'
 
 
@@ -579,10 +581,29 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new timesheet
     """
     model = Timesheet
-    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'document', 'status']
+    fields = ['contract', 'sign_in', 'sign_out', 'document', 'remark', 'status']
     template_name = 'timesheet_form.html'
     success_message = "timesheet was created successfully"
     success_url = reverse_lazy('list_timesheets')
+
+    def get_context_data(self, **kwargs):
+        data = super(CreateTimesheetView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['tasks'] = TimesheetTaskFormSet(self.request.POST)
+        else:
+            data['tasks'] = TimesheetTaskFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        tasks = context['tasks']
+        with transaction.atomic():
+            self.object = form.save()
+
+            if tasks.is_valid():
+                tasks.instance = self.object
+                tasks.save()
+        return super(CreateTimesheetView, self).form_valid(form)
 
 
 class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -590,10 +611,30 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing timesheet
     """
     model = Timesheet
-    fields = ['contract', 'sign_in', 'sign_out','tasks','is_billable', 'document', 'status']
+    fields = ['contract', 'sign_in', 'sign_out', 'document', 'remark', 'status']
     template_name = 'timesheet_form.html'
     success_message = "timesheet was updated successfully"
     success_url = reverse_lazy('list_timesheets')
+
+    def get_context_data(self, **kwargs):
+        data = super(UpdateTimesheetView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['tasks'] = TimesheetTaskFormSet(self.request.POST, instance=self.object)
+            data['tasks'].full_clean()
+        else:
+            data['tasks'] = TimesheetTaskFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        tasks = context['tasks']
+        with transaction.atomic():
+            self.object = form.save()
+
+            if tasks.is_valid():
+                tasks.instance = self.object
+                tasks.save()
+        return super(UpdateTimesheetView, self).form_valid(form)
 
 
 class DeleteTimesheetView(LoginRequiredMixin, DeleteView):
@@ -612,20 +653,14 @@ class GenericTimesheetView(View):
 
     def post(self, request):
         try:
-            if request.POST['is_billable']:
-                is_billable = True
-            else:
-                is_billable = False
-
             for d in request.POST['dates'].split(','):
                 contract = Contract.objects.get(id=request.POST['contract'])
                 start = datetime.strptime(d.strip()+' '+request.POST['start_time'],'%Y-%m-%d %H:%M')
                 end = datetime.strptime(d.strip()+' '+request.POST['end_time'], '%Y-%m-%d %H:%M')
-                t = Timesheet.objects.create(contract=contract, sign_in=start, sign_out=end, tasks=request.POST['tasks'],\
-                                         is_billable=is_billable, status=request.POST['status'])
-                doc = request.FILES['document']
-                if doc:
-                    t.document = doc
+                t = Timesheet.objects.create(contract=contract, sign_in=start, sign_out=end,\
+                                              remark=request.POST['remark'], status=request.POST['status'])
+                if request.FILES:
+                    t.document = request.FILES['document']
                     t.save()
             return redirect('list_timesheets')
         except Exception as inst:
