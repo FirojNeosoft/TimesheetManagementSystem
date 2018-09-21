@@ -20,6 +20,7 @@ class ProjectActivitySet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('name',)
     ordering_fields = ('name',)
+    permission_classes = (IsAuthenticated,)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -29,6 +30,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
     ordering_fields = ('name',)
     filter_fields = ('owner', 'status')
+    permission_classes = (IsAuthenticated,)
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -38,6 +40,7 @@ class ContractViewSet(viewsets.ModelViewSet):
     search_fields = ('role', 'referral')
     ordering_fields = ('created_at',)
     filter_fields = ('employee', 'representative', 'client', 'billing_cycle', 'pay_rate_type', 'status')
+    permission_classes = (IsAuthenticated,)
 
 
 class TimesheetViewSet(viewsets.ModelViewSet):
@@ -47,6 +50,7 @@ class TimesheetViewSet(viewsets.ModelViewSet):
     search_fields = ('contract',)
     ordering_fields = ('created_at',)
     filter_fields = ('contract', 'status')
+    permission_classes = (IsAuthenticated,)
 
 
 class TimesheetTaskViewSet(viewsets.ModelViewSet):
@@ -56,6 +60,7 @@ class TimesheetTaskViewSet(viewsets.ModelViewSet):
     search_fields = ('note',)
     ordering_fields = ('created_at',)
     filter_fields = ('project', 'activity')
+    permission_classes = (IsAuthenticated,)
 
 
 class AssignmentViewSet(viewsets.ModelViewSet):
@@ -65,6 +70,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     search_fields = ('title', 'description')
     ordering_fields = ('created_at', 'due_date')
     filter_fields = ('emp', 'status')
+    permission_classes = (IsAuthenticated,)
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
@@ -74,6 +80,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     search_fields = ('remark',)
     ordering_fields = ('created_at',)
     filter_fields = ('client', 'status')
+    permission_classes = (IsAuthenticated,)
 
 
 class ListProjectsOfEmployee(APIView):

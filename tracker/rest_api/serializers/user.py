@@ -83,7 +83,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = ('id', 'first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile',\
-                  'email', 'skype_id', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
+                  'email', 'skype_id', 'department', 'designation', 'is_manager', 'employment_type', 'current_pay_rate_type',\
                   'current_pay_rate', 'passport_no', 'current_visa_status', 'referral_bonus_points','status', 'document',\
                   'address', 'emergency_contact', 'bank_account_info', 'tax_info', 'created_at')
         read_only_fields = ('id', 'referral_bonus_points', 'created_at',)
@@ -116,6 +116,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         instance.skype_id = validated_data.get('skype_id', instance.skype_id)
         instance.department = validated_data.get('department', instance.department)
         instance.designation = validated_data.get('designation', instance.designation)
+        instance.is_manager = validated_data.get('is_manager', instance.is_manager)
         instance.employment_type = validated_data.get('employment_type', instance.employment_type)
         instance.current_pay_rate_type = validated_data.get('current_pay_rate_type', instance.current_pay_rate_type)
         instance.current_pay_rate = validated_data.get('current_pay_rate', instance.current_pay_rate)

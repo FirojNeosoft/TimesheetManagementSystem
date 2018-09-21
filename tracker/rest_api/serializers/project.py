@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
@@ -134,12 +135,14 @@ class AssignmentSerializer(serializers.ModelSerializer):
     emp = serializers.SlugRelatedField(slug_field='email', queryset=Employee.objects.exclude(status='Delete'), \
                                        allow_null=True)
     activity = serializers.SlugRelatedField(slug_field='name', queryset=ProjectActivity.objects.all())
+    created_by = serializers.SlugRelatedField(slug_field='email', queryset=User.objects.all(), \
+                                              default=serializers.CurrentUserDefault())
 
 
     class Meta:
         model = Assignment
-        fields = ('id', 'emp', 'due_date', 'activity', 'note', 'document', 'status', 'created_at')
-        read_only_fields = ('id', 'created_at', 'status',)
+        fields = ('id', 'emp', 'due_date', 'activity', 'note', 'document', 'status', 'created_at','created_by')
+        read_only_fields = ('id', 'created_at', 'status', 'created_by',)
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):

@@ -12,11 +12,13 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
                         <div class="">
+                            {% if request.user.is_staff %}
                             <ul class="list-inline pull-right controls">
                                 <li>
                                     <a class="btn btn-primary download-excel" href="{% url 'add_assignment' %}"> <i class="fa fa-plus"></i> Create New Assignment</a>
                                 </li>
                             </ul>
+                            {% endif %}
                             <div class="clearfix"></div>
                         </div>
                         <div class="box-header" >
@@ -37,24 +39,30 @@
                                 <table id="assignments_table" class="cell-border">
                                     <thead>
                                     <tr>
+                                      <th>Assigned By</th>
                                       <th>Title</th>
                                       <th>Due Date</th>
                                       <th>Assigned To</th>
                                       <th>Status</th>
+                                        {% if request.user.is_staff %}
                                       <th class="no-sort">Action</th>
+                                        {% endif %}
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {% for task in assignment_list %}
                                       <tr>
+                                        <td>{{ task.created_by }}</td>
                                         <td>{{ task.activity.name }}</td>
                                         <td>{{ task.due_date }}</td>
                                         <td>{{ task.emp.full_name }}</td>
                                         <td>{{ task.status }}</td>
+                                          {% if request.user.is_staff %}
                                         <td>
                                           <a class="fa fa-pencil-square-o" href="{% url 'update_assignment' task.id %}"></a>
                                           <a class="fa fa-times client_delete_icon" href="{% url 'delete_assignment' task.id %}" obj_name='' style="padding-left:50px;"></a>
                                         </td>
+                                          {% endif %}
                                       </tr>
                                     {% endfor %}
                                     </tbody>

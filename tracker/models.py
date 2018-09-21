@@ -1,11 +1,15 @@
+import random, string
+
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
-
+from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.mail import send_mail
 
+from datetime import datetime, date
 
 class Address(models.Model):
     """
@@ -112,6 +116,9 @@ class Employee(models.Model):
     tax_info = models.OneToOneField('TaxInfo', related_name='employee', blank=False, null=True,\
                                     on_delete=models.SET_NULL)
     document = models.FileField('Document', upload_to='upload_docs/employee/', null=True, blank=True)
+    is_manager = models.BooleanField('Is Manager', default=False)
+    user = models.OneToOneField(User, related_name='employee', blank=False, null=True,\
+                                    on_delete=models.SET_NULL)
     status = models.CharField(max_length=10, choices=settings.EMPLOYEE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -282,8 +289,9 @@ class TimesheetTask(models.Model):
     Task of timesheet model
     """
     timesheet = models.ForeignKey('Timesheet', related_name='timesheet_task', blank=False, null=False, on_delete=models.CASCADE)
-    start_time = models.TimeField('Start')
-    end_time = models.TimeField('Finish')
+    start_time = models.TimeField('Start', blank=True, null=True)
+    end_time = models.TimeField('Finish', blank=True, null=True)
+    duration = models.DurationField('Duration', blank=False, null=False)
     project = models.ForeignKey('Project', related_name='timesheet_task', blank=False, null=False, on_delete=models.CASCADE)
     activity = models.ForeignKey('ProjectActivity', related_name='timesheet_task', blank=False, null=False, on_delete=models.CASCADE)
     note = models.TextField(null=False, blank=False)
@@ -293,17 +301,23 @@ class TimesheetTask(models.Model):
     def __str__(self):
         return '%s(%s)' % (self.project.name, self.activity.name)
 
+    def save(self, *args, **kwargs):
+        if not self.duration:
+            self.duration = datetime.combine(date.today(), self.end_time) - datetime.combine(date.today(), self.start_time)
+        super(TimesheetTask, self).save(*args, **kwargs)
+
 
 class Assignment(models.Model):
     """
     Assignment model
     """
-    emp = models.ForeignKey('Employee', related_name='assignment', blank=True, null=True, on_delete=models.SET_NULL)
+    emp = models.ForeignKey('Employee', related_name='assignment_to', blank=True, null=True, on_delete=models.SET_NULL)
     due_date = models.DateField('Due Date', blank=True, null=True)
     activity = models.ForeignKey('ProjectActivity', related_name='assignment', blank=False, null=False, on_delete=models.CASCADE)
     note = models.TextField(null=False, blank=False)
     document = models.FileField('Document', upload_to='upload_docs/assignment/', null=True, blank=True)
     status = models.CharField(max_length=15, choices=settings.PROJECT_STATUS, default='In progress')
+    created_by = models.ForeignKey(User, related_name='assignment_from', blank=False, null=False, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -311,6 +325,7 @@ class Assignment(models.Model):
 
     def __str__(self):
         return self.title
+
 
     def delete(self):
         """
@@ -443,3 +458,35 @@ def add_referral_points(sender, instance, created, **kwargs):
         bonus_points = instance.representative.referral_bonus_points
         instance.representative.referral_bonus_points = bonus_points+1
         instance.representative.save()
+
+
+@receiver(post_save, sender=Employee)
+def add_user(sender, instance, created, **kwargs):
+    if created:
+        random_pwd = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(8)])
+        user = User.objects.create(username=instance.email, email=instance.email,\
+                                   is_staff=instance.is_manager)
+        user.set_password(random_pwd)
+        user.save()
+        instance.user = user
+        instance.save()
+        send_mail(
+            'Profile Created',
+            'Hi, Your profile successfully created. Username is '+ user.username +
+            ' Password- '+ random_pwd,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
+    else:
+        instance.user.username = instance.email
+        instance.user.email = instance.email
+        instance.user.is_staff = instance.is_manager
+        instance.user.save()
+        send_mail(
+            'Profile Updated',
+            'Hi, Your profile successfully updated. Username is '+ instance.user.username,
+            settings.EMAIL_HOST_USER,
+            [instance.user.email],
+            fail_silently=False,
+        )

@@ -244,7 +244,7 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
+              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
               'passport_no','current_visa_status', 'document', 'status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
@@ -319,7 +319,7 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
+              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
               'passport_no','current_visa_status', 'document', 'status']
     template_name = 'edit_employee_form.html'
     success_message = "%(first_name)s was updated successfully"
@@ -546,6 +546,9 @@ class CreateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_message = "Assignment was created successfully"
     success_url = reverse_lazy('list_assignments')
 
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(CreateAssignmentView, self).form_valid(form)
 
 class UpdateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
@@ -603,6 +606,10 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             if tasks.is_valid():
                 tasks.instance = self.object
                 tasks.save()
+            else:
+                logger.error(tasks.errors)
+                messages.error(self.request, tasks.errors)
+                return redirect('add_timesheet')
         return super(CreateTimesheetView, self).form_valid(form)
 
 
@@ -634,6 +641,10 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             if tasks.is_valid():
                 tasks.instance = self.object
                 tasks.save()
+            else:
+                logger.error(tasks.errors)
+                messages.error(self.request, tasks.errors)
+                return redirect('update_timesheet', self.object.id)
         return super(UpdateTimesheetView, self).form_valid(form)
 
 
