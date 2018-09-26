@@ -1043,6 +1043,7 @@ class ReportView(LoginRequiredMixin, View):
         if form.is_valid():
             list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'], form.cleaned_data['to_date'])
             print(list_contracts)
-            return render(request, 'report.html', {'list_contracts': list_contracts})
+            # return render(request, 'report.html', {'list_contracts': list_contracts})
+            return Render.pdf_file('report.html', {'list_contracts': list_contracts})
         else:
             return render(request, 'search_form.html', {'form': form, 'messages': form.errors})

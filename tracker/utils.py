@@ -6,6 +6,11 @@ from django.views.generic import View
 
 from tracker.models import *
 
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+import xhtml2pdf.pisa as pisa
+
 
 class GetContracts(View):
     """
@@ -32,8 +37,10 @@ class GetContracts(View):
 
 
 def get_report_data(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
+    """
+      get report of an employee
+    """
     first_name, last_name = name.split(' ')
-    print(">>>>>>>>>>>", first_name, from_date, to_date)
     emp = Employee.objects.get(first_name=first_name, last_name=last_name)
     contracts = Contract.objects.filter(employee=emp, created_at__range=[from_date, to_date]).exclude(status='Delete')
     list_contracts = []
@@ -47,21 +54,31 @@ def get_report_data(name, from_date=datetime.today().date(), to_date=datetime.to
             project_tasks_from_timesheet = TimesheetTask.objects.filter(project=member_detail.project, \
                                                                         timesheet__in=timsheet_ids).aggregate(Sum('duration'))
             if project_tasks_from_timesheet['duration__sum']:
-                actual_duration = round(decimal.Decimal(project_tasks_from_timesheet['duration__sum'].seconds / 3600),
-                                        2)
+                actual_duration = round(decimal.Decimal(project_tasks_from_timesheet['duration__sum'].seconds / 3600),2)
             else:
                 actual_duration = 0
-
             project_info = {
-                            "contract_name": contract.__str__(),
-                            'project_name': member_detail.project.name,
-                            'resource_cost': member_detail.cost,
-                            'planned_resource_duration': decimal.Decimal(member_detail.duration.seconds / 3600),
-                            'planned_total_cost': member_detail.cost * decimal.Decimal(member_detail.duration.seconds / 3600),
-                            'actual_resource_duration': actual_duration,
-                            'actual_total_cost': member_detail.cost * actual_duration
+                "contract_name": contract.__str__(),
+                'project_name': member_detail.project.name,
+                'resource_cost': member_detail.cost,
+                'planned_resource_duration': decimal.Decimal(member_detail.duration.seconds / 3600),
+                'planned_total_cost': round(member_detail.cost * decimal.Decimal(member_detail.duration.seconds / 3600),2),
+                'actual_resource_duration': actual_duration,
+                'actual_total_cost': round(member_detail.cost * actual_duration,2)
                            }
-
-
             list_contracts.append(project_info)
         return list_contracts
+
+
+class Render:
+
+    @staticmethod
+    def pdf_file(path: str, params: dict):
+        template = get_template(path)
+        html = template.render(params)
+        response = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response)
+        if not pdf.err:
+            return HttpResponse(response.getvalue(), content_type='application/pdf')
+        else:
+            return HttpResponse("Error Rendering PDF", status=400)
