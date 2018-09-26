@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.forms import ModelForm
 from django.forms.models import inlineformset_factory
@@ -22,7 +24,6 @@ class TimesheetTaskForm(ModelForm):
         start_time = cleaned_data.get("start_time")
         end_time = cleaned_data.get("end_time")
         duration = cleaned_data.get("duration")
-        # import pdb; pdb.set_trace()
         if start_time and end_time:
             return cleaned_data
         elif not duration:
@@ -31,5 +32,21 @@ class TimesheetTaskForm(ModelForm):
             return cleaned_data
 
 
-TimesheetTaskFormSet = inlineformset_factory(Timesheet, TimesheetTask,
-                                            form=TimesheetTaskForm, extra=1)
+TimesheetTaskFormSet = inlineformset_factory(Timesheet, TimesheetTask, form=TimesheetTaskForm, extra=1)
+
+
+class ProjectMembershipForm(ModelForm):
+    class Meta:
+        model = ProjectMembership
+        exclude = ('created_at',)
+        widgets = {
+          'duration': forms.TextInput(attrs={'size': 10, 'class': 'clock', 'placeholder': 'HH:MM:SS'}),
+        }
+
+ProjectMembershipFormSet = inlineformset_factory(Project, ProjectMembership, form=ProjectMembershipForm, extra=1)
+
+
+class SearchForm(forms.Form):
+    resource_name = forms.CharField(label='Resource name', max_length=100)
+    from_date = forms.DateField(initial=datetime.today().date())
+    to_date = forms.DateField(initial=datetime.today().date())

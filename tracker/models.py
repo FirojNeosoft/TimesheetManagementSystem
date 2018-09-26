@@ -199,7 +199,7 @@ class Project(models.Model):
     description = models.TextField(null=True, blank=True)
     located_at = models.ForeignKey('Address', related_name='project', blank=True, null=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey('Client', related_name='project', blank=False, null=True, on_delete=models.CASCADE)
-    project_members = models.ManyToManyField('Employee', related_name='project', blank=False)
+    project_members = models.ManyToManyField('Employee', related_name='project', blank=False, through='ProjectMembership')
     project_activities = models.ManyToManyField('ProjectActivity', related_name='project', blank=True)
     document = models.FileField('Document', upload_to='upload_docs/project/', null=True, blank=True)
     status = models.CharField(max_length=12, choices=settings.PROJECT_STATUS)
@@ -218,6 +218,20 @@ class Project(models.Model):
         """
         self.status = 'Delete'
         self.save()
+
+
+class ProjectMembership(models.Model):
+    """
+    Member of project
+    """
+    project = models.ForeignKey('Project', related_name='member', blank=False, null=False, on_delete=models.CASCADE)
+    employee = models.ForeignKey('Employee', related_name='member', blank=False, null=False, on_delete=models.CASCADE)
+    cost = models.DecimalField('cost', max_digits=10, decimal_places=2, blank=False, null=False, default=0)
+    duration = models.DurationField('Duration', blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '%s- %s' % (self.project.name, self.employee.full_name)
 
 
 class Contract(models.Model):

@@ -17,6 +17,7 @@ from django.contrib import messages
 
 from tracker.models import *
 from tracker.forms import *
+from tracker.utils import *
 
 logger = logging.getLogger('tracker_log')
 
@@ -453,16 +454,50 @@ class ListProjectsView(LoginRequiredMixin, ListView):
     queryset = Project.objects.exclude(status='Delete')
     template_name = 'project_list.html'
 
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        """
+        queryset = Project.objects.exclude(status='Delete')
+        if not self.request.user.is_superuser:
+            project_ids = ProjectMembership.objects.filter(employee=self.request.user.employee).values_list('project', flat=False)
+            queryset = Project.objects.filter(id__in=project_ids).exclude(status='Delete')
+        return queryset
+
 
 class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Create new project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'project_members', 'project_activities', 'document', 'status']
+    fields = ['name', 'description', 'owner', 'project_activities', 'document', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was created successfully"
     success_url = reverse_lazy('list_projects')
+
+    def get_context_data(self, **kwargs):
+        data = super(CreateProjectView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['members'] = ProjectMembershipFormSet(self.request.POST)
+        else:
+            data['members'] = ProjectMembershipFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        members = context['members']
+
+        with transaction.atomic():
+            self.object = form.save()
+
+            if members.is_valid():
+                members.instance = self.object
+                members.save()
+            else:
+                logger.error(members.errors)
+                messages.error(self.request, members.errors)
+                return redirect('add_project')
+        return super(CreateProjectView, self).form_valid(form)
 
 
 class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
@@ -470,10 +505,35 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     Update existing project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'project_members', 'project_activities', 'document', 'status']
+    fields = ['name', 'description', 'owner', 'project_activities', 'document', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was updated successfully"
     success_url = reverse_lazy('list_projects')
+
+    def get_context_data(self, **kwargs):
+        data = super(UpdateProjectView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['members'] = ProjectMembershipFormSet(self.request.POST, instance=self.object)
+            data['members'].full_clean()
+        else:
+            data['members'] = ProjectMembershipFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        members = context['members']
+
+        with transaction.atomic():
+            self.object = form.save()
+
+            if members.is_valid():
+                members.instance = self.object
+                members.save()
+            else:
+                logger.error(members.errors)
+                messages.error(self.request, members.errors)
+                return redirect('update_project', self.object.id)
+        return super(UpdateProjectView, self).form_valid(form)
 
 
 class DeleteProjectView(LoginRequiredMixin, DeleteView):
@@ -492,6 +552,18 @@ class ListContractsView(LoginRequiredMixin, ListView):
     model = Contract
     queryset = Contract.objects.exclude(status='Delete')
     template_name = 'contract_list.html'
+
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        """
+        if self.request.user.is_superuser:
+            queryset = Contract.objects.exclude(status='Delete')
+        elif not self.request.user.is_superuser and self.request.user.is_staff:
+            queryset = Contract.objects.filter(representative=self.request.user.employee)
+        else:
+            queryset = Contract.objects.filter(employee=self.request.user.employee)
+        return queryset
 
 
 class CreateContractView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -535,6 +607,18 @@ class ListAssignmentsView(LoginRequiredMixin, ListView):
     queryset = Assignment.objects.exclude(status='Delete')
     template_name = 'assignments_list.html'
 
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        """
+        if self.request.user.is_superuser:
+            queryset = Assignment.objects.exclude(status='Delete')
+        elif not self.request.user.is_superuser and self.request.user.is_staff:
+            queryset = Assignment.objects.filter(created_by=self.request.user)
+        else:
+            queryset = Assignment.objects.filter(emp=self.request.user.employee)
+        return queryset
+
 
 class CreateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
@@ -549,6 +633,7 @@ class CreateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super(CreateAssignmentView, self).form_valid(form)
+
 
 class UpdateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
@@ -577,6 +662,21 @@ class ListTimesheetsView(LoginRequiredMixin, ListView):
     model = Timesheet
     queryset = Timesheet.objects.exclude(status='Delete')
     template_name = 'timesheet_list.html'
+
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        """
+        contract_ids = []
+        if self.request.user.is_superuser:
+            queryset = Timesheet.objects.exclude(status='Delete')
+        elif not self.request.user.is_superuser and self.request.user.is_staff:
+            contract_ids = (Contract.objects.filter(representative=self.request.user.employee) | Contract.objects.filter(employee=self.request.user.employee)).distinct()
+            queryset = Timesheet.objects.filter(contract__in=contract_ids.values_list('id', flat=False))
+        else:
+            contract_ids = Contract.objects.filter(employee=self.request.user.employee).values_list('id', flat=True)
+            queryset = Timesheet.objects.filter(contract__in=contract_ids)
+        return queryset
 
 
 class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -923,3 +1023,26 @@ class DeleteReferralView(LoginRequiredMixin, DeleteView):
     model = Referral
     template_name = 'referral_confirm_delete.html'
     success_url = reverse_lazy('list_referrals')
+
+
+class ReportView(LoginRequiredMixin, View):
+    """
+    Report
+    """
+    def get(self, request):
+        """
+          report
+        """
+        form = SearchForm()
+        return render(request, 'search_form.html', {'form': form})
+
+    def post(self, request):
+        form = SearchForm(request.POST)
+        # import pdb;
+        # pdb.set_trace()
+        if form.is_valid():
+            list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'], form.cleaned_data['to_date'])
+            print(list_contracts)
+            return render(request, 'report.html', {'list_contracts': list_contracts})
+        else:
+            return render(request, 'search_form.html', {'form': form, 'messages': form.errors})

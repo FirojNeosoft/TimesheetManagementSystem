@@ -44,9 +44,7 @@
                                       <th>Due Date</th>
                                       <th>Assigned To</th>
                                       <th>Status</th>
-                                        {% if request.user.is_staff %}
                                       <th class="no-sort">Action</th>
-                                        {% endif %}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -57,12 +55,12 @@
                                         <td>{{ task.due_date }}</td>
                                         <td>{{ task.emp.full_name }}</td>
                                         <td>{{ task.status }}</td>
-                                          {% if request.user.is_staff %}
                                         <td>
                                           <a class="fa fa-pencil-square-o" href="{% url 'update_assignment' task.id %}"></a>
+                                          {% if request.user.is_staff %}
                                           <a class="fa fa-times client_delete_icon" href="{% url 'delete_assignment' task.id %}" obj_name='' style="padding-left:50px;"></a>
-                                        </td>
                                           {% endif %}
+                                        </td>
                                       </tr>
                                     {% endfor %}
                                     </tbody>

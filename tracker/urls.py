@@ -28,7 +28,7 @@ urlpatterns = [
     path('project/<int:pk>/edit/', UpdateProjectView.as_view(), name='update_project'),
     path('project/<int:pk>/delete/', DeleteProjectView.as_view(), name='delete_project'),
 
-    path('getcontracts/', GetContractsView.as_view(), name='get_contracts'),
+    path('getcontracts/', GetContracts.as_view(), name='get_contracts'),
     path('contracts/', ListContractsView.as_view(), name='list_contracts'),
     path('contract/add/', CreateContractView.as_view(), name='add_contract'),
     path('contract/<int:pk>/edit/', UpdateContractView.as_view(), name='update_contract'),
@@ -55,4 +55,6 @@ urlpatterns = [
     path('referral/add/', CreateReferralView.as_view(), name='add_referral'),
     path('referral/<int:pk>/edit/', UpdateReferralView.as_view(), name='update_referral'),
     path('referral/<int:pk>/delete/', DeleteReferralView.as_view(), name='delete_referral'),
+
+    path('search/', ReportView.as_view(), name='report'),
 ]

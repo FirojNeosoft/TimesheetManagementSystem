@@ -5,7 +5,7 @@
 {% block body %}
 <div class="page-title">
     <div class="title_left">
-        <h3>Assignment</h3>
+        <h3>Search</h3>
     </div>
     <div class="clearfix"></div>
     <div class="row">
@@ -31,18 +31,14 @@
                                 <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
                                      {{ form.as_p }}
-                                <div class="ln_solid"></div>
-                              {% if request.user.is_staff %}
+                                    <div class="ln_solid"></div>
                               <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                  <a href="{% url 'list_assignments' %}" class='btn btn-primary' >Cancel</a>
                                   <button class="btn btn-primary" type="reset">Reset</button>
                                   <input type="submit" class="btn btn-success"/>
                                 </div>
                               </div>
-                              {% endif %}
                                 </form>
-                                <input type="hidden" id="is_manager" value={% if request.user.is_staff %} true {% else %} false {% endif %} />
                             </div>
                             <!-- /.box-body -->
                           </div>
@@ -62,22 +58,11 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-   $("#id_emp").addClass( "form-control" );
-   $("#id_due_date").addClass( "form-control" );
-   $('#id_due_date').datepicker({'dateFormat': 'yy-mm-dd'});
-   $("#id_activity").addClass( "form-control" );
-   $("#id_note").addClass( "form-control" );
-   $("#id_status").addClass( "form-control" );
-   $("label[for='id_emp']").html("Assign To");
-         if ($("#is_manager").val() == 'false')
-   {
-   $("#id_due_date").prop('readonly', 'readonly');
-   $("#id_note").prop('readonly', 'readonly');
-   $("#id_activity").prop('disabled', true);
-   $("#id_emp").prop('disabled', true);
-   $("#id_document").prop('disabled', true);
-   $("#id_status").prop('disabled', true);
-   }
+   $("#id_resource_name").addClass( "form-control" );
+   $("#id_from_date").addClass( "form-control" );
+   $('#id_from_date').datepicker({'dateFormat': 'yy-mm-dd'});
+   $("#id_to_date").addClass( "form-control" );
+   $('#id_to_date').datepicker({'dateFormat': 'yy-mm-dd'});
     });
 </script>
 {% endblock %}

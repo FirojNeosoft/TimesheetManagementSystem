@@ -1,5 +1,6 @@
-import logging
+import logging, datetime
 
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, filters
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from tracker.models import *
+from tracker.utils import *
 from tracker.rest_api.serializers.project import *
 
 
@@ -140,3 +142,27 @@ class ListTimesheetsOfProject(APIView):
             data.extend(serializer.data)
         return Response(data)
 
+
+class ReportView(APIView):
+    # permission_classes = (IsAuthenticated,)
+
+    @transaction.atomic()
+    def post(self, request, format=None):
+        try:
+            # import pdb; pdb.set_trace()
+            from_date = datetime.strptime(request.data['from_date'], '%d/%m/%Y').date()
+            to_date = datetime.strptime(request.data['to_date'], '%d/%m/%Y').date()
+            list_contracts = get_report_data(request.data['resource_name'], from_date, to_date)
+            print(list_contracts)
+            return Response({
+                'success': True,
+                'message': 'Report generated.',
+                'data': list_contracts
+            })
+        except Exception as e:
+            logger.error("{}, error occured while generating report.".format(e))
+            return Response({
+                'success': False,
+                'message': 'Something goes wrong while generating report.',
+                'data': {}
+            })

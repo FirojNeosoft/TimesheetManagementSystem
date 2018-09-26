@@ -54,7 +54,11 @@
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
+                {% if request.user.is_superuser %}
                 <h2>{{request.user.username}}</h2>
+                {% else %}
+                <h2>{{request.user.employee.first_name}}</h2>
+                {% endif %}
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -66,8 +70,8 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                   <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> Dashboard </a>   </li>
                   {% if request.user.is_superuser %}
+                   <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> Dashboard </a>   </li>
                    <li><a><i class="fa fa-users"></i> Users <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'list_users' %}">System Users</a></li>

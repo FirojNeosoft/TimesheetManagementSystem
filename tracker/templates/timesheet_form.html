@@ -74,6 +74,7 @@
                                 </div>
                               </div>
                                 </form>
+                                <input type="hidden" id="is_manager" value={% if request.user.is_staff %} true {% else %} false {% endif %} />
                             </div>
                             <!-- /.box-body -->
                           </div>
@@ -106,6 +107,27 @@
    $("#id_remark").attr( "cols", 40 );
    $("#id_remark").attr( "rows", 1 );
    $("#id_status").addClass( "form-control" );
+    if ($("#is_manager").val() == 'false')
+       {
+       $("#id_status").hide();
+       $("label[for='id_status']").hide();
+       }
+           $.ajax({
+            url: "/tracker/getcontracts/",
+            dataType: 'json',
+            type: 'GET',
+            data: {},
+            success: function(data) {
+                $('#id_contract').empty(); // clear the current elements in select box
+                for (row in data['contract_list']) {
+                    $('#id_contract').append('<option value='+ data['contract_list'][row].id+'>'+data['contract_list'][row].name+'</option>');
+                }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
     });
 
     $('.formset_row').formset({
