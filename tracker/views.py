@@ -1020,12 +1020,17 @@ class ReportView(LoginRequiredMixin, View):
         return render(request, 'search_form.html', {'form': form})
 
     def post(self, request):
-        form = SearchForm(request.POST)
+        try:
+            form = SearchForm(request.POST)
 
-        if form.is_valid():
-            list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
-                                             form.cleaned_data['to_date'])
-            # return render(request, 'report.html', {'list_contracts': list_contracts})
-            return Render.pdf_file('report.html', {'list_contracts': list_contracts})
-        else:
-            return render(request, 'search_form.html', {'form': form, 'messages': form.errors})
+            if form.is_valid():
+                list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
+                                                 form.cleaned_data['to_date'])
+                # return render(request, 'report.html', {'list_contracts': list_contracts})
+                return Render.pdf_file('report.html', {'list_contracts': list_contracts})
+            else:
+                return render(request, 'search_form.html', {'form': form, 'messages': form.errors})
+        except Exception as e:
+            logger.error("{}, error occured while searching report.".format(e))
+            messages.error(request, "Error occured while searching report.")
+            return redirect('report')

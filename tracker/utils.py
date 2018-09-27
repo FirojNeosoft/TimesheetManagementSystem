@@ -41,7 +41,7 @@ def get_report_data(name, from_date=datetime.today().date(), to_date=datetime.to
       get report of an employee
     """
     first_name, last_name = name.split(' ')
-    emp = Employee.objects.get(first_name=first_name, last_name=last_name)
+    emp = Employee.objects.get(first_name=first_name.capitalize(), last_name=last_name.capitalize())
     contracts = Contract.objects.filter(employee=emp, created_at__range=[from_date, to_date]).exclude(status='Delete')
     list_contracts = []
     for contract in contracts:

@@ -33,13 +33,13 @@
                               <div class="form-group">
                                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_first_name">First Name <span class="required" style='color:red;'>*</span></label>
                                   <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" value="{{obj.first_name}}" name="first_name" maxlength="128" required id="id_first_name" class="form-control col-md-7 col-xs-12"/></p>
+                                  <input type="text" value="{{obj.first_name}}" name="first_name" maxlength="128" required id="id_first_name" class="form-control col-md-7 col-xs-12 uppercase"/></p>
                                 </div>
                               </div>
                               <div class="form-group">
                                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_last_name">Last Name <span class="required" style='color:red;'>*</span></label>
                                   <div class="col-md-6 col-sm-6 col-xs-12">
-                                  <input type="text" value="{{obj.last_name}}" name="last_name" maxlength="128" required id="id_last_name" class="form-control col-md-7 col-xs-12"/></p>
+                                  <input type="text" value="{{obj.last_name}}" name="last_name" maxlength="128" required id="id_last_name" class="form-control col-md-7 col-xs-12 uppercase"/></p>
                                 </div>
                               </div>
                               <div class="form-group">
@@ -316,4 +316,10 @@ $('#id_joined_date').datepicker({'dateFormat': 'yy-mm-dd'});
 $('#id_birth_date').datepicker({'dateFormat': 'yy-mm-dd'});
     });
 </script>
+<style>
+ .uppercase
+{
+    text-transform:capitalize;
+}
+</style>
 {% endblock %}
