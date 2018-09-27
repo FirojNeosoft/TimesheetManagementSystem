@@ -6,10 +6,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from tracker.models import *
 from tracker.utils import *
+from tracker.rest_api.permissions import *
 from tracker.rest_api.serializers.project import *
 
 
@@ -22,7 +23,7 @@ class ProjectActivitySet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('name',)
     ordering_fields = ('name',)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsManagerOrReadOnly,)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -32,7 +33,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
     ordering_fields = ('name',)
     filter_fields = ('owner', 'status')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsManagerOrReadOnly,)
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -42,7 +43,7 @@ class ContractViewSet(viewsets.ModelViewSet):
     search_fields = ('role', 'referral')
     ordering_fields = ('created_at',)
     filter_fields = ('employee', 'representative', 'client', 'billing_cycle', 'pay_rate_type', 'status')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsManagerOrReadOnly,)
 
 
 class TimesheetViewSet(viewsets.ModelViewSet):
@@ -72,7 +73,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     search_fields = ('title', 'description')
     ordering_fields = ('created_at', 'due_date')
     filter_fields = ('emp', 'status')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsManagerOrReadOnly,)
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
@@ -82,7 +83,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     search_fields = ('remark',)
     ordering_fields = ('created_at',)
     filter_fields = ('client', 'status')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAdminUser,)
 
 
 class ListProjectsOfEmployee(APIView):
@@ -144,12 +145,11 @@ class ListTimesheetsOfProject(APIView):
 
 
 class ReportView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAdminUser,)
 
     @transaction.atomic()
     def post(self, request, format=None):
         try:
-            # import pdb; pdb.set_trace()
             from_date = datetime.strptime(request.data['from_date'], '%d/%m/%Y').date()
             to_date = datetime.strptime(request.data['to_date'], '%d/%m/%Y').date()
             list_contracts = get_report_data(request.data['resource_name'], from_date, to_date)

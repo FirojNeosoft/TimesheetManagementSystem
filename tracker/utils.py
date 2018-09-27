@@ -1,15 +1,15 @@
 import datetime, decimal
+import xhtml2pdf.pisa as pisa
 
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.views.generic import View
+from django.http import HttpResponse
+from django.template.loader import get_template
 
 from tracker.models import *
 
 from io import BytesIO
-from django.http import HttpResponse
-from django.template.loader import get_template
-import xhtml2pdf.pisa as pisa
 
 
 class GetContracts(View):

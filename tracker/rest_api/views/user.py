@@ -3,10 +3,10 @@ import logging
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, filters
 
 from tracker.models import *
+from tracker.rest_api.permissions import *
 from tracker.rest_api.serializers.user import *
 
 
@@ -20,7 +20,7 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ('username', 'email')
     ordering_fields = ('username', 'email')
     filter_fields = ('username', 'email', 'is_staff')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsSuperAdmin,)
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -31,7 +31,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     ordering_fields = ('first_name', 'last_name', 'email', 'skype_id')
     filter_fields = ('gender', 'department', 'designation', 'employment_type', 'current_pay_rate_type',\
                      'current_visa_status', 'status', 'is_manager')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsSuperAdmin,)
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -41,7 +41,7 @@ class ClientViewSet(viewsets.ModelViewSet):
     search_fields = ('first_name', 'last_name', 'mobile', 'email', 'skype_id')
     ordering_fields = ('first_name', 'last_name', 'email', 'skype_id')
     filter_fields = ('gender', 'status')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsSuperAdmin,)
 
 
 class VendorViewSet(viewsets.ModelViewSet):
@@ -51,7 +51,7 @@ class VendorViewSet(viewsets.ModelViewSet):
     search_fields = ('organization_name', 'contact_person_name', 'mobile', 'email',)
     ordering_fields = ('organization_name', 'contact_person_name', 'email',)
     filter_fields = ('status',)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsSuperAdmin,)
 
 
 class ReferralViewSet(viewsets.ModelViewSet):
@@ -61,4 +61,4 @@ class ReferralViewSet(viewsets.ModelViewSet):
     search_fields = ('first_name', 'last_name', 'mobile', 'email',)
     ordering_fields = ('first_name', 'last_name', 'email',)
     filter_fields = ('status',)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsSuperAdmin,)

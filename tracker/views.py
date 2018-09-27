@@ -123,7 +123,7 @@ class UpdateClientView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             country = request.POST['country']
             state = request.POST['state']
             zip_code = request.POST['zip']
-            # import pdb; pdb.set_trace()
+
             if city and country and state and zip_code:
                 try:
                     if client.address:
@@ -205,21 +205,6 @@ class UpdateUserView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "%(username)s was updated successfully"
     success_url = reverse_lazy('list_users')
 
-   # def post(self, request, pk):
-    #    """
-     #   Handle POST requests: instantiate a form instance with the passed
-      #  POST variables and then check if it's valid.
-       # """
-        #self.object = User.objects.get(id=pk)
-        #form = self.get_form()
-        #if form.is_valid():
-         #   user = form.save()
-          #  user.set_password(request.POST['password'])
-           # user.save()
-       # else:
-        #    pass
-        #return HttpResponseRedirect(reverse('list_users'))
-
 
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     """
@@ -245,8 +230,8 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
-              'passport_no','current_visa_status', 'document', 'status']
+              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type',\
+              'current_pay_rate', 'passport_no','current_visa_status', 'document', 'status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_employees')
@@ -320,8 +305,8 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type','current_pay_rate',\
-              'passport_no','current_visa_status', 'document', 'status']
+              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type',\
+              'current_pay_rate', 'passport_no','current_visa_status', 'document', 'status']
     template_name = 'edit_employee_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_employees')
@@ -702,7 +687,6 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         tasks = context['tasks']
         with transaction.atomic():
             self.object = form.save()
-
             if tasks.is_valid():
                 tasks.instance = self.object
                 tasks.save()
@@ -737,7 +721,6 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         tasks = context['tasks']
         with transaction.atomic():
             self.object = form.save()
-
             if tasks.is_valid():
                 tasks.instance = self.object
                 tasks.save()
@@ -866,7 +849,7 @@ class UpdateVendorView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             country = request.POST['country']
             state = request.POST['state']
             zip_code = request.POST['zip']
-            # import pdb; pdb.set_trace()
+
             if city and country and state and zip_code:
                 try:
                     if vendor.address:
@@ -989,7 +972,7 @@ class UpdateReferralView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
             country = request.POST['country']
             state = request.POST['state']
             zip_code = request.POST['zip']
-            # import pdb; pdb.set_trace()
+
             if city and country and state and zip_code:
                 try:
                     if referral.address:
@@ -1038,11 +1021,10 @@ class ReportView(LoginRequiredMixin, View):
 
     def post(self, request):
         form = SearchForm(request.POST)
-        # import pdb;
-        # pdb.set_trace()
+
         if form.is_valid():
-            list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'], form.cleaned_data['to_date'])
-            print(list_contracts)
+            list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
+                                             form.cleaned_data['to_date'])
             # return render(request, 'report.html', {'list_contracts': list_contracts})
             return Render.pdf_file('report.html', {'list_contracts': list_contracts})
         else:

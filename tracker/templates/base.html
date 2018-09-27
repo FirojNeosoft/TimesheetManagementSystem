@@ -71,7 +71,7 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   {% if request.user.is_superuser %}
-                   <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> Dashboard </a>   </li>
+                   <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> Dashboard </a></li>
                    <li><a><i class="fa fa-users"></i> Users <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'list_users' %}">System Users</a></li>
@@ -90,7 +90,9 @@
                             <li><a href="{% url 'list_assignments' %}">Assignments</a></li>
                         </ul>
                     </li>
-                  <li><a href="{% url 'report' %}"><i class="fa fa-search"></i> Search Report</a>
+                  {% if request.user.is_staff %}
+                     <li><a href="{% url 'report' %}"><i class="fa fa-search"></i> Search Report</a>
+                  {% endif %}
                 </ul>
               </div>
             </div>
