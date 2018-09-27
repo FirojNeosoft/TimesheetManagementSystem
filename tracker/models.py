@@ -476,6 +476,8 @@ def add_referral_points(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Employee)
 def add_user(sender, instance, created, **kwargs):
+    instance.first_name = instance.first_name.capitalize()
+    instance.last_name = instance.last_name.capitalize()
     if created:
         random_pwd = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(8)])
         user = User.objects.create(username=instance.email, email=instance.email,\
