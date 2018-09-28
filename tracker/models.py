@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
 
@@ -474,10 +474,14 @@ def add_referral_points(sender, instance, created, **kwargs):
         instance.representative.save()
 
 
-@receiver(post_save, sender=Employee)
-def add_user(sender, instance, created, **kwargs):
+@receiver(pre_save, sender=Employee)
+def formatting_employee_name(sender, instance, *args, **kwargs):
     instance.first_name = instance.first_name.capitalize()
     instance.last_name = instance.last_name.capitalize()
+
+
+@receiver(post_save, sender=Employee)
+def add_user(sender, instance, created, **kwargs):
     if created:
         random_pwd = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(8)])
         user = User.objects.create(username=instance.email, email=instance.email,\
@@ -506,3 +510,4 @@ def add_user(sender, instance, created, **kwargs):
             [instance.user.email],
             fail_silently=False,
         )
+
