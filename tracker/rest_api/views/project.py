@@ -166,3 +166,33 @@ class ReportView(APIView):
                 'message': 'Something goes wrong while generating report.',
                 'data': {}
             })
+
+
+class GetDefaultersView(APIView):
+    permission_classes = (IsAdminUser,)
+
+    @transaction.atomic()
+    def post(self, request, format=None):
+        try:
+            from_date = datetime.strptime(request.data['from_date'], '%d/%m/%Y').date()
+            to_date = datetime.strptime(request.data['to_date'], '%d/%m/%Y').date()
+            list_contracts = get_defaulter(request.data['resource_name'], from_date, to_date)
+            if list_contracts:
+                return Response({
+                    'success': True,
+                    'message': 'Defaulter considered.',
+                    'data': list_contracts
+                })
+            else:
+                return Response({
+                    'success': True,
+                    'message': 'Not Defaulter.',
+                    'data': list_contracts
+                })
+        except Exception as e:
+            logger.error("{}, error occured while finding defaulter.".format(e))
+            return Response({
+                'success': False,
+                'message': 'Something goes wrong while finding defaulter.',
+                'data': {}
+            })

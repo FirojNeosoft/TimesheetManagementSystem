@@ -82,3 +82,22 @@ class Render:
             return HttpResponse(response.getvalue(), content_type='application/pdf')
         else:
             return HttpResponse("Error Rendering PDF", status=400)
+
+
+def get_defaulter(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
+    """
+      get report of an employee
+    """
+    first_name, last_name = name.split(' ')
+    emp = Employee.objects.get(first_name=first_name.capitalize(), last_name=last_name.capitalize())
+    total_timesheet_count = abs((from_date - to_date).days)
+    contracts = Contract.objects.filter(employee=emp, status='In progress')
+    list_contracts = []
+    for contract in contracts:
+        submitted_timsheet_count = Timesheet.objects.filter(contract=contract, sign_in__range=[from_date, to_date]).count()
+        remaining_timesheet_count = (total_timesheet_count - submitted_timsheet_count)
+        if remaining_timesheet_count > 0:
+            list_contracts.append({
+                "contract_name": contract.__str__(),
+                "remaining_timesheet_count": remaining_timesheet_count})
+    return list_contracts

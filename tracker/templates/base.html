@@ -21,17 +21,14 @@
     <link href="{% static 'tracker/css/nprogress.css' %}" rel="stylesheet">
     <!-- iCheck -->
     <link href="{% static 'tracker/css/green.css' %}" rel="stylesheet">
-
     <!-- bootstrap-progressbar -->
     <link href="{% static 'tracker/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
     <!-- JQVMap -->
     <link href="{% static 'tracker/css/jqvmap.min.css' %}" rel="stylesheet"/>
     <!-- bootstrap-daterangepicker -->
     <link href="{% static 'tracker/css/daterangepicker.css' %}" rel="stylesheet">
-
     <!-- bootstrap dual-list-box -->
     <link href="{% static 'tracker/css/bootstrap-duallistbox.css' %}" rel="stylesheet">
-
     <!-- Custom Theme Style -->
     <link href="{% static 'tracker/css/custom.min.css' %}" rel="stylesheet">
   </head>
@@ -91,7 +88,8 @@
                         </ul>
                     </li>
                   {% if request.user.is_staff %}
-                     <li><a href="{% url 'report' %}"><i class="fa fa-search"></i> Search Report</a>
+                     <li><a href="{% url 'report' %}"><i class="fa fa-book"></i> Search Report</a>
+                     <li><a href="{% url 'get_defaulters' %}"><i class="fa fa-search"></i> Search Defaulters</a>
                   {% endif %}
                 </ul>
               </div>
@@ -157,23 +155,17 @@
     <script src="{% static 'tracker/js/bootstrap-datetimepicker.min.js' %}"></script>
 	 <!-- FastClick -->
     <script src="{% static 'tracker/js/fastclick.js' %}"></script>
-
 	  <!--   <!-- NProgress -->
     <script src="{% static 'tracker/js/nprogress.js' %}"></script>
-
-
 	<!-- bootstrap-progressbar -->
     <script src="{% static 'tracker/js/bootstrap-progressbar.min.js' %}"></script>
-
 	 <!-- bootstrap-daterangepicker -->
     <script src="{% static 'tracker/js/moment.min.js' %}"></script>
     <script src="{% static 'tracker/js/daterangepicker.js' %}"></script>
-
 	 <!-- jquery.inputmask -->
     <script src="{% static 'tracker/js/jquery.inputmask.bundle.min.js' %}"></script>
 
     <script src="{% static 'tracker/js/jquery.bootstrap-duallistbox.js' %}"></script>
-
 	<!-- Custom Theme Scripts -->
     <script src="{% static 'tracker/js/custom.min.js' %}"></script>
 
@@ -184,6 +176,5 @@
     <link rel="stylesheet" href="{% static 'tracker/css/datatables.min.css' %}">
     {% block static %}
     {% endblock %}
-
   </body>
 </html>

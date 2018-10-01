@@ -1034,3 +1034,33 @@ class ReportView(LoginRequiredMixin, View):
             logger.error("{}, error occured while searching report.".format(e))
             messages.error(request, "Error occured while searching report.")
             return redirect('report')
+
+
+class SearchDefaulterView(LoginRequiredMixin, View):
+    """
+    Get defaulters
+    """
+    def get(self, request):
+        """
+          Get defaulters
+        """
+        form = SearchForm()
+        return render(request, 'search_defaulter_form.html', {'form': form})
+
+    def post(self, request):
+        try:
+            form = SearchForm(request.POST)
+
+            if form.is_valid():
+                list_contracts = get_defaulter(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
+                                                 form.cleaned_data['to_date'])
+                if list_contracts:
+                    return render(request, 'search_defaulter_form.html', {'form': form, 'list_contracts': list_contracts})
+                else:
+                    return render(request, 'search_defaulter_form.html', {'form': form, 'message': str("Not  defaulter")})
+            else:
+                return render(request, 'search_defaulter_form.html', {'form': form, 'message': form.errors})
+        except Exception as e:
+            logger.error("{}, error occured while searching defaulters.".format(e))
+            messages.error(request, "Error occured while searching defaulters.")
+            return redirect('get_defaulters')

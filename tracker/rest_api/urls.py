@@ -27,4 +27,5 @@ urlpatterns = [
     # path('api/projects/<int:project_id>/employees', ListEmployeesOfProject.as_view()),
     # path('api/projects/<int:project_id>/timesheets', ListTimesheetsOfProject.as_view()),
     path('report', ReportView.as_view(), name='report_api'),
+    path('search_defaulter', GetDefaultersView.as_view(), name='search_defaulter'),
     ]
