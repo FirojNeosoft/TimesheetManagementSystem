@@ -49,5 +49,9 @@ ProjectMembershipFormSet = inlineformset_factory(Project, ProjectMembership, for
 class SearchForm(forms.Form):
     resource_name = forms.CharField(label='Resource name', max_length=100,\
                                         widget = forms.TextInput(attrs={'placeholder': 'FirstName  LastName'}))
-    from_date = forms.DateField(initial=datetime.today().date())
-    to_date = forms.DateField(initial=datetime.today().date())
+    from_date = forms.DateField(initial=datetime.today().date(), widget=forms.widgets.DateInput(format="%m/%d/%Y"))
+    to_date = forms.DateField(initial=datetime.today().date(), widget=forms.widgets.DateInput(format="%m/%d/%Y"))
+
+class DurationSearchForm(forms.Form):
+    from_date = forms.DateField(initial=datetime.today().date(), widget=forms.widgets.DateInput(format="%m/%d/%Y"))
+    to_date = forms.DateField(initial=datetime.today().date(), widget=forms.widgets.DateInput(format="%m/%d/%Y"))

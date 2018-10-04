@@ -39,14 +39,16 @@
                                 <table id="defaulter_table" class="cell-border">
                                     <thead>
                                     <tr>
-                                      <th>Contract Name</th>
+                                      <th>Resource Name</th>
+                                      <th>Client Name</th>
                                       <th>Count Of Pending Timesheets</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {% for contract in list_contracts %}
                                       <tr>
-                                        <td>{{ contract.contract_name }}</td>
+                                        <td>{{ contract.resource_name }}</td>
+                                        <td>{{ contract.client_name }}</td>
                                         <td>{{ contract.remaining_timesheet_count }}</td>
                                       </tr>
                                     {% endfor %}
@@ -73,11 +75,19 @@
 {% block static %}
 <script>
   $(document).ready(function(){
+    var availableEmps = [
+     {% for emp in emps %}
+          "{{emp}}",
+      {%endfor%}
+      ];
    $("#id_resource_name").addClass( "form-control" );
+   $("#id_resource_name").autocomplete({
+        source: availableEmps
+      });
    $("#id_from_date").addClass( "form-control" );
-   $('#id_from_date').datepicker({'dateFormat': 'yy-mm-dd'});
+   $('#id_from_date').datepicker({'dateFormat': 'mm/dd/yy'});
    $("#id_to_date").addClass( "form-control" );
-   $('#id_to_date').datepicker({'dateFormat': 'yy-mm-dd'});
+   $('#id_to_date').datepicker({'dateFormat': 'mm/dd/yy'});
    $('#defaulter_table').DataTable();
     });
 </script>

@@ -2,10 +2,12 @@
 <html>
   <head>
     <style>
-       .cell-border
-        {
-        border: 1px solid black;
-        padding: 1px 1px 1px 1px;
+       td,th {
+         text-align: center;
+       }
+       .cell-border{
+         border: 1px solid black;
+         padding: 1px 1px 1px 1px;
         }
     </style>
   </head>
@@ -25,13 +27,13 @@
         <tbody>
         {% for contract in list_contracts %}
           <tr>
-            <td>{{ contract.contract_name }}</td>
-            <td>{{ contract.project_name }}</td>
-            <td>{{ contract.resource_cost }}</td>
-            <td>{{ contract.planned_resource_duration }}</td>
-            <td>{{ contract.actual_resource_duration }}</td>
-            <td>{{ contract.planned_total_cost }}</td>
-            <td>{{ contract.actual_total_cost }}</td>
+            <td class="cell-data">{{ contract.contract_name }}</td>
+            <td class="cell-data">{{ contract.project_name }}</td>
+            <td class="cell-data">{{ contract.resource_cost }}</td>
+            <td class="cell-data">{{ contract.planned_resource_duration }}</td>
+            <td class="cell-data">{{ contract.actual_resource_duration }}</td>
+            <td class="cell-data">{{ contract.planned_total_cost }}</td>
+            <td class="cell-data">{{ contract.actual_total_cost }}</td>
           </tr>
         {% endfor %}
         </tbody>

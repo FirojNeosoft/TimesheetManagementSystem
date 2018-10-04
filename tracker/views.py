@@ -230,7 +230,7 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type',\
+              'skype_id', 'is_manager', 'department', 'designation', 'skills', 'employment_type','current_pay_rate_type',\
               'current_pay_rate', 'passport_no','current_visa_status', 'document', 'status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
@@ -305,7 +305,7 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
-              'skype_id', 'is_manager', 'department', 'designation', 'employment_type','current_pay_rate_type',\
+              'skype_id', 'is_manager', 'department', 'designation', 'skills', 'employment_type','current_pay_rate_type',\
               'current_pay_rate', 'passport_no','current_visa_status', 'document', 'status']
     template_name = 'edit_employee_form.html'
     success_message = "%(first_name)s was updated successfully"
@@ -1017,19 +1017,23 @@ class ReportView(LoginRequiredMixin, View):
           report
         """
         form = SearchForm()
-        return render(request, 'search_form.html', {'form': form})
+        emps = Employee.objects.exclude(status='Delete').order_by('first_name')
+        return render(request, 'search_form.html', {'form': form, 'emps':emps})
 
     def post(self, request):
         try:
             form = SearchForm(request.POST)
+            emps = Employee.objects.exclude(status='Delete').order_by('first_name')
 
             if form.is_valid():
                 list_contracts = get_report_data(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
                                                  form.cleaned_data['to_date'])
-                # return render(request, 'report.html', {'list_contracts': list_contracts})
-                return Render.pdf_file('report.html', {'list_contracts': list_contracts})
+                if 'submit_btn' in request.POST:
+                    return render(request, 'search_form.html', {'form':form, 'list_contracts': list_contracts})
+                else:
+                    return Render.pdf_file('report.html', {'list_contracts': list_contracts})
             else:
-                return render(request, 'search_form.html', {'form': form, 'messages': form.errors})
+                return render(request, 'search_form.html', {'form': form, 'emps':emps, 'messages': form.errors})
         except Exception as e:
             logger.error("{}, error occured while searching report.".format(e))
             messages.error(request, "Error occured while searching report.")
@@ -1045,21 +1049,26 @@ class SearchDefaulterView(LoginRequiredMixin, View):
           Get defaulters
         """
         form = SearchForm()
-        return render(request, 'search_defaulter_form.html', {'form': form})
+        emps = Employee.objects.exclude(status='Delete').order_by('first_name')
+        return render(request, 'search_defaulter_form.html', {'form': form, 'emps':emps})
 
     def post(self, request):
         try:
             form = SearchForm(request.POST)
+            emps = Employee.objects.exclude(status='Delete').order_by('first_name')
 
             if form.is_valid():
                 list_contracts = get_defaulter(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
                                                  form.cleaned_data['to_date'])
                 if list_contracts:
-                    return render(request, 'search_defaulter_form.html', {'form': form, 'list_contracts': list_contracts})
+                    return render(request, 'search_defaulter_form.html', {'form': form, 'emps':emps,\
+                                                                          'list_contracts': list_contracts})
                 else:
-                    return render(request, 'search_defaulter_form.html', {'form': form, 'message': str("Not  defaulter")})
+                    return render(request, 'search_defaulter_form.html', {'form': form, 'emps':emps,\
+                                                                          'message': str("Not  defaulter")})
             else:
-                return render(request, 'search_defaulter_form.html', {'form': form, 'message': form.errors})
+                return render(request, 'search_defaulter_form.html', {'form': form, 'emps':emps,\
+                                                                      'message': form.errors})
         except Exception as e:
             logger.error("{}, error occured while searching defaulters.".format(e))
             messages.error(request, "Error occured while searching defaulters.")

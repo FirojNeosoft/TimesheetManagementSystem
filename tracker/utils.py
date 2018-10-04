@@ -98,6 +98,7 @@ def get_defaulter(name, from_date=datetime.today().date(), to_date=datetime.toda
         remaining_timesheet_count = (total_timesheet_count - submitted_timsheet_count)
         if remaining_timesheet_count > 0:
             list_contracts.append({
-                "contract_name": contract.__str__(),
+                "resource_name": contract.employee.full_name,
+                "client_name": contract.client.full_name,
                 "remaining_timesheet_count": remaining_timesheet_count})
     return list_contracts

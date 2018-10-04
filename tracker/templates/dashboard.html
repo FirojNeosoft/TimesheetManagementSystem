@@ -102,8 +102,31 @@
                         </a>
                     </div>
                 </div>
-        </div>
+         </div>
      {% endif %}
-</div>
+             <div class="ln_solid"></div>
+                                            <form method="post" enctype="multipart/form-data">
+                                   {% csrf_token %}
+                                     {{ form }}
+                                    <!--<input type="submit" name="submit_btn" id="id_submit_btn" class="btn btn-success"/>-->
+                                                <!--</form>-->
 
+                                <div class="ln_solid"></div>
+                                <table id="report_table" class="cell-border">
+                                    <thead>
+                                    <!--<tr>-->
+                                      <!--<th class="no-sort">Contract Name</th>-->
+                                    <!--</tr>-->
+                                    </thead>
+                                    <tbody>
+                                    {% for contract in list_contracts %}
+                                      <!--<tr>-->
+                                        <!--<td>{{ contract.contract_name }}</td>-->
+                                      <!--</tr>-->
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+</div>
+</div>
 {% endblock %}

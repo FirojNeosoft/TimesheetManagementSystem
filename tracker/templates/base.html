@@ -29,6 +29,7 @@
     <link href="{% static 'tracker/css/daterangepicker.css' %}" rel="stylesheet">
     <!-- bootstrap dual-list-box -->
     <link href="{% static 'tracker/css/bootstrap-duallistbox.css' %}" rel="stylesheet">
+    <link href="{% static 'tracker/css/bootstrap-tagsinput.css' %}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="{% static 'tracker/css/custom.min.css' %}" rel="stylesheet">
   </head>
@@ -88,8 +89,8 @@
                         </ul>
                     </li>
                   {% if request.user.is_staff %}
-                     <li><a href="{% url 'report' %}"><i class="fa fa-book"></i> Search Report</a>
-                     <li><a href="{% url 'get_defaulters' %}"><i class="fa fa-search"></i> Search Defaulters</a>
+                     <li><a href="{% url 'report' %}"><i class="fa fa-search"></i> Search Report</a>
+                     <!--<li><a href="{% url 'get_defaulters' %}"><i class="fa fa-book"></i> Search Defaulters</a>-->
                   {% endif %}
                 </ul>
               </div>
@@ -151,6 +152,8 @@
     <script src="{% static 'tracker/js/jquery.min.js' %}"></script>
     <!-- Bootstrap -->
     <script src="{% static 'tracker/js/bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'tracker/js/bootstrap-tagsinput.js' %}"></script>
 
     <script src="{% static 'tracker/js/bootstrap-datetimepicker.min.js' %}"></script>
 	 <!-- FastClick -->

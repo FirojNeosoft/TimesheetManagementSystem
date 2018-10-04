@@ -1,3 +1,4 @@
+import tagulous
 import random, string
 
 from django.db import models
@@ -103,6 +104,7 @@ class Employee(models.Model):
     skype_id = models.CharField('skype Id', max_length=128, blank=True, null=True)
     department = models.CharField('Department', max_length=128, blank=False, null=False)
     designation = models.CharField('Designation', max_length=128, blank=False, null=False)
+    skills = tagulous.models.TagField()
     employment_type = models.CharField(max_length=10, choices=settings.EMPLOYEMENT_TYPE)
     current_pay_rate_type = models.CharField(max_length=10, choices=settings.PAY_RATE_TYPE)
     current_pay_rate = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)

@@ -30,15 +30,42 @@
                             <div class="box-body">
                                 <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
-                                     {{ form.as_p }}
-                                    <div class="ln_solid"></div>
-                              <div class="form-group">
-                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                  <button class="btn btn-primary" type="reset">Reset</button>
-                                  <input type="submit" class="btn btn-success"/>
+                                     {{ form }}
+                                    <input type="submit" name="submit_btn" id="id_submit_btn" class="btn btn-success"/>
+
+                                <div class="ln_solid"></div>
+                                <table id="report_table" class="cell-border">
+                                    <thead>
+                                    <tr>
+                                      <th class="no-sort">Contract Name</th>
+                                      <th class="no-sort">Project Name</th>
+                                      <th class="no-sort">Resource Cost $/hour</th>
+                                      <th class="no-sort">Planed Project Duration (hour)</th>
+                                      <th class="no-sort">Actual Duration (hour)</th>
+                                      <th class="no-sort">Total Plan Cost($)</th>
+                                      <th class="no-sort">Actual Total Cost($) </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for contract in list_contracts %}
+                                      <tr>
+                                        <td>{{ contract.contract_name }}</td>
+                                        <td>{{ contract.project_name }}</td>
+                                        <td>{{ contract.resource_cost }}</td>
+                                        <td>{{ contract.planned_resource_duration }}</td>
+                                        <td>{{ contract.actual_resource_duration }}</td>
+                                        <td>{{ contract.planned_total_cost }}</td>
+                                        <td>{{ contract.actual_total_cost }}</td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% if list_contracts %}
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-5">
+                                  <button class="btn btn-primary" type="submit" name="export_btn">Export Report</button>
                                 </div>
-                              </div>
-                                </form>
+                             </form>
+                            {% endif %}
                             </div>
                             <!-- /.box-body -->
                           </div>
@@ -58,11 +85,26 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-   $("#id_resource_name").addClass( "form-control" );
-   $("#id_from_date").addClass( "form-control" );
-   $('#id_from_date').datepicker({'dateFormat': 'yy-mm-dd'});
-   $("#id_to_date").addClass( "form-control" );
-   $('#id_to_date').datepicker({'dateFormat': 'yy-mm-dd'});
+  $('#report_table').DataTable();
+    var availableEmps = [
+     {% for emp in emps %}
+          "{{emp}}",
+      {%endfor%}
+      ];
+   $("#id_resource_name").autocomplete({
+        source: availableEmps
+      });
+   $('#id_from_date').datepicker({'dateFormat': 'mm/dd/yy'});
+   $('#id_to_date').datepicker({'dateFormat': 'mm/dd/yy'});
     });
 </script>
+<style>
+ label
+{
+    padding-left: 20px;
+}
+#id_submit_btn{
+    margin-left: 10px;
+}
+</style>
 {% endblock %}
