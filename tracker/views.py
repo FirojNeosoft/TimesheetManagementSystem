@@ -30,11 +30,39 @@ class DashboardView(LoginRequiredMixin, View):
         """
           dashboard
         """
+        form = DurationSearchForm()
         data = { "employees_count" : Employee.objects.exclude(status='Delete').count(),
         "clients_count" : Client.objects.exclude(status='Delete').count(),
         "projects_count" : Project.objects.exclude(status='Delete').count(),
-        "contracts_count" : Contract.objects.exclude(status='Delete').count()}
+        "contracts_count" : Contract.objects.exclude(status='Delete').count(),
+                 "form":form}
         return render(request, 'dashboard.html', data)
+
+    def post(self, request):
+        try:
+            form = DurationSearchForm(request.POST)
+            data = {"employees_count": Employee.objects.exclude(status='Delete').count(),
+                    "clients_count": Client.objects.exclude(status='Delete').count(),
+                    "projects_count": Project.objects.exclude(status='Delete').count(),
+                    "contracts_count": Contract.objects.exclude(status='Delete').count(),
+                    "form": form}
+
+            if form.is_valid():
+                data['total_submitted_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ]).\
+                    exclude(contract__status='Delete').count()
+                data['total_pending_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Pending').\
+                    exclude(contract__status='Delete').count()
+                data['total_approved_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Approved').\
+                    exclude(contract__status='Delete').count()
+                data['total_rejected_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Rejected').\
+                    exclude(contract__status='Delete').count()
+                return render(request, 'dashboard.html', data)
+            else:
+                return render(request, 'dashboard.html', data)
+        except Exception as e:
+            logger.error("{}, error occured while searching timesheet data on dashboard.".format(e))
+            messages.error(request, "Error occured while searching timesheet data on dashboard.")
+            return redirect('dashboard')
 
 
 class ListClientsView(LoginRequiredMixin, ListView):

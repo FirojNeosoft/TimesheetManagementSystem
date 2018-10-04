@@ -104,12 +104,12 @@
                 </div>
          </div>
      {% endif %}
-             <div class="ln_solid"></div>
-                                            <form method="post" enctype="multipart/form-data">
+                                <div class="ln_solid"></div>
+                                <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
                                      {{ form }}
-                                    <!--<input type="submit" name="submit_btn" id="id_submit_btn" class="btn btn-success"/>-->
-                                                <!--</form>-->
+                                    <input type="submit" name="submit_btn" id="id_submit_btn" class="btn btn-success"/>
+                                </form>
 
                                 <div class="ln_solid"></div>
                                 <table id="report_table" class="cell-border">
@@ -129,4 +129,22 @@
 
 </div>
 </div>
+{% endblock %}
+{% block static %}
+<script>
+  $(document).ready(function(){
+  <!--$('#report_table').DataTable();-->
+   $('#id_from_date').datepicker({'dateFormat': 'mm/dd/yy'});
+   $('#id_to_date').datepicker({'dateFormat': 'mm/dd/yy'});
+    });
+</script>
+<style>
+ label
+{
+    padding-left: 20px;
+}
+#id_submit_btn{
+    margin-left: 10px;
+}
+</style>
 {% endblock %}
