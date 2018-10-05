@@ -1061,7 +1061,10 @@ class ReportView(LoginRequiredMixin, View):
                 if 'submit_btn' in request.POST:
                     return render(request, 'search_form.html', {'form':form, 'list_contracts': list_contracts})
                 else:
-                    return Render.pdf_file('report.html', {'list_contracts': list_contracts})
+                    return Render.pdf_file('report.html', {'list_contracts': list_contracts,\
+                                                'emp_name': form.cleaned_data['resource_name'],\
+                                                'from_date': form.cleaned_data['from_date'],\
+                                                'to_date': form.cleaned_data['to_date']})
             else:
                 return render(request, 'search_form.html', {'form': form, 'emps':emps, 'messages': form.errors})
         except Exception as e:
