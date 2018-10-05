@@ -48,14 +48,16 @@ class DashboardView(LoginRequiredMixin, View):
                     "form": form}
 
             if form.is_valid():
-                data['total_submitted_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ]).\
+                timesheet_result = {}
+                timesheet_result['total_submitted_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ]).\
                     exclude(contract__status='Delete').count()
-                data['total_pending_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Pending').\
+                timesheet_result['total_pending_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Pending').\
                     exclude(contract__status='Delete').count()
-                data['total_approved_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Approved').\
+                timesheet_result['total_approved_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Approved').\
                     exclude(contract__status='Delete').count()
-                data['total_rejected_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Rejected').\
+                timesheet_result['total_rejected_timesheet'] = Timesheet.objects.filter(sign_in__range=[form.cleaned_data['from_date'] , form.cleaned_data['to_date'] ], status='Rejected').\
                     exclude(contract__status='Delete').count()
+                data['timesheet_result'] = timesheet_result
                 return render(request, 'dashboard.html', data)
             else:
                 return render(request, 'dashboard.html', data)

@@ -104,32 +104,53 @@
                 </div>
          </div>
      {% endif %}
-                                <div class="ln_solid"></div>
-                                <form method="post" enctype="multipart/form-data">
-                                   {% csrf_token %}
-                                     {{ form }}
-                                    <input type="submit" name="submit_btn" id="id_submit_btn" class="btn btn-success"/>
-                                </form>
+         <div class="ln_solid"></div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Timesheet Summary
+                </div>
+                <div class="form-div">
+                    <form method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
+                         {{ form }}
+                        <input type="submit" name="submit_btn" id="id_submit_btn" class="btn btn-success"/>
+                    </form>
+                </div>
 
-                                <div class="ln_solid"></div>
-                                <table id="report_table" class="cell-border">
+            {% if timesheet_result %}
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
                                     <thead>
-                                    <!--<tr>-->
-                                      <!--<th class="no-sort">Contract Name</th>-->
-                                    <!--</tr>-->
+                                        <tr>
+                                            <th>Total Submitted Timesheet</th>
+                                            <th>Total Pending Timesheet</th>
+                                            <th>Total Approved Timesheet</th>
+                                            <th>Total Rejected Timesheet</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {% for contract in list_contracts %}
-                                      <!--<tr>-->
-                                        <!--<td>{{ contract.contract_name }}</td>-->
-                                      <!--</tr>-->
-                                    {% endfor %}
+                                        <tr>
+                                            <td>{{ timesheet_result.total_submitted_timesheet }}</td>
+                                            <td>{{ timesheet_result.total_pending_timesheet }}</td>
+                                            <td>{{ timesheet_result.total_approved_timesheet }}</td>
+                                            <td>{{ timesheet_result.total_rejected_timesheet }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
-
-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.panel-body -->
+            {% endif %}
+     </div>
 </div>
 {% endblock %}
+
 {% block static %}
 <script>
   $(document).ready(function(){
@@ -145,6 +166,10 @@
 }
 #id_submit_btn{
     margin-left: 10px;
+}
+.form-div{
+padding-top:15px;
+padding-bottom:15px;
 }
 </style>
 {% endblock %}
