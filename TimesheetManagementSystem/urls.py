@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 
-from .views import LoginView, LogoutView, ChangePasswordView
+from .views import LoginView, LogoutView, ChangePasswordView, CompanyView
 from rest_framework_swagger.views import get_swagger_view
 
 
@@ -28,11 +28,12 @@ schema_view = get_swagger_view(title='TMS APIs')
 urlpatterns = [
     path('login/', LoginView.as_view(), name="sys_login"),
     path('logout/', LogoutView.as_view(), name="sys_logout"),
+    path('', CompanyView.as_view(), name="company_choice"),
     path('change_password/', ChangePasswordView.as_view(), name="change_password"),
     path('schema/', schema_view),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('', include('django.contrib.auth.urls')),
+    path('auth/', include('django.contrib.auth.urls')),
     path('tracker/', include('tracker.urls')),
     path('tracker/api/', include('tracker.rest_api.urls')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

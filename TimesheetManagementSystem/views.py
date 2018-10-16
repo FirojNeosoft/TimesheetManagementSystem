@@ -13,6 +13,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 logger = logging.getLogger('tracker_log')
 
+
 class LoginView(View):
 
     def get(self, request):
@@ -27,14 +28,14 @@ class LoginView(View):
         else:
             logger.error('wrong credentials for user {}'.format(request.POST['username']))
             messages.error(request, 'Please check credentials.')
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponseRedirect('')
 
 
 class LogoutView(LoginRequiredMixin, View):
 
     def get(self, request):
         logout(request)
-        return render(request, 'login.html')
+        return HttpResponseRedirect(reverse('company_choice'))
 
 
 class ChangePasswordView(LoginRequiredMixin, View):
@@ -62,3 +63,12 @@ class ChangePasswordView(LoginRequiredMixin, View):
             logger.error('Failed to change password by user {}'.format(request.user.username))
             messages.error(request, 'Error occured while changing password, please enter a proper password.')
         return redirect('change_password')
+
+
+class CompanyView(View):
+
+    def get(self, request):
+        return render(request, 'company_selection.html')
+
+    def post(self, request):
+        return HttpResponseRedirect('http://'+request.POST['company_choice']+'.localhost:8000/login')

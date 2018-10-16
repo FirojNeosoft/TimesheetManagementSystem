@@ -8,8 +8,25 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 
 from tracker.models import *
+from tenants.models import *
 
 from io import BytesIO
+
+
+class GetTenants(View):
+    """
+       Get contracts as role wise
+    """
+
+    def get(self, request):
+        """
+        Get contracts as role wise
+        """
+        company_list=[]
+        companies = Company.objects.exclude(name='public')
+        for company in companies:
+            company_list.append({'name': company.name})
+        return JsonResponse({'company_list': company_list})
 
 
 class GetContracts(View):

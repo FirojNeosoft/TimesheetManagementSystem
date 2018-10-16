@@ -58,4 +58,6 @@ urlpatterns = [
 
     path('search/', ReportView.as_view(), name='report'),
     path('search/defaulters/', SearchDefaulterView.as_view(), name='get_defaulters'),
+
+    path('gettenants/', GetTenants.as_view(), name='get_tenants'),
 ]

@@ -25,12 +25,22 @@ SECRET_KEY = '33o3)02k$7)x6qja60p6uwnrqx2o$h@ya5o39id39m@r_rsxw('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '.localhost', '.tms.com']
 
 
 # Application definition
+SHARED_APPS = [
+    'tenant_schemas',
+    'tenants',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+               ]
 
-INSTALLED_APPS = [
+TENANT_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +54,24 @@ INSTALLED_APPS = [
     'tracker',
 ]
 
+INSTALLED_APPS = [
+    'tenant_schemas',
+    'tenants',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django_filters',
+    'rest_framework',
+    'rest_framework_swagger',
+    'tagulous',
+    'tracker',
+               ]
+
 MIDDLEWARE = [
+    'tenant_schemas.middleware.TenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,7 +107,7 @@ WSGI_APPLICATION = 'TimesheetManagementSystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'tenant_schemas.postgresql_backend',
         'NAME': 'tms',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
@@ -88,6 +115,9 @@ DATABASES = {
     }
 }
 
+DATABASE_ROUTERS = ("tenant_schemas.routers.TenantSyncRouter",)
+
+TENANT_MODEL = "tenants.Company"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

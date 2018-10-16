@@ -19,6 +19,9 @@ from tracker.models import *
 from tracker.forms import *
 from tracker.utils import *
 
+from django.db import connection
+from tenant_schemas.utils import (get_tenant_model, remove_www,get_public_schema_name)
+
 logger = logging.getLogger('tracker_log')
 
 
@@ -31,6 +34,11 @@ class DashboardView(LoginRequiredMixin, View):
           dashboard
         """
         form = DurationSearchForm()
+        # import pdb; pdb.set_trace()
+        # TenantModel = get_tenant_model()
+        # t = TenantModel.objects.get(name='triveni')
+        # request.tenant = t
+        # connection.set_tenant(request.tenant)
         data = { "employees_count" : Employee.objects.exclude(status='Delete').count(),
         "clients_count" : Client.objects.exclude(status='Delete').count(),
         "projects_count" : Project.objects.exclude(status='Delete').count(),
