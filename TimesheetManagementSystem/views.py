@@ -1,10 +1,10 @@
 import logging
 
-from django.contrib.auth.models import User
 from django.views import View
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -15,7 +15,9 @@ logger = logging.getLogger('tracker_log')
 
 
 class LoginView(View):
-
+    """
+    Login view
+    """
     def get(self, request):
         return render(request, 'login.html')
 
@@ -32,7 +34,9 @@ class LoginView(View):
 
 
 class LogoutView(LoginRequiredMixin, View):
-
+    """
+    Logout view
+    """
     def get(self, request):
         logout(request)
         return HttpResponseRedirect(reverse('company_choice'))
@@ -43,17 +47,10 @@ class ChangePasswordView(LoginRequiredMixin, View):
     Change Password
     """
     def get(self, request):
-        """
-          dashboard
-        """
         form = PasswordChangeForm(request.user)
         return render(request, 'change_password.html', {'form': form})
 
     def post(self, request):
-        """
-          change password
-        """
-
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
@@ -66,9 +63,14 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
 
 class CompanyView(View):
-
+    """
+    List companies or tenants
+    """
     def get(self, request):
         return render(request, 'company_selection.html')
 
     def post(self, request):
-        return HttpResponseRedirect('http://'+request.POST['company_choice']+'.localhost:8000/login')
+        if request.POST['company_choice'] == 'Select Company':
+            return render(request, 'company_selection.html')
+        else:
+            return HttpResponseRedirect('http://'+request.POST['company_choice']+'.localhost:8000/login')

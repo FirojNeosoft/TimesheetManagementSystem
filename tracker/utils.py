@@ -15,12 +15,12 @@ from io import BytesIO
 
 class GetTenants(View):
     """
-       Get contracts as role wise
+       Get tenants
     """
 
     def get(self, request):
         """
-        Get contracts as role wise
+        Get tenants
         """
         company_list=[]
         companies = Company.objects.exclude(name='public')
@@ -103,7 +103,7 @@ class Render:
 
 def get_defaulter(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
     """
-      get report of an employee
+      get defaulters
     """
     first_name, last_name = name.split(' ')
     emp = Employee.objects.get(first_name=first_name.capitalize(), last_name=last_name.capitalize())
