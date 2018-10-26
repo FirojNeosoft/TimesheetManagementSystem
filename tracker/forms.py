@@ -7,6 +7,15 @@ from django.forms.models import inlineformset_factory
 from tracker.models import *
 
 
+class EmployeeDocumentForm(ModelForm):
+    class Meta:
+        model = EmployeeDocument
+        exclude = ('created_at',)
+        widgets = {
+          'description': forms.Textarea(attrs={'rows': 2, 'cols': 8}),
+        }
+
+
 class TimesheetTaskForm(ModelForm):
     duration = forms.DurationField(required=False, widget = forms.TextInput(attrs={'size': 5, 'class': 'clock'}))
     class Meta:

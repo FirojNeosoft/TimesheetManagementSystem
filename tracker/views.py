@@ -493,7 +493,7 @@ class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'project_activities', 'document', 'status']
+    fields = ['name', 'description', 'owner', 'project_activities', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was created successfully"
     success_url = reverse_lazy('list_projects')
