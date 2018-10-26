@@ -469,6 +469,45 @@ class DeleteEmployeeView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('list_employees')
 
 
+class UploadEmployeeDocView(LoginRequiredMixin, View):
+    """
+    Document upload for an emp
+    """
+    def get(self, request):
+        form = EmployeeDocumentForm()
+        return render(request, 'upload_employee_docs.html', {'form': form})
+
+    def post(self, request):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        form = EmployeeDocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse('upload_emp_doc'))
+
+
+class DeleteEmployeeDocument(View):
+    """
+       Delete document of emp
+    """
+
+    def get(self, request, pk):
+        """
+        delete document
+        """
+        try:
+            emp_doc = EmployeeDocument.objects.get(id=int(pk))
+            doc_name = emp_doc.name
+            emp_doc.delete()
+            messages.info(request, doc_name+" document is deleted successfully.")
+        except Exception as e:
+            logger.error("{}, error occured while deleting document of employee.".format(e))
+            messages.error(request, "Error occured while deleting document of employee.")
+        return redirect('upload_emp_doc')
+
+
 class ListProjectsView(LoginRequiredMixin, ListView):
     """
     List Projects

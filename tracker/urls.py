@@ -12,6 +12,9 @@ urlpatterns = [
 
     path('employees/', ListEmployeesView.as_view(), name='list_employees'),
     path('employee/add/', CreateEmployeeView.as_view(), name='add_employee'),
+    path('employee/upload/', UploadEmployeeDocView.as_view(), name='upload_emp_doc'),
+    path('employee/getdocs/', GetEmployeeDocuments.as_view(), name='get_emp_docs'),
+    path('employee/delete_doc/<int:pk>/', DeleteEmployeeDocument.as_view(), name='delete_emp_doc'),
     path('employee/<int:pk>/edit/', UpdateEmployeeView.as_view(), name='update_employee'),
     path('employee/<int:pk>/delete/', DeleteEmployeeView.as_view(), name='delete_employee'),
 

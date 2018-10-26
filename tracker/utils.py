@@ -95,6 +95,27 @@ class GetProjectDocuments(View):
         return JsonResponse({'document_list': document_list})
 
 
+
+class GetEmployeeDocuments(View):
+    """
+       Get documents
+    """
+
+    def get(self, request):
+        """
+        Get documents
+        """
+        emp = Employee.objects.get(id=int(request.GET['emp_id']))
+        emp_docs = EmployeeDocument.objects.filter(employee=emp)
+        document_list = []
+        for doc in emp_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return JsonResponse({'document_list': document_list})
+
 def get_report_data(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
     """
       get report of an employee
