@@ -73,4 +73,4 @@ class CompanyView(View):
         if request.POST['company_choice'] == 'Select Company':
             return render(request, 'company_selection.html')
         else:
-            return HttpResponseRedirect('http://'+request.POST['company_choice']+'.localhost:8000/login')
+            return HttpResponseRedirect('http://'+request.POST['company_choice']+'.'+request.get_host()+'/login')

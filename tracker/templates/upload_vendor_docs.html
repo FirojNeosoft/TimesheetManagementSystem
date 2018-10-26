@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Upload Documents of Vendor</h3>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <section class="content">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <div class="">
+                            <div class="box-header">
+                              {% if messages %}
+                                <ul class="messages alert alert-danger">
+                                  {% for message in messages %}
+                                    {{ message }}
+                                  {% endfor %}
+                                </ul>
+                              {% endif %}
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                              <form id="client-form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data" method="post">
+                                  {% csrf_token %}
+                                  {{ form.as_p }}
+                                  <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                  <a href="{% url 'list_vendors' %}" class='btn btn-primary' >Cancel</a>
+                                  <button class="btn btn-primary" type="reset">Reset</button>
+                                  <input type="submit" class="btn btn-success"/>
+                                </div>
+                              </div>
+                              </form>
+                                <div class="ln_solid"></div>
+                              <div class="panel-body">
+                                  <h3>My Documents</h3>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped" id="docs">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Document</th>
+                                                        <th>Name</th>
+                                                        <th>Description</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.row -->
+                            </div>
+                            <!-- /.panel-body -->
+                            </div>
+                            <!-- /.box-body -->
+                          </div>
+                          <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block static %}
+<script>
+  $(document).ready(function(){
+   $("#id_vendor").addClass( "form-control" );
+   $("#id_name").addClass( "form-control" );
+   $("#id_description").addClass( "form-control" );
+    });
+    $("#id_vendor").change(function(){
+       if($( "#id_vendor option:selected" ).val()){
+           $.ajax({
+            url: "/tracker/vendor/getdocs/",
+            dataType: 'json',
+            type: 'GET',
+            data: {
+                  'vendor_id': $( "#id_vendor option:selected" ).val(),
+                  },
+            success: function(data) {
+                $('#docs > tbody').empty();
+                for (row in data['document_list']) {
+                    $('#docs > tbody').append('<tr><td><a href='+data['document_list'][row].doc+'><span class="glyphicon glyphicon-file"></span></a></td><td>'+data['document_list'][row].name+'</td><td>'+data['document_list'][row].description+'</td><td><a class="delete_doc" id='+data['document_list'][row].pk+' href="/tracker/vendor/delete_doc/'+data['document_list'][row].pk+'"><span class="glyphicon glyphicon-remove"></span></a></td></tr>');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+      }
+    });
+</script>
+{% endblock %}

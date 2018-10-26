@@ -15,6 +15,9 @@
                             {% if request.user.is_staff %}
                             <ul class="list-inline pull-right clearfix controls">
                                 <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'upload_project_doc' %}"> <i class="glyphicon glyphicon-upload"></i> Upload Doument</a>
+                                </li>
+                                <li>
                                     <a class="btn btn-primary download-excel" href="{% url 'add_project' %}"> <i class="fa fa-plus"></i> Create New Project</a>
                                 </li>
                             </ul>

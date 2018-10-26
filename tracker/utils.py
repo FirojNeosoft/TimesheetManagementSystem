@@ -53,6 +53,48 @@ class GetContracts(View):
         return JsonResponse({'contract_list': contract_list})
 
 
+class GetVendorDocuments(View):
+    """
+       Get documents
+    """
+
+    def get(self, request):
+        """
+        Get documents
+        """
+        vendor = Vendor.objects.get(id=int(request.GET['vendor_id']))
+        vendor_docs = VendorDocument.objects.filter(vendor=vendor)
+        document_list = []
+        for doc in vendor_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return JsonResponse({'document_list': document_list})
+
+
+class GetProjectDocuments(View):
+    """
+       Get documents
+    """
+
+    def get(self, request):
+        """
+        Get documents
+        """
+        project = Project.objects.get(id=int(request.GET['project_id']))
+        project_docs = ProjectDocument.objects.filter(project=project)
+        document_list = []
+        for doc in project_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return JsonResponse({'document_list': document_list})
+
+
 def get_report_data(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
     """
       get report of an employee

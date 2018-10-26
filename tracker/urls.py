@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from tracker.views import *
 from tracker.utils import *
@@ -25,6 +27,9 @@ urlpatterns = [
 
     path('projects/', ListProjectsView.as_view(), name='list_projects'),
     path('project/add/', CreateProjectView.as_view(), name='add_project'),
+    path('project/upload/', UploadProjectDocView.as_view(), name='upload_project_doc'),
+    path('project/getdocs/', GetProjectDocuments.as_view(), name='get_project_docs'),
+    path('project/delete_doc/<int:pk>/', DeleteProjectDocument.as_view(), name='delete_project_doc'),
     path('project/<int:pk>/edit/', UpdateProjectView.as_view(), name='update_project'),
     path('project/<int:pk>/delete/', DeleteProjectView.as_view(), name='delete_project'),
 
@@ -48,6 +53,9 @@ urlpatterns = [
 
     path('vendors/', ListVendorsView.as_view(), name='list_vendors'),
     path('vendor/add/', CreateVendorView.as_view(), name='add_vendor'),
+    path('vendor/upload/', UploadVendorDocView.as_view(), name='upload_vendor_doc'),
+    path('vendor/getdocs/', GetVendorDocuments.as_view(), name='get_vendor_docs'),
+    path('vendor/delete_doc/<int:pk>/', DeleteVendorDocument.as_view(), name='delete_vendor_doc'),
     path('vendor/<int:pk>/edit/', UpdateVendorView.as_view(), name='update_vendor'),
     path('vendor/<int:pk>/delete/', DeleteVendorView.as_view(), name='delete_vendor'),
 
@@ -60,4 +68,4 @@ urlpatterns = [
     path('search/defaulters/', SearchDefaulterView.as_view(), name='get_defaulters'),
 
     path('gettenants/', GetTenants.as_view(), name='get_tenants'),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

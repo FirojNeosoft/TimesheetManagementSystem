@@ -165,6 +165,7 @@ STATIC_URL = '/static/'
 # MEDIA files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 

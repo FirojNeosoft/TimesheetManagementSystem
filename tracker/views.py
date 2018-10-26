@@ -528,7 +528,7 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     Update existing project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'project_activities', 'document', 'status']
+    fields = ['name', 'description', 'owner', 'project_activities', 'status']
     template_name = 'project_form.html'
     success_message = "%(name)s was updated successfully"
     success_url = reverse_lazy('list_projects')
@@ -556,6 +556,7 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
                 logger.error(members.errors)
                 messages.error(self.request, members.errors)
                 return redirect('update_project', self.object.id)
+
         return super(UpdateProjectView, self).form_valid(form)
 
 
@@ -566,6 +567,45 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
     model = Project
     template_name = 'project_confirm_delete.html'
     success_url = reverse_lazy('list_projects')
+
+
+class UploadProjectDocView(LoginRequiredMixin, View):
+    """
+    Document upload for a project
+    """
+    def get(self, request):
+        form = ProjectDocumentForm()
+        return render(request, 'upload_project_docs.html', {'form': form})
+
+    def post(self, request):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        form = ProjectDocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse('upload_project_doc'))
+
+
+class DeleteProjectDocument(View):
+    """
+       Delete document of project
+    """
+
+    def get(self, request, pk):
+        """
+        delete document
+        """
+        try:
+            project_doc = ProjectDocument.objects.get(id=int(pk))
+            doc_name = project_doc.name
+            project_doc.delete()
+            messages.info(request, doc_name+" document is deleted successfully.")
+        except Exception as e:
+            logger.error("{}, error occured while deleting document of project.".format(e))
+            messages.error(request, "Error occured while deleting document of project.")
+        return redirect('upload_project_doc')
 
 
 class ListContractsView(LoginRequiredMixin, ListView):
@@ -815,7 +855,7 @@ class CreateVendorView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new vendor
     """
     model = Vendor
-    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'document', 'status']
+    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'status']
     template_name = 'vendor_form.html'
     success_message = "%(organization_name)s was created successfully"
     success_url = reverse_lazy('list_vendors')
@@ -855,7 +895,7 @@ class UpdateVendorView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing vendor
     """
     model = Vendor
-    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'document', 'status']
+    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'status']
     template_name = 'edit_vendor_form.html'
     success_message = "%(organization_name)s was updated successfully"
     success_url = reverse_lazy('list_vendors')
@@ -866,11 +906,7 @@ class UpdateVendorView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         POST variables and then check if it's valid.
         """
         obj = Vendor.objects.get(id=pk)
-        if obj.document:
-            file_url = request.build_absolute_uri('/')[:-1]+obj.document.url
-        else:
-            file_url=''
-        return render(request, 'edit_vendor_form.html', {'obj': obj, 'file_url':file_url})
+        return render(request, 'edit_vendor_form.html', {'obj': obj})
 
     def post(self, request, pk):
         """
@@ -921,6 +957,45 @@ class DeleteVendorView(LoginRequiredMixin, DeleteView):
     model = Vendor
     template_name = 'vendor_confirm_delete.html'
     success_url = reverse_lazy('list_vendors')
+
+
+class UploadVendorDocView(LoginRequiredMixin, View):
+    """
+    Document upload for a vendor
+    """
+    def get(self, request):
+        form = VendorDocumentForm()
+        return render(request, 'upload_vendor_docs.html', {'form': form})
+
+    def post(self, request):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        form = VendorDocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse('upload_vendor_doc'))
+
+
+class DeleteVendorDocument(View):
+    """
+       Delete document of vendor
+    """
+
+    def get(self, request, pk):
+        """
+        delete document
+        """
+        try:
+            vendor_doc = VendorDocument.objects.get(id=int(pk))
+            doc_name = vendor_doc.name
+            vendor_doc.delete()
+            messages.info(request, doc_name+" document is deleted successfully.")
+        except Exception as e:
+            logger.error("{}, error occured while deleting document of vendor.".format(e))
+            messages.error(request, "Error occured while deleting document of vendor.")
+        return redirect('upload_vendor_doc')
 
 
 class ListReferralsView(LoginRequiredMixin, ListView):

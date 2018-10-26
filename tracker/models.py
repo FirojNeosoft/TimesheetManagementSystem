@@ -144,6 +144,21 @@ class Employee(models.Model):
         self.save()
 
 
+class EmployeeDocument(models.Model):
+    """
+    Documents of emp
+    """
+    employee = models.ForeignKey('Employee', related_name='emp_doc', blank=False, null=False, on_delete=models.CASCADE)
+    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=True, blank=True)
+    name = models.CharField('Document Name', max_length=128, blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    is_private = models.BooleanField('Is Private', default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '%s(%s)' % (self.name, self.employee.full_name)
+
+
 class Client(models.Model):
     """
     Client model
@@ -203,7 +218,6 @@ class Project(models.Model):
     owner = models.ForeignKey('Client', related_name='project', blank=False, null=True, on_delete=models.CASCADE)
     project_members = models.ManyToManyField('Employee', related_name='project', blank=False, through='ProjectMembership')
     project_activities = models.ManyToManyField('ProjectActivity', related_name='project', blank=True)
-    document = models.FileField('Document', upload_to='upload_docs/project/', null=True, blank=True)
     status = models.CharField(max_length=12, choices=settings.PROJECT_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -235,6 +249,20 @@ class ProjectMembership(models.Model):
     def __str__(self):
         return '%s- %s' % (self.project.name, self.employee.full_name)
 
+
+class ProjectDocument(models.Model):
+    """
+    Documents of project
+    """
+    project = models.ForeignKey('Project', related_name='project_doc', blank=False, null=False, on_delete=models.CASCADE)
+    document = models.FileField('Document', upload_to='upload_docs/project/', null=True, blank=True)
+    name = models.CharField('Document Name', max_length=128, blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    is_private = models.BooleanField('Is Private', default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '%s(%s)' % (self.name, self.project.name)
 
 class Contract(models.Model):
     """
@@ -411,7 +439,6 @@ class Vendor(models.Model):
                                   unique=True, blank=False, null=False)
     email = models.EmailField('Email', blank=False, null=False, unique=True)
     remark = models.TextField(null=True, blank=True)
-    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -428,6 +455,22 @@ class Vendor(models.Model):
         """
         self.status = 'Delete'
         self.save()
+
+
+class VendorDocument(models.Model):
+    """
+    Documents of vendor
+    """
+    vendor = models.ForeignKey('Vendor', related_name='vendor_document', blank=False, null=False, on_delete=models.CASCADE)
+    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=True, blank=True)
+    name = models.CharField('Document Name', max_length=128, blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    is_private = models.BooleanField('Is Private', default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '%s(%s)' % (self.name, self.vendor.organization_name)
+
 
 
 class Referral(models.Model):
