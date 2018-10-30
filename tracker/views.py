@@ -1228,3 +1228,51 @@ class SearchDefaulterView(LoginRequiredMixin, View):
             logger.error("{}, error occured while searching defaulters.".format(e))
             messages.error(request, "Error occured while searching defaulters.")
             return redirect('get_defaulters')
+
+
+class InboxMessagesView(LoginRequiredMixin, View):
+    """
+    List messages
+    """
+    def get(self, request):
+        if self.request.user.is_staff:
+            queryset = Message.objects.all()
+        else:
+            queryset = Message.objects.filter(receiver=self.request.user)
+        return render(request, 'message_inbox.html', {'messages': queryset})
+
+
+class CreateMessageView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    Create new message
+    """
+    model = Message
+    fields = ['receiver', 'note']
+    template_name = 'message_form.html'
+    success_message = "Message was created successfully"
+    success_url = reverse_lazy('inbox_messages')
+
+    def form_valid(self, form):
+        form.instance.sender = self.request.user
+        return super(CreateMessageView, self).form_valid(form)
+
+
+class UpdateMessageView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    Update existing message
+    """
+    model = Message
+    fields = ['receiver', 'note']
+    template_name = 'message_form.html'
+    success_message = "Message was updated successfully"
+    success_url = reverse_lazy('inbox_messages')
+
+
+class DeleteMessageView(LoginRequiredMixin, DeleteView):
+    """
+    Delete existing message
+    """
+    model = Message
+    template_name = 'message_confirm_delete.html'
+    success_url = reverse_lazy('inbox_messages')
+

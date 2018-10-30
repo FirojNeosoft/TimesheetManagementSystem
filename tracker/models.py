@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 
 from datetime import datetime, date
 
+
 class Address(models.Model):
     """
     Address model
@@ -472,7 +473,6 @@ class VendorDocument(models.Model):
         return '%s(%s)' % (self.name, self.vendor.organization_name)
 
 
-
 class Referral(models.Model):
     """
     Referral model
@@ -509,6 +509,22 @@ class Referral(models.Model):
         """
         self.status = 'Delete'
         self.save()
+
+
+class Message(models.Model):
+    """
+    Message model
+    """
+    sender = models.ForeignKey(User, related_name='message_sender', blank=False, null=False, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='message_receiver', blank=False, null=False, on_delete=models.CASCADE)
+    note = models.TextField(null=False, blank=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Message"
+
+    # def __str__(self):
+    #     return self.note
 
 
 @receiver(post_save, sender=Contract)

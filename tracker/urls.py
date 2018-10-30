@@ -71,4 +71,9 @@ urlpatterns = [
     path('search/defaulters/', SearchDefaulterView.as_view(), name='get_defaulters'),
 
     path('gettenants/', GetTenants.as_view(), name='get_tenants'),
+
+    path('messages/', InboxMessagesView.as_view(), name='inbox_messages'),
+    path('message/add/', CreateMessageView.as_view(), name='create_message'),
+    path('message/<int:pk>/edit/', UpdateMessageView.as_view(), name='update_message'),
+    path('message/<int:pk>/delete/', DeleteMessageView.as_view(), name='delete_message'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
