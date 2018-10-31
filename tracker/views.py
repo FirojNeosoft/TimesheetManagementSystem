@@ -269,7 +269,7 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
               'skype_id', 'is_manager', 'department', 'designation', 'skills', 'employment_type','current_pay_rate_type',\
-              'current_pay_rate', 'passport_no','current_visa_status', 'document', 'status']
+              'current_pay_rate', 'passport_no','current_visa_status', 'status']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_employees')
@@ -344,7 +344,7 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
               'skype_id', 'is_manager', 'department', 'designation', 'skills', 'employment_type','current_pay_rate_type',\
-              'current_pay_rate', 'passport_no','current_visa_status', 'document', 'status']
+              'current_pay_rate', 'passport_no','current_visa_status', 'status']
     template_name = 'edit_employee_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_employees')
@@ -355,11 +355,7 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         POST variables and then check if it's valid.
         """
         obj = Employee.objects.get(id=pk)
-        if obj.document:
-            file_url = request.build_absolute_uri('/')[:-1]+obj.document.url
-        else:
-            file_url=''
-        return render(request, 'edit_employee_form.html', {'obj': obj, 'file_url':file_url})
+        return render(request, 'edit_employee_form.html', {'obj': obj})
 
     def post(self, request, pk):
         """

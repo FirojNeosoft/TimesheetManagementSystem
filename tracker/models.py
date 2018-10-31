@@ -150,7 +150,7 @@ class EmployeeDocument(models.Model):
     Documents of emp
     """
     employee = models.ForeignKey('Employee', related_name='emp_doc', blank=False, null=False, on_delete=models.CASCADE)
-    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=True, blank=True)
+    document = models.FileField('Document', upload_to='upload_docs/employee/', null=True, blank=True)
     name = models.CharField('Document Name', max_length=128, blank=True, null=True)
     description = models.TextField(null=True, blank=True)
     is_private = models.BooleanField('Is Private', default=True)
