@@ -118,7 +118,6 @@ class Employee(models.Model):
                                              on_delete=models.SET_NULL)
     tax_info = models.OneToOneField('TaxInfo', related_name='employee', blank=False, null=True,\
                                     on_delete=models.SET_NULL)
-    document = models.FileField('Document', upload_to='upload_docs/employee/', null=True, blank=True)
     is_manager = models.BooleanField('Is Manager', default=False)
     user = models.OneToOneField(User, related_name='employee', blank=False, null=True,\
                                     on_delete=models.SET_NULL)

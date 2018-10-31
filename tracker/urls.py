@@ -17,6 +17,7 @@ urlpatterns = [
     path('employee/delete_doc/<int:pk>/', DeleteEmployeeDocument.as_view(), name='delete_emp_doc'),
     path('employee/<int:pk>/edit/', UpdateEmployeeView.as_view(), name='update_employee'),
     path('employee/<int:pk>/delete/', DeleteEmployeeView.as_view(), name='delete_employee'),
+    path('employees/download/', export_emps_xls, name='download_emps'),
 
     path('clients/', ListClientsView.as_view(), name='list_clients'),
     path('client/add/', CreateClientView.as_view(), name='add_client'),
