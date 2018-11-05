@@ -95,7 +95,6 @@ class GetProjectDocuments(View):
         return JsonResponse({'document_list': document_list})
 
 
-
 class GetEmployeeDocuments(View):
     """
        Get documents
@@ -115,6 +114,7 @@ class GetEmployeeDocuments(View):
                                      'name': doc.name,
                                       'description': doc.description})
         return JsonResponse({'document_list': document_list})
+
 
 def get_report_data(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
     """
@@ -159,7 +159,9 @@ class Render:
         response = BytesIO()
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response)
         if not pdf.err:
-            return HttpResponse(response.getvalue(), content_type='application/pdf')
+            response = HttpResponse(response.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+            return response
         else:
             return HttpResponse("Error Rendering PDF", status=400)
 
