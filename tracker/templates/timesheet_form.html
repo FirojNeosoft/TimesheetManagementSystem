@@ -30,8 +30,24 @@
                             <div class="box-body">
                                 <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
-                                     {{ form.as_p }}
-                                    <h4>Tasks</h4>
+                                     <!--{{ form.as_p }}-->
+                               {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                              {% endfor %}
+
+                                {% for field in form.visible_fields %}
+                                 <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                    {{ field.label_tag }}
+                                      {{ field.errors }}
+                                      {{ field }}
+                                      {{ field.help_text }}
+                                  </div>
+                                {% endfor %}
+                                 </div>
+
+                                    <label>Tasks</label>
                                     <div class="table-responsive">
                                         <table class="table">
                                             {{ tasks.management_form }}
@@ -109,8 +125,7 @@
    $("#id_status").addClass( "form-control" );
     if ($("#is_manager").val() == 'false')
        {
-       $("#id_status").hide();
-       $("label[for='id_status']").hide();
+       $("#id_status").prop('disabled', true);
        }
            $.ajax({
             url: "/tracker/getcontracts/",

@@ -30,8 +30,24 @@
                             <div class="box-body">
                                 <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
-                                     {{ form.as_p }}
-                                <div class="ln_solid"></div>
+                                     <!--{{ form.as_p }}-->
+                              {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                              {% endfor %}
+
+                                {% for field in form.visible_fields %}
+                                 <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                    {{ field.label_tag }}
+                                      {{ field.errors }}
+                                      {{ field }}
+                                      {{ field.help_text }}
+                                  </div>
+                                {% endfor %}
+                                 </div>
+
+                                <!--<div class="ln_solid"></div>-->
                               {% if request.user.is_staff %}
                               <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -67,6 +83,8 @@
    $('#id_due_date').datepicker({'dateFormat': 'yy-mm-dd'});
    $("#id_activity").addClass( "form-control" );
    $("#id_note").addClass( "form-control" );
+   $("#id_note").attr( "cols", 40 );
+   $("#id_note").attr( "rows", 1 );
    $("#id_status").addClass( "form-control" );
    $("label[for='id_emp']").html("Assign To");
          if ($("#is_manager").val() == 'false')

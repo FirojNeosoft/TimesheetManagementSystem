@@ -528,7 +528,7 @@ class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'project_activities', 'status']
+    fields = ['name', 'owner', 'description', 'status', 'project_activities']
     template_name = 'project_form.html'
     success_message = "%(name)s was created successfully"
     success_url = reverse_lazy('list_projects')
@@ -563,7 +563,7 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     Update existing project
     """
     model = Project
-    fields = ['name', 'description', 'owner', 'project_activities', 'status']
+    fields = ['name', 'owner', 'description', 'status', 'project_activities']
     template_name = 'project_form.html'
     success_message = "%(name)s was updated successfully"
     success_url = reverse_lazy('list_projects')
@@ -670,7 +670,7 @@ class CreateContractView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Contract
     fields = ['representative', 'client', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-              'pay_rate', 'billing_cycle', 'referral', 'remark', 'document', 'status']
+              'pay_rate', 'billing_cycle', 'document', 'remark', 'referral', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was created successfully"
     success_url = reverse_lazy('list_contracts')
@@ -682,7 +682,7 @@ class UpdateContractView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """
     model = Contract
     fields = ['representative', 'client', 'employee', 'role', 'start_date', 'end_date', 'duration_per_day', 'pay_rate_type',\
-              'pay_rate', 'billing_cycle', 'referral', 'remark', 'document', 'status']
+              'pay_rate', 'billing_cycle', 'document', 'remark', 'referral', 'status']
     template_name = 'contract_form.html'
     success_message = "contract was updated successfully"
     success_url = reverse_lazy('list_contracts')
@@ -723,7 +723,7 @@ class CreateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new assignment
     """
     model = Assignment
-    fields = ['activity', 'note', 'due_date', 'emp', 'document', 'status']
+    fields = ['activity', 'note', 'document', 'emp', 'due_date', 'status']
     template_name = 'assignment_form.html'
     success_message = "Assignment was created successfully"
     success_url = reverse_lazy('list_assignments')
@@ -738,7 +738,7 @@ class UpdateAssignmentView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing assignment
     """
     model = Assignment
-    fields = ['activity', 'note', 'due_date', 'emp', 'document', 'status']
+    fields = ['activity', 'note', 'document', 'emp', 'due_date', 'status']
     template_name = 'assignment_form.html'
     success_message = "Assignment was updated successfully"
     success_url = reverse_lazy('list_assignments')
@@ -782,7 +782,7 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new timesheet
     """
     model = Timesheet
-    fields = ['contract', 'sign_in', 'sign_out', 'document', 'remark', 'status']
+    fields = ['contract', 'remark', 'sign_in', 'sign_out', 'document', 'status']
     template_name = 'timesheet_form.html'
     success_message = "timesheet was created successfully"
     success_url = reverse_lazy('list_timesheets')
@@ -815,7 +815,7 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing timesheet
     """
     model = Timesheet
-    fields = ['contract', 'sign_in', 'sign_out', 'document', 'remark', 'status']
+    fields = ['contract', 'remark', 'sign_in', 'sign_out', 'document', 'status']
     template_name = 'timesheet_form.html'
     success_message = "timesheet was updated successfully"
     success_url = reverse_lazy('list_timesheets')
@@ -1047,7 +1047,7 @@ class CreateReferralView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new referral
     """
     model = Referral
-    fields = ['first_name', 'last_name', 'mobile', 'email', 'document', 'emp', 'status']
+    fields = ['first_name', 'last_name', 'mobile', 'email', 'document', 'emp']
     template_name = 'referral_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_referrals')
@@ -1087,7 +1087,7 @@ class UpdateReferralView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing referral
     """
     model = Referral
-    fields = ['first_name', 'last_name', 'mobile', 'email', 'document', 'emp', 'status']
+    fields = ['first_name', 'last_name', 'mobile', 'email', 'document', 'emp']
     template_name = 'edit_referral_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_referrals')

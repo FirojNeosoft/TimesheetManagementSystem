@@ -30,8 +30,25 @@
                             <div class="box-body">
                                 <form method="post" enctype="multipart/form-data">
                                    {% csrf_token %}
-                                     {{ form.as_p }}
-                                    <h4>Members</h4>
+                                     <!--{{ form.as_p }}-->
+                                                                  {{ form.non_field_errors }}
+
+                              {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                              {% endfor %}
+
+                                {% for field in form.visible_fields %}
+                                 <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                    {{ field.label_tag }}
+                                      {{ field.errors }}
+                                      {{ field }}
+                                      {{ field.help_text }}
+                                  </div>
+                                {% endfor %}
+                                 </div>
+                                    <label>Members</label>
                                     <div class="table-responsive">
                                         <table class="table">
                                             {{ members.management_form }}
