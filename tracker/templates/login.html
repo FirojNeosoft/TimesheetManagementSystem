@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" >
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style type="text/css">
@@ -121,7 +122,13 @@
             <a href="{% url 'password_reset' %}" class="forgot-link">Forgot Password?</a>
         </div>
         <input type="submit" class="btn btn-primary btn-block btn-lg" value="Login">
+        <b>-------------------OR--------------------</b>
     </form>
+
+            <div class="form-group">
+            <a class="btn btn-info" style="background:red; color:white;" href="{% url 'social:begin' 'google-oauth2' %}"><i class="fab fa-google"></i> Login With Google</a>
+            <a class="btn btn-info" style="background:blue; color:white;"  href="{% url 'social:begin' 'twitter' %}" class="forgot-link"><i class="fab fa-twitter"></i> Login With Twitter</a>
+        </div>
     <!--<div class="text-center small">Don't have an account? <a href="#">Sign up</a></div>-->
 </div>
 </body>

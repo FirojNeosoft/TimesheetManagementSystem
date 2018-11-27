@@ -25,8 +25,8 @@ SECRET_KEY = '33o3)02k$7)x6qja60p6uwnrqx2o$h@ya5o39id39m@r_rsxw('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '.localhost', '.tms.com']
-
+ALLOWED_HOSTS = ['localhost', '.localhost', 'tms.com', '.tms.com']
+# ALLOWED_HOSTS =['*']
 
 # Application definition
 SHARED_APPS = [
@@ -38,6 +38,7 @@ SHARED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django'
                ]
 
 TENANT_APPS = [
@@ -52,6 +53,7 @@ TENANT_APPS = [
     'rest_framework_swagger',
     'tagulous',
     'tracker',
+    'social_django'
 ]
 
 INSTALLED_APPS = [
@@ -68,6 +70,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'tagulous',
     'tracker',
+    'social_django'
                ]
 
 MIDDLEWARE = [
@@ -80,6 +83,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.open_id.OpenIdAuth',  # for Google authentication
+    'social_core.backends.google.GoogleOpenId',  # for Google authentication
+    'social_core.backends.google.GoogleOAuth2',  # for Google authentication
+    'social_core.backends.facebook.FacebookOAuth2', # for Facebook authentication
+    'social_core.backends.twitter.TwitterOAuth',  # for Twitter authentication
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 ROOT_URLCONF = 'TimesheetManagementSystem.urls'
 
@@ -94,6 +107,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
@@ -138,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_URL = 'sys_login'
-LOGIN_REDIRECT_URL = 'sys_login'
+LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_URL = 'sys_logout'
 
 # Internationalization
@@ -249,7 +264,7 @@ LOGGING = {
 # SESSION AGE 60 Minutes
 # SESSION_COOKIE_AGE = 60*60
 
-#Email Server
+# Email Server
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
@@ -257,3 +272,10 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 
 DEFAULTER_NOTIFICATION_DAY_COUNT = 4
+
+# Social-Auth
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+
+SOCIAL_AUTH_TWITTER_KEY = ''
+SOCIAL_AUTH_TWITTER_SECRET = ''
