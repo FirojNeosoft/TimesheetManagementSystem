@@ -25,7 +25,7 @@ SECRET_KEY = '33o3)02k$7)x6qja60p6uwnrqx2o$h@ya5o39id39m@r_rsxw('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '.localhost', 'tms.com', '.tms.com']
+ALLOWED_HOSTS = ['localhost', '.localhost', 'hrms.webdemos.co', '.hrms.webdemos.co']
 # ALLOWED_HOSTS =['*']
 
 # Application definition
@@ -82,6 +82,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
 
