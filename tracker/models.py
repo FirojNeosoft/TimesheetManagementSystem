@@ -544,7 +544,7 @@ def formatting_employee_name(sender, instance, *args, **kwargs):
 def add_user(sender, instance, created, **kwargs):
     if created:
         random_pwd = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(8)])
-        user = User.objects.create(username=instance.email, email=instance.email,\
+        user = User.objects.create(username=instance.email, email=instance.email, first_name= instance.first_name,\
                                    is_staff=instance.is_manager)
         user.set_password(random_pwd)
         user.save()
@@ -561,6 +561,7 @@ def add_user(sender, instance, created, **kwargs):
     else:
         instance.user.username = instance.email
         instance.user.email = instance.email
+        instance.first_name = instance.first_name,
         instance.user.is_staff = instance.is_manager
         instance.user.save()
         send_mail(
