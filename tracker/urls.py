@@ -77,4 +77,9 @@ urlpatterns = [
     path('message/add/', CreateMessageView.as_view(), name='create_message'),
     path('message/<int:pk>/edit/', UpdateMessageView.as_view(), name='update_message'),
     path('message/<int:pk>/delete/', DeleteMessageView.as_view(), name='delete_message'),
+
+   path('tasks/', ListTasksView.as_view(), name='list_tasks'),
+   path('task/add/', CreateTaskView.as_view(), name='add_task'),
+   path('task/<int:pk>/edit/', UpdateTaskView.as_view(), name='update_task'),
+   path('task/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

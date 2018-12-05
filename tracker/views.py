@@ -269,7 +269,7 @@ class CreateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
               'skype_id', 'is_manager', 'department', 'designation', 'skills', 'employment_type','current_pay_rate_type',\
-              'current_pay_rate', 'passport_no','current_visa_status', 'status']
+              'current_pay_rate', 'passport_no','current_visa_status', 'status', 'note']
     template_name = 'employee_form.html'
     success_message = "%(first_name)s was created successfully"
     success_url = reverse_lazy('list_employees')
@@ -344,7 +344,7 @@ class UpdateEmployeeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Employee
     fields = ['first_name', 'last_name', 'employee_id', 'birth_date', 'gender', 'joined_date', 'mobile', 'email',\
               'skype_id', 'is_manager', 'department', 'designation', 'skills', 'employment_type','current_pay_rate_type',\
-              'current_pay_rate', 'passport_no','current_visa_status', 'status']
+              'current_pay_rate', 'passport_no','current_visa_status', 'status', 'note']
     template_name = 'edit_employee_form.html'
     success_message = "%(first_name)s was updated successfully"
     success_url = reverse_lazy('list_employees')
@@ -528,7 +528,7 @@ class CreateProjectView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new project
     """
     model = Project
-    fields = ['name', 'owner', 'description', 'status', 'project_activities']
+    fields = ['name', 'owner', 'description', 'status', 'note', 'project_activities']
     template_name = 'project_form.html'
     success_message = "%(name)s was created successfully"
     success_url = reverse_lazy('list_projects')
@@ -563,7 +563,7 @@ class UpdateProjectView(LoginRequiredMixin,SuccessMessageMixin, UpdateView):
     Update existing project
     """
     model = Project
-    fields = ['name', 'owner', 'description', 'status', 'project_activities']
+    fields = ['name', 'owner', 'description', 'status', 'note', 'project_activities']
     template_name = 'project_form.html'
     success_message = "%(name)s was updated successfully"
     success_url = reverse_lazy('list_projects')
@@ -890,7 +890,7 @@ class CreateVendorView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new vendor
     """
     model = Vendor
-    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'status']
+    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'note', 'status']
     template_name = 'vendor_form.html'
     success_message = "%(organization_name)s was created successfully"
     success_url = reverse_lazy('list_vendors')
@@ -930,7 +930,7 @@ class UpdateVendorView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing vendor
     """
     model = Vendor
-    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'remark', 'status']
+    fields = ['organization_name', 'contact_person_name', 'designation', 'mobile', 'email', 'note', 'status']
     template_name = 'edit_vendor_form.html'
     success_message = "%(organization_name)s was updated successfully"
     success_url = reverse_lazy('list_vendors')
@@ -1271,4 +1271,60 @@ class DeleteMessageView(LoginRequiredMixin, DeleteView):
     model = Message
     template_name = 'message_confirm_delete.html'
     success_url = reverse_lazy('inbox_messages')
+
+
+class ListTasksView(LoginRequiredMixin, ListView):
+    """
+    List Tasks
+    """
+    model = Task
+    queryset = Task.objects.exclude(status='Delete')
+    template_name = 'tasks_list.html'
+
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        """
+        if self.request.user.is_superuser:
+            queryset = Task.objects.exclude(status='Delete')
+        elif not self.request.user.is_superuser and self.request.user.is_staff:
+            queryset = Task.objects.filter(created_by=self.request.user)
+        else:
+            queryset = Task.objects.filter(emps__id__in=[self.request.user.employee.id])
+        return queryset
+
+
+class CreateTaskView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    Create new task
+    """
+    model = Task
+    fields = ['task_name', 'due_date', 'description', 'emps', 'status']
+    template_name = 'task_form.html'
+    success_message = "Task was created successfully"
+    success_url = reverse_lazy('list_tasks')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(CreateTaskView, self).form_valid(form)
+
+
+class UpdateTaskView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    Update existing task
+    """
+    model = Task
+    fields = ['task_name', 'due_date', 'description', 'emps', 'status']
+    template_name = 'task_form.html'
+    success_message = "Task was updated successfully"
+    success_url = reverse_lazy('list_tasks')
+
+
+class DeleteTaskView(LoginRequiredMixin, DeleteView):
+    """
+    Delete existing task
+    """
+    model = Task
+    template_name = 'task_confirm_delete.html'
+    success_url = reverse_lazy('list_tasks')
 

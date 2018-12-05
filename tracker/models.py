@@ -121,6 +121,7 @@ class Employee(models.Model):
     is_manager = models.BooleanField('Is Manager', default=False)
     user = models.OneToOneField(User, related_name='employee', blank=False, null=True,\
                                     on_delete=models.SET_NULL)
+    note = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.EMPLOYEE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -218,6 +219,7 @@ class Project(models.Model):
     owner = models.ForeignKey('Client', related_name='project', blank=False, null=True, on_delete=models.CASCADE)
     project_members = models.ManyToManyField('Employee', related_name='project', blank=False, through='ProjectMembership')
     project_activities = models.ManyToManyField('ProjectActivity', related_name='project', blank=True)
+    note = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=12, choices=settings.PROJECT_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -263,6 +265,7 @@ class ProjectDocument(models.Model):
 
     def __str__(self):
         return '%s(%s)' % (self.name, self.project.name)
+
 
 class Contract(models.Model):
     """
@@ -355,6 +358,7 @@ class Assignment(models.Model):
     """
     Assignment model
     """
+    # emp = models.ManyToManyField('Employee', related_name='assignment_to', blank=True)
     emp = models.ForeignKey('Employee', related_name='assignment_to', blank=True, null=True, on_delete=models.SET_NULL)
     due_date = models.DateField('Due Date', blank=True, null=True)
     activity = models.ForeignKey('ProjectActivity', related_name='assignment', blank=False, null=False, on_delete=models.CASCADE)
@@ -438,7 +442,7 @@ class Vendor(models.Model):
                                   '+999999999'. Up to 15 digits allowed.")], max_length=15,\
                                   unique=True, blank=False, null=False)
     email = models.EmailField('Email', blank=False, null=False, unique=True)
-    remark = models.TextField(null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -510,6 +514,32 @@ class Referral(models.Model):
         self.save()
 
 
+class Task(models.Model):
+    """
+    Task model
+    """
+    task_name = models.CharField('Task Name', max_length=128, blank=False, null=False)
+    description = models.TextField(null=False, blank=False)
+    due_date = models.DateField('Due Date', blank=True, null=True)
+    emps = models.ManyToManyField('Employee', related_name='task_to', blank=True)
+    status = models.CharField(max_length=15, choices=settings.PROJECT_STATUS, default='In progress')
+    created_by = models.ForeignKey(User, related_name='task_from', blank=False, null=False, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Task"
+
+    def __str__(self):
+        return self.task_name
+
+    def delete(self):
+        """
+        Delete task
+        """
+        self.status = 'Delete'
+        self.save()
+
+
 class Message(models.Model):
     """
     Message model
@@ -536,8 +566,8 @@ def add_referral_points(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Employee)
 def formatting_employee_name(sender, instance, *args, **kwargs):
-    instance.first_name = instance.first_name.capitalize()
-    instance.last_name = instance.last_name.capitalize()
+    instance.first_name = ''.join(instance.first_name).capitalize()
+    instance.last_name = ''.join(instance.last_name).capitalize()
 
 
 @receiver(post_save, sender=Employee)

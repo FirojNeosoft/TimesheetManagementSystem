@@ -120,6 +120,9 @@
    $("#id_project_members").addClass( "form-control" );
    $("#id_project_activities").addClass( "form-control" );
    $("#id_status").addClass( "form-control" );
+   $("#id_note").addClass( "form-control" );
+   $("#id_note").attr( "cols", 40 );
+   $("#id_note").attr( "rows", 2 );
    $('select[name="project_activities"]').bootstrapDualListbox();
 
       if ($("#is_manager").val() == 'false')
@@ -150,6 +153,9 @@
    a[class="delete-row"]{
     color: red;
     font-size: 125%
+}
+.form-group .btn {
+    margin-bottom: 0px;
 }
 </style>
 {% endblock %}

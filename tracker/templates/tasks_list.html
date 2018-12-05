@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+       <div class="page-title">
+            <div class="title_left">
+                <h3>Tasks</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="">
+                            {% if request.user.is_staff %}
+                            <ul class="list-inline pull-right controls">
+                                <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_task' %}"> <i class="fa fa-plus"></i> Create New Task</a>
+                                </li>
+                            </ul>
+                            {% endif %}
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="box-header" >
+                          {% if messages %}
+                            <ul class="messages">
+                              {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissable">
+                                  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                {{ message }}
+                                </div>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </div>
+                        <div class="x_content">
+                            <br />
+                            <div class="table-responsive">
+                                <table id="tasks_table" class="cell-border hover row-border order-column">
+                                    <thead>
+                                    <tr>
+                                      <th>Assigned By</th>
+                                      <th>Task Name</th>
+                                      <th>Due Date</th>
+                                      <th>Status</th>
+                                      <th class="no-sort">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for task in task_list %}
+                                      <tr>
+                                        <td>{{ task.created_by }}</td>
+                                        <td>{{ task.task_name }}</td>
+                                        <td>{{ task.due_date }}</td>
+                                        <td>{{ task.status }}</td>
+                                        <td>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_task' task.id %}"></a>
+                                          {% if request.user.is_staff %}
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_task' task.id %}" obj_name='' style="padding-left:50px;"></a>
+                                          {% endif %}
+                                        </td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#tasks_table').DataTable();
+  });
+</script>
+{% endblock %}
