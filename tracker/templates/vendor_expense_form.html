@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Add Expense</h3>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <section class="content">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <div class="">
+                            <div class="box-header">
+                              {% if messages %}
+                                <ul class="messages alert alert-danger">
+                                  {% for message in messages %}
+                                    {{ message }}
+                                  {% endfor %}
+                                </ul>
+                              {% endif %}
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <form method="post" enctype="multipart/form-data">
+                                   {% csrf_token %}
+                                     <!--{{ form.as_p }}-->
+                                    {{ form.non_field_errors }}
+
+                              {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                              {% endfor %}
+
+                                {% for field in form.visible_fields %}
+                                 <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                    {{ field.label_tag }}
+                                      {{ field.errors }}
+                                      {{ field }}
+                                      {{ field.help_text }}
+                                  </div>
+                                {% endfor %}
+                                 </div>
+                              <input type="hidden" name="vendor" value="{{ vendor_id }}" />
+                              {% if request.user.is_staff %}
+                              <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                  <a href="{% url 'list_vendor_expenses' vendor_id %}" class='btn btn-primary' >Cancel</a>
+                                  <button class="btn btn-primary" type="reset">Reset</button>
+                                  <input type="submit" class="btn btn-success"/>
+                                </div>
+                              </div>
+                              {% endif %}
+                                </form>
+                            </div>
+                            <!-- /.box-body -->
+                          </div>
+                          <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+   $("#id_vendor").addClass( "form-control" );
+   $("#id_vendor").prop('disabled', true);
+   $("#id_expense_date").addClass( "form-control" );
+   $('#id_expense_date').datepicker({'dateFormat': 'yy-mm-dd'});
+   $("#id_expense_type").addClass( "form-control" );
+   $("#id_amount").addClass( "form-control" );
+   $("#id_note").addClass( "form-control" );
+   $("#id_note").attr( "cols", 160 );
+   $("#id_note").attr( "rows", 1 );
+   });
+</script>
+{% endblock %}

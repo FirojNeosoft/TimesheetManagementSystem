@@ -1328,3 +1328,125 @@ class DeleteTaskView(LoginRequiredMixin, DeleteView):
     template_name = 'task_confirm_delete.html'
     success_url = reverse_lazy('list_tasks')
 
+
+class ListEmpExpensesView(LoginRequiredMixin, View):
+    """
+    List expenses of an employee
+    """
+    def get(self, request, emp_id):
+        emp = Employee.objects.get(id=emp_id)
+        employee_expenses = EmployeeExpense.objects.filter(employee=emp).exclude(status='Delete')
+        return render(request, 'emp_expense_list.html', {'employee_expenses': employee_expenses, "emp": emp})
+
+
+class CreateEmpExpenseView(LoginRequiredMixin, SuccessMessageMixin, View):
+    """
+    Add new expense of an employee
+    """
+    def get(self, request, emp_id):
+        form = EmployeeExpenseForm(initial = {"employee": emp_id})
+        return render(request, 'emp_expense_form.html', {'form': form, 'emp_id': emp_id})
+
+    def post(self, request, emp_id):
+        form = EmployeeExpenseForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'emp_expense_form.html', {'form': form, 'emp_id': emp_id, 'messages':form.errors})
+        return HttpResponseRedirect(reverse('list_emp_expenses',  kwargs={'emp_id':emp_id}))
+
+
+class UpdateEmpExpenseView(LoginRequiredMixin,SuccessMessageMixin, View):
+    """
+    Update existing expense record
+    """
+    def get(self, request, emp_id, expense_id):
+        obj = EmployeeExpense.objects.get(id=expense_id)
+        form = EmployeeExpenseForm(instance=obj)
+        return render(request, 'emp_expense_form.html', {'form': form, 'emp_id': emp_id})
+
+    def post(self, request, emp_id, expense_id):
+        obj = EmployeeExpense.objects.get(id=expense_id)
+        form = EmployeeExpenseForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'emp_expense_form.html', {'form': form, 'emp_id': emp_id, 'messages':form.errors})
+        return HttpResponseRedirect(reverse('list_emp_expenses',  kwargs={'emp_id':emp_id}))
+
+
+class DeleteEmpExpenseView(LoginRequiredMixin, View):
+    """
+    Delete existing expense record
+    """
+    def get(self, request, emp_id, expense_id):
+        obj = EmployeeExpense.objects.get(id=expense_id)
+        return render(request, 'emp_expense_confirm_delete.html', {'emp_id': emp_id,'obj': obj})
+
+    def post(self, request, emp_id, expense_id):
+        obj = EmployeeExpense.objects.get(id=expense_id)
+        obj.status = 'Delete'
+        obj.save()
+        return HttpResponseRedirect(reverse('list_emp_expenses',  kwargs={'emp_id':emp_id}))
+
+
+class ListVendorExpensesView(LoginRequiredMixin, View):
+    """
+    List expenses of a vendor
+    """
+    def get(self, request, vendor_id):
+        vendor = Vendor.objects.get(id=vendor_id)
+        vendor_expenses = VendorExpense.objects.filter(vendor=vendor).exclude(status='Delete')
+        return render(request, 'vendor_expense_list.html', {'vendor_expenses': vendor_expenses, "vendor": vendor})
+
+
+class CreateVendorExpenseView(LoginRequiredMixin, SuccessMessageMixin, View):
+    """
+    Add new expense of a vendor
+    """
+    def get(self, request, vendor_id):
+        form = VendorExpenseForm(initial = {"vendor": vendor_id})
+        return render(request, 'vendor_expense_form.html', {'form': form, 'vendor_id': vendor_id})
+
+    def post(self, request, vendor_id):
+        form = VendorExpenseForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'vendor_expense_form.html', {'form': form, 'vendor_id': vendor_id, 'messages':form.errors})
+        return HttpResponseRedirect(reverse('list_vendor_expenses',  kwargs={'vendor_id':vendor_id}))
+
+
+class UpdateVendorExpenseView(LoginRequiredMixin,SuccessMessageMixin, View):
+    """
+    Update existing expense record
+    """
+    def get(self, request, vendor_id, expense_id):
+        obj = VendorExpense.objects.get(id=expense_id)
+        form = VendorExpenseForm(instance=obj)
+        return render(request, 'vendor_expense_form.html', {'form': form, 'vendor_id': vendor_id})
+
+    def post(self, request, vendor_id, expense_id):
+        obj = VendorExpense.objects.get(id=expense_id)
+        form = VendorExpenseForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'vendor_expense_form.html', {'form': form, 'vendor_id': vendor_id, 'messages':form.errors})
+        return HttpResponseRedirect(reverse('list_vendor_expenses',  kwargs={'vendor_id':vendor_id}))
+
+
+class DeleteVendorExpenseView(LoginRequiredMixin, View):
+    """
+    Delete existing expense record
+    """
+    def get(self, request, vendor_id, expense_id):
+        obj = VendorExpense.objects.get(id=expense_id)
+        return render(request, 'vendor_expense_confirm_delete.html', {'vendor_id': vendor_id,'obj': obj})
+
+    def post(self, request, vendor_id, expense_id):
+        obj = VendorExpense.objects.get(id=expense_id)
+        obj.status = 'Delete'
+        obj.save()
+        return HttpResponseRedirect(reverse('list_vendor_expenses',  kwargs={'vendor_id':vendor_id}))
+

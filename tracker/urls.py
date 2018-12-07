@@ -19,6 +19,11 @@ urlpatterns = [
     path('employee/<int:pk>/delete/', DeleteEmployeeView.as_view(), name='delete_employee'),
     path('employees/download/', export_emps_xls, name='download_emps'),
 
+    path('employee/<int:emp_id>/expenses/', ListEmpExpensesView.as_view(), name='list_emp_expenses'),
+    path('employee/<int:emp_id>/expense/add/', CreateEmpExpenseView.as_view(), name='add_emp_expense'),
+    path('employee/<int:emp_id>/expense/<int:expense_id>/edit/', UpdateEmpExpenseView.as_view(), name='update_emp_expense'),
+    path('employee/<int:emp_id>/expense/<int:expense_id>/delete/', DeleteEmpExpenseView.as_view(), name='delete_emp_expense'),
+
     path('clients/', ListClientsView.as_view(), name='list_clients'),
     path('client/add/', CreateClientView.as_view(), name='add_client'),
     path('client/<int:pk>/edit/', UpdateClientView.as_view(), name='update_client'),
@@ -62,6 +67,13 @@ urlpatterns = [
     path('vendor/delete_doc/<int:pk>/', DeleteVendorDocument.as_view(), name='delete_vendor_doc'),
     path('vendor/<int:pk>/edit/', UpdateVendorView.as_view(), name='update_vendor'),
     path('vendor/<int:pk>/delete/', DeleteVendorView.as_view(), name='delete_vendor'),
+
+    path('vendor/<int:vendor_id>/expenses/', ListVendorExpensesView.as_view(), name='list_vendor_expenses'),
+    path('vendor/<int:vendor_id>/expense/add/', CreateVendorExpenseView.as_view(), name='add_vendor_expense'),
+    path('vendor/<int:vendor_id>/expense/<int:expense_id>/edit/', UpdateVendorExpenseView.as_view(),
+       name='update_vendor_expense'),
+    path('vendor/<int:vendor_id>/expense/<int:expense_id>/delete/', DeleteVendorExpenseView.as_view(),
+       name='delete_vendor_expense'),
 
     path('referrals/', ListReferralsView.as_view(), name='list_referrals'),
     path('referral/add/', CreateReferralView.as_view(), name='add_referral'),

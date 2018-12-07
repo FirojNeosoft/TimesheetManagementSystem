@@ -36,6 +36,19 @@ class Address(models.Model):
         self.save()
 
 
+class ExpenseType(models.Model):
+    """
+    Type of an expense
+    """
+    name = models.CharField('Type Name', max_length=128, blank=False, null=False)
+    code = models.CharField('Type Code', max_length=64, blank=True, null=True)
+    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '%s(%s)' % (self.name, self.code)
+
+
 class EmergencyContact(models.Model):
     """
     EmergencyContact model
@@ -158,6 +171,27 @@ class EmployeeDocument(models.Model):
 
     def __str__(self):
         return '%s(%s)' % (self.name, self.employee.full_name)
+
+
+class EmployeeExpense(models.Model):
+    """
+    Expense of an employee
+    """
+    employee = models.ForeignKey('Employee', related_name='emp_expense', blank=False, null=False, on_delete=models.CASCADE)
+    expense_date =  models.DateField('Expense Date', blank=False, null=False)
+    expense_type = models.ForeignKey('ExpenseType', related_name='emp_expense_type', blank=False, null=False,\
+                                     on_delete=models.CASCADE)
+    amount = models.DecimalField('Expense Amount', max_digits=10, decimal_places=2, blank=False, null=False, default=0)
+    note = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def delete(self):
+        """
+        Delete expense
+        """
+        self.status = 'Delete'
+        self.save()
 
 
 class Client(models.Model):
@@ -474,6 +508,27 @@ class VendorDocument(models.Model):
 
     def __str__(self):
         return '%s(%s)' % (self.name, self.vendor.organization_name)
+
+
+class VendorExpense(models.Model):
+    """
+    Expense of a vendor
+    """
+    vendor = models.ForeignKey('Vendor', related_name='vendor_expense', blank=False, null=False, on_delete=models.CASCADE)
+    expense_date =  models.DateField('Expense Date', blank=False, null=False)
+    expense_type = models.ForeignKey('ExpenseType', related_name='vendor_expense_type', blank=False, null=False,\
+                                     on_delete=models.CASCADE)
+    amount = models.DecimalField('Expense Amount', max_digits=10, decimal_places=2, blank=False, null=False, default=0)
+    note = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def delete(self):
+        """
+        Delete expense
+        """
+        self.status = 'Delete'
+        self.save()
 
 
 class Referral(models.Model):

@@ -18,5 +18,9 @@ class TimesheetAdmin(admin.ModelAdmin):
     # change_form_template = 'timesheet_form.html'
 
 
+class ExpenseTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'status')
+
 admin.site.register(ProjectActivity, ProjectActivityAdmin)
 admin.site.register(Timesheet, TimesheetAdmin)
+admin.site.register(ExpenseType, ExpenseTypeAdmin)

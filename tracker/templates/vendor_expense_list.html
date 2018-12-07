@@ -5,22 +5,21 @@
 {% block body %}
        <div class="page-title">
             <div class="title_left">
-                <h3>Employees</h3>
+                <h3>Expenses for {{vendor}}</h3>
             </div>
-           <a href="{% url 'download_emps' %}" class="list-inline pull-right btn btn-success downloadControl"><i class="fa fa-download"></i></a>
+           <a href="{% url 'list_vendors' %}" class="list-inline btn btn-success"><i class="fa fa-arrow-alt-left "></i>Back To Vendors</a>
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
-                        <div class="">
+                        <div class="x_title">
+                            {% if request.user.is_staff %}
                             <ul class="list-inline pull-right clearfix controls">
                                 <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'upload_emp_doc' %}"> <i class="glyphicon glyphicon-upload"></i> Upload Doument</a>
-                                </li>
-                                <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'add_employee' %}"> <i class="fa fa-plus"></i> Create New Employee</a>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_vendor_expense' vendor.id %}"> <i class="fa fa-plus"></i>Add New Expense</a>
                                 </li>
                             </ul>
+                            {% endif %}
                             <div class="clearfix"></div>
                         </div>
                         <div class="box-header" >
@@ -38,31 +37,26 @@
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="emps_table" class="cell-border hover row-border order-column">
+                                <table id="vendor_expenses_table" class="cell-border hover row-border order-column">
                                     <thead>
                                     <tr>
-                                      <th>Name</th>
-                                      <th>Email</th>
-                                      <th>Mobile</th>
-                                      <th>Skype Id</th>
-                                      <th>Located At</th>
-                                      <th>Status</th>
+                                      <th>Date</th>
+                                      <th>Expense Type</th>
+                                      <th>Amount</th>
+                                      <th>Note</th>
                                       <th class="no-sort">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for employee in employee_list %}
+                                    {% for expense in vendor_expenses %}
                                       <tr>
-                                        <td>{{ employee.full_name }}</td>
-                                        <td>{{ employee.email }}</td>
-                                        <td>{{ employee.mobile }}</td>
-                                        <td>{{ employee.skype_id }}</td>
-                                        <td>{{ employee.address.city_or_village }}, {{ employee.address.state }}, {{ employee.address.country }}</td>
-                                        <td>{{ employee.status }}</td>
+                                        <td>{{ expense.expense_date }}</td>
+                                        <td>{{ expense.expense_type }}</td>
+                                        <td>{{ expense.amount }}</td>
+                                        <td>{{ expense.note }}</td>
                                         <td>
-                                          <a class="fa fa-pencil-square-o" href="{% url 'update_employee' employee.id %}"></a>
-                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_employee' employee.id %}" obj_name='' style="padding-left:50px;"></a>
-                                          <a class="fa fa-calculator" href="{% url 'list_emp_expenses' employee.id %}" style="padding-left:50px;"></a>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_vendor_expense' vendor.id expense.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_vendor_expense' vendor.id expense.id %}" obj_name='' style="padding-left:50px;"></a>
                                         </td>
                                       </tr>
                                     {% endfor %}
@@ -79,7 +73,7 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-  $('#emps_table').DataTable();
+  $('#vendor_expenses_table').DataTable();
   });
 </script>
 {% endblock %}

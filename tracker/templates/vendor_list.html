@@ -62,7 +62,8 @@
                                         <td>{{ vendor.status }}</td>
                                         <td>
                                           <a class="fa fa-pencil-square-o" href="{% url 'update_vendor' vendor.id %}"></a>
-                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_vendor' vendor.id %}" obj_name='' style="padding-left:50px;"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_vendor' vendor.id %}" obj_name='' style="padding-left:8px;"></a>
+                                          <a class="fa fa-calculator" href="{% url 'list_vendor_expenses' vendor.id %}" style="padding-left:4px;"></a>
                                         </td>
                                       </tr>
                                     {% endfor %}

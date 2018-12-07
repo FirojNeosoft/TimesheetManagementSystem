@@ -15,6 +15,16 @@ class EmployeeDocumentForm(ModelForm):
           'description': forms.Textarea(attrs={'rows': 2, 'cols': 8}),
         }
 
+class EmployeeExpenseForm(ModelForm):
+    class Meta:
+        model = EmployeeExpense
+        exclude = ('created_at', 'status',)
+
+
+class VendorExpenseForm(ModelForm):
+    class Meta:
+        model = VendorExpense
+        exclude = ('created_at', 'status',)
 
 class TimesheetTaskForm(ModelForm):
     duration = forms.DurationField(required=False, widget = forms.TextInput(attrs={'size': 5, 'class': 'clock'}))
