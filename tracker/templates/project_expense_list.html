@@ -5,8 +5,9 @@
 {% block body %}
        <div class="page-title">
             <div class="title_left">
-                <h3>Projects</h3>
+                <h3>Expenses for {{project}}</h3>
             </div>
+           <a href="{% url 'list_projects' %}" class="list-inline btn btn-success"><i class="fa fa-arrow-alt-left "></i>Back To Projects</a>
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -15,10 +16,7 @@
                             {% if request.user.is_staff %}
                             <ul class="list-inline pull-right clearfix controls">
                                 <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'upload_project_doc' %}"> <i class="glyphicon glyphicon-upload"></i> Upload Doument</a>
-                                </li>
-                                <li>
-                                    <a class="btn btn-primary download-excel" href="{% url 'add_project' %}"> <i class="fa fa-plus"></i> Create New Project</a>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_project_expense' project.id %}"> <i class="fa fa-plus"></i>Add New Expense</a>
                                 </li>
                             </ul>
                             {% endif %}
@@ -39,29 +37,27 @@
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
-                                <table id="projects_table" class="cell-border hover row-border order-column">
+                                <table id="project_expenses_table" class="cell-border hover row-border order-column">
                                     <thead>
                                     <tr>
-                                      <th>Name</th>
-                                      <th>Owner</th>
-                                      <th>Status</th>
+                                      <th>Date</th>
+                                      <th>Expense Type</th>
+                                      <th>Amount</th>
+                                      <th>Note</th>
                                       <th class="no-sort">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for project in project_list %}
+                                    {% for expense in project_expenses %}
                                       <tr>
-                                        <td>{{ project.name }}</td>
-                                        <td>{{ project.owner }}</td>
-                                        <td>{{ project.status }}</td>
+                                        <td>{{ expense.expense_date }}</td>
+                                        <td>{{ expense.expense_type }}</td>
+                                        <td>{{ expense.amount }}</td>
+                                        <td>{{ expense.note }}</td>
                                         <td>
-                                          <a class="fa fa-pencil-square-o" href="{% url 'update_project' project.id %}"></a>
-                                            {% if request.user.is_staff %}
-                                              <a class="fa fa-times client_delete_icon" href="{% url 'delete_project' project.id %}" obj_name='' style="padding-left:50px;"></a>
-                                              <a class="fa fa-calculator" href="{% url 'list_project_expenses' project.id %}" style="padding-left:34px;"></a>
-                                            {% endif %}
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_project_expense' project.id expense.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_project_expense' project.id expense.id %}" obj_name='' style="padding-left:50px;"></a>
                                         </td>
-
                                       </tr>
                                     {% endfor %}
                                     </tbody>
@@ -77,7 +73,7 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-  $('#projects_table').DataTable();
+  $('#project_expenses_table').DataTable();
   });
 </script>
 {% endblock %}

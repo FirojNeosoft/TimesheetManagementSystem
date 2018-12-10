@@ -42,6 +42,13 @@ urlpatterns = [
     path('project/<int:pk>/edit/', UpdateProjectView.as_view(), name='update_project'),
     path('project/<int:pk>/delete/', DeleteProjectView.as_view(), name='delete_project'),
 
+    path('project/<int:project_id>/expenses/', ListProjectExpensesView.as_view(), name='list_project_expenses'),
+    path('project/<int:project_id>/expense/add/', CreateProjectExpenseView.as_view(), name='add_project_expense'),
+    path('project/<int:project_id>/expense/<int:expense_id>/edit/', UpdateProjectExpenseView.as_view(),
+         name='update_project_expense'),
+    path('project/<int:project_id>/expense/<int:expense_id>/delete/', DeleteProjectExpenseView.as_view(),
+           name='delete_project_expense'),
+
     path('getcontracts/', GetContracts.as_view(), name='get_contracts'),
     path('contracts/', ListContractsView.as_view(), name='list_contracts'),
     path('contract/add/', CreateContractView.as_view(), name='add_contract'),
@@ -90,8 +97,8 @@ urlpatterns = [
     path('message/<int:pk>/edit/', UpdateMessageView.as_view(), name='update_message'),
     path('message/<int:pk>/delete/', DeleteMessageView.as_view(), name='delete_message'),
 
-   path('tasks/', ListTasksView.as_view(), name='list_tasks'),
-   path('task/add/', CreateTaskView.as_view(), name='add_task'),
-   path('task/<int:pk>/edit/', UpdateTaskView.as_view(), name='update_task'),
-   path('task/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
+    path('tasks/', ListTasksView.as_view(), name='list_tasks'),
+    path('task/add/', CreateTaskView.as_view(), name='add_task'),
+    path('task/<int:pk>/edit/', UpdateTaskView.as_view(), name='update_task'),
+    path('task/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

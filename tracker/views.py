@@ -1450,3 +1450,64 @@ class DeleteVendorExpenseView(LoginRequiredMixin, View):
         obj.save()
         return HttpResponseRedirect(reverse('list_vendor_expenses',  kwargs={'vendor_id':vendor_id}))
 
+
+class ListProjectExpensesView(LoginRequiredMixin, View):
+    """
+    List expenses of a project
+    """
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+        project_expenses = ProjectExpense.objects.filter(project=project).exclude(status='Delete')
+        return render(request, 'project_expense_list.html', {'project_expenses': project_expenses, "project": project})
+
+
+class CreateProjectExpenseView(LoginRequiredMixin, SuccessMessageMixin, View):
+    """
+    Add new expense of a project
+    """
+    def get(self, request, project_id):
+        form = ProjectExpenseForm(initial = {"project": project_id})
+        return render(request, 'project_expense_form.html', {'form': form, 'project_id': project_id})
+
+    def post(self, request, project_id):
+        form = ProjectExpenseForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'project_expense_form.html', {'form': form, 'project_id': project_id, 'messages':form.errors})
+        return HttpResponseRedirect(reverse('list_project_expenses',  kwargs={'project_id':project_id}))
+
+
+class UpdateProjectExpenseView(LoginRequiredMixin,SuccessMessageMixin, View):
+    """
+    Update existing expense record
+    """
+    def get(self, request, project_id, expense_id):
+        obj = ProjectExpense.objects.get(id=expense_id)
+        form = ProjectExpenseForm(instance=obj)
+        return render(request, 'project_expense_form.html', {'form': form, 'project_id': project_id})
+
+    def post(self, request, project_id, expense_id):
+        obj = ProjectExpense.objects.get(id=expense_id)
+        form = ProjectExpenseForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'project_expense_form.html', {'form': form, 'project_id': project_id, 'messages':form.errors})
+        return HttpResponseRedirect(reverse('list_project_expenses',  kwargs={'project_id':project_id}))
+
+
+class DeleteProjectExpenseView(LoginRequiredMixin, View):
+    """
+    Delete existing expense record
+    """
+    def get(self, request, project_id, expense_id):
+        obj = ProjectExpense.objects.get(id=expense_id)
+        return render(request, 'project_expense_confirm_delete.html', {'project_id': project_id,'obj': obj})
+
+    def post(self, request, project_id, expense_id):
+        obj = ProjectExpense.objects.get(id=expense_id)
+        obj.status = 'Delete'
+        obj.save()
+        return HttpResponseRedirect(reverse('list_project_expenses',  kwargs={'project_id':project_id}))
+

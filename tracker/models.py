@@ -301,6 +301,27 @@ class ProjectDocument(models.Model):
         return '%s(%s)' % (self.name, self.project.name)
 
 
+class ProjectExpense(models.Model):
+    """
+    Expense of a project
+    """
+    project = models.ForeignKey('Project', related_name='project_expense', blank=False, null=False, on_delete=models.CASCADE)
+    expense_date =  models.DateField('Expense Date', blank=False, null=False)
+    expense_type = models.ForeignKey('ExpenseType', related_name='project_expense_type', blank=False, null=False,\
+                                     on_delete=models.CASCADE)
+    amount = models.DecimalField('Expense Amount', max_digits=10, decimal_places=2, blank=False, null=False, default=0)
+    note = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def delete(self):
+        """
+        Delete expense
+        """
+        self.status = 'Delete'
+        self.save()
+
+
 class Contract(models.Model):
     """
     Contract model

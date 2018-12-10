@@ -21,6 +21,12 @@ class EmployeeExpenseForm(ModelForm):
         exclude = ('created_at', 'status',)
 
 
+class ProjectExpenseForm(ModelForm):
+    class Meta:
+        model = ProjectExpense
+        exclude = ('created_at', 'status',)
+
+
 class VendorExpenseForm(ModelForm):
     class Meta:
         model = VendorExpense
