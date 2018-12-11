@@ -88,6 +88,7 @@ urlpatterns = [
     path('referral/<int:pk>/delete/', DeleteReferralView.as_view(), name='delete_referral'),
 
     path('search/', ReportView.as_view(), name='report'),
+    path('search_expense/', ExpenseReportView.as_view(), name='expense_report'),
     path('search/defaulters/', SearchDefaulterView.as_view(), name='get_defaulters'),
 
     path('gettenants/', GetTenants.as_view(), name='get_tenants'),

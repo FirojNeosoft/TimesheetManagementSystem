@@ -1191,6 +1191,33 @@ class ReportView(LoginRequiredMixin, View):
             return redirect('report')
 
 
+class ExpenseReportView(LoginRequiredMixin, View):
+    """
+    Expense Report
+    """
+    def get(self, request):
+        form = SearchForm()
+        emps = Employee.objects.exclude(status='Delete').order_by('first_name')
+        return render(request, 'search_expense_report.html', {'form': form, 'emps':emps})
+
+    def post(self, request):
+        try:
+            form = SearchForm(request.POST)
+            emps = Employee.objects.exclude(status='Delete').order_by('first_name')
+
+            if form.is_valid():
+                result = get_expense_report(form.cleaned_data['resource_name'], form.cleaned_data['from_date'],\
+                                                 form.cleaned_data['to_date'])
+
+                return render(request, 'search_expense_report.html', {'form':form, 'emps':emps, 'result': result})
+            else:
+                return render(request, 'search_expense_report.html', {'form': form, 'emps':emps, 'messages': form.errors})
+        except Exception as e:
+            logger.error("{}, error occured while searching expense report.".format(e))
+            messages.error(request, "Error occured while searching expense report.")
+            return redirect('expense_report')
+
+
 class SearchDefaulterView(LoginRequiredMixin, View):
     """
     Get defaulters

@@ -216,3 +216,16 @@ def export_emps_xls(request):
 
     wb.save(response)
     return response
+
+def get_expense_report(name, from_date=datetime.today().date(), to_date=datetime.today().date()):
+    """
+      get report of an employee
+    """
+    first_name, last_name = name.split(' ')
+    emp = Employee.objects.get(first_name=first_name.capitalize(), last_name=last_name.capitalize())
+    expenses = list(EmployeeExpense.objects.filter(employee=emp, expense_date__range=[from_date, to_date]).exclude(status='Delete').\
+                                                                    values('expense_type__name').annotate(Sum('amount')))
+    total_expense = EmployeeExpense.objects.filter(employee=emp, expense_date__range=[from_date, to_date]).exclude(status='Delete'). \
+                                                                                                       aggregate(Sum('amount'))
+    result = {"expenses": expenses, "total_expense": total_expense['amount__sum'] }
+    return result

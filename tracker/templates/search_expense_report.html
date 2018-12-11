@@ -5,7 +5,7 @@
 {% block body %}
 <div class="page-title">
     <div class="title_left">
-        <h3>Cost Estimation Report</h3>
+        <h3>Expense Report</h3>
     </div>
     <div class="clearfix"></div>
     <div class="row">
@@ -37,30 +37,24 @@
                                 <table id="report_table" class="cell-border hover row-border order-column">
                                     <thead>
                                     <tr>
-                                      <th class="no-sort">Contract Name</th>
-                                      <th class="no-sort">Project Name</th>
-                                      <th class="no-sort">Resource Cost $/hour</th>
-                                      <th class="no-sort">Planed Project Duration (hour)</th>
-                                      <th class="no-sort">Actual Duration (hour)</th>
-                                      <th class="no-sort">Total Plan Cost($)</th>
-                                      <th class="no-sort">Actual Total Cost($) </th>
+                                      <th class="no-sort">Expense Type</th>
+                                      <th class="no-sort">Amount</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for contract in list_contracts %}
+                                    {% for expense in result.expenses %}
                                       <tr>
-                                        <td>{{ contract.contract_name }}</td>
-                                        <td>{{ contract.project_name }}</td>
-                                        <td>{{ contract.resource_cost }}</td>
-                                        <td>{{ contract.planned_resource_duration }}</td>
-                                        <td>{{ contract.actual_resource_duration }}</td>
-                                        <td>{{ contract.planned_total_cost }}</td>
-                                        <td>{{ contract.actual_total_cost }}</td>
+                                        <td>{{ expense.expense_type__name }}</td>
+                                        <td>{{ expense.amount__sum }}</td>
                                       </tr>
                                     {% endfor %}
+                                    <tr>
+                                      <th class="no-sort">Total Expense</th>
+                                      <th class="no-sort">{{ result.total_expense }}</th>
+                                    </tr>
                                     </tbody>
                                 </table>
-                                {% if list_contracts %}
+                                {% if expenses %}
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-5">
                                   <button class="btn btn-primary" type="submit" name="export_btn">Export Report</button>
                                 </div>

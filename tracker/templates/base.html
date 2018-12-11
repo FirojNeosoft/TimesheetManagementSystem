@@ -90,7 +90,11 @@
                         </ul>
                     </li>
                   {% if request.user.is_staff %}
-                     <li><a href="{% url 'report' %}"><i class="fa fa-search"></i> Search Report</a>
+                     <li><a><i class="fa fa-search"></i><span class="fa fa-chevron-down"></span>Search Report</a>
+                            <ul class="nav child_menu">
+                                <li><a href="{% url 'report' %}">Cost Estimation Report</a></li>
+                                <li><a href="{% url 'expense_report' %}">Expense Report</a></li>
+                            </ul>
                      <!--<li><a href="{% url 'get_defaulters' %}"><i class="fa fa-book"></i> Search Defaulters</a>-->
                   {% endif %}
                   <li><a href="{% url 'inbox_messages' %}"><i class="fa fa-envelope"></i>Inbox Messages</a>
