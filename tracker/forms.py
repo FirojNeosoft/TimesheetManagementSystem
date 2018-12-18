@@ -99,3 +99,30 @@ class SearchForm(forms.Form):
 class DurationSearchForm(forms.Form):
     from_date = forms.DateField(initial=datetime.today().date(), widget=forms.widgets.DateInput(format="%m/%d/%Y"))
     to_date = forms.DateField(initial=datetime.today().date(), widget=forms.widgets.DateInput(format="%m/%d/%Y"))
+
+
+class InvoiceItemForm(ModelForm):
+    class Meta:
+        model = InvoiceItem
+        exclude = ('created_at',)
+        widgets = {
+          'description': forms.Textarea(attrs={'rows': 1, 'cols': 8}),
+          'pay_rate': forms.TextInput(attrs={'class': 'pay_rate'}),
+          'quantity': forms.TextInput(attrs={'class': 'quantity'}),
+          'amount': forms.TextInput(attrs={'class': 'amount'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        pay_rate = cleaned_data.get("pay_rate")
+        quantity = cleaned_data.get("quantity")
+        amount = cleaned_data.get("amount")
+        if pay_rate and quantity:
+            return cleaned_data
+        elif not amount:
+            self.add_error('amount', 'Required either amount or rate and quatity.')
+        else:
+            return cleaned_data
+
+
+InvoiceItemFormSet = inlineformset_factory(Invoice, InvoiceItem, form=InvoiceItemForm, extra=1)

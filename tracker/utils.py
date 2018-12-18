@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.generic import View
 from django.http import HttpResponse
 from django.template.loader import get_template
+from django.core.mail import EmailMessage
 
 from tracker.models import *
 from tenants.models import *
@@ -164,6 +165,30 @@ class Render:
             return response
         else:
             return HttpResponse("Error Rendering PDF", status=400)
+
+
+    @staticmethod
+    def send_invoice(path: str, params: dict, client_mail_id: str, extra_file: str):
+        template = get_template(path)
+        html = template.render(params)
+        response = BytesIO()
+        file = open("invoice.pdf", "wb")
+        pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), file)
+        file.close()
+        if not pdf.err:
+            draft_email = EmailMessage(
+                "Triveni: Invoice",
+                "Hi,\nYour invoice is attached. Please remit payment at your earliest convenience.\nThank you.",
+                settings.EMAIL_HOST_USER,
+                [client_mail_id],
+            )
+            draft_email.attach_file("invoice.pdf")
+            if extra_file:
+                draft_email.attach_file(settings.MEDIA_ROOT+'/triveni.localhost/'+extra_file)
+            draft_email.send()
+            return True
+        else:
+            return False
 
 
 def get_defaulter(name, from_date=datetime.today().date(), to_date=datetime.today().date()):

@@ -98,6 +98,9 @@
                      <!--<li><a href="{% url 'get_defaulters' %}"><i class="fa fa-book"></i> Search Defaulters</a>-->
                   {% endif %}
                   <li><a href="{% url 'inbox_messages' %}"><i class="fa fa-envelope"></i>Inbox Messages</a>
+                  {% if request.user.is_staff %}
+                  <li><a href="{% url 'list_invoices' %}"><i class="fa fa-file"></i>Invoices</a></li>
+                  {% endif %}
                 </ul>
               </div>
             </div>

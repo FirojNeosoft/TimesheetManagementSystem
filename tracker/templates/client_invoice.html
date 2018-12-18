@@ -1,0 +1,49 @@
+{% load static %}
+<html>
+  <head>
+    <style>
+       td,th {
+         text-align: center;
+       }
+       .cell-border{
+         border: 1px solid black;
+         padding: 1px 1px 1px 1px;
+        }
+        .heading-space{
+         padding-left: 1px;
+        }
+    </style>
+  </head>
+  <body>
+     <div style="text-align: center;"><h2>Invoice</h2></div>
+     <div class="heading-space" style="text-align: right;"><b> Due Date: {{ invoice.due_date }}</b> </div>
+     <div class="heading-space"><b> Client's Name: {{ invoice.client.full_name }}</b> </div>
+     <table id="report_table" class="cell-border">
+      <thead>
+        <tr>
+          <th class="no-sort">Service</th>
+          <th class="no-sort">Pay Rate</th>
+          <th class="no-sort">Quantity</th>
+          <th class="no-sort">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in services %}
+          <tr>
+            <td class="cell-data">{{ service.service_name }}</td>
+            <td class="cell-data">{{ service.pay_rate }}</td>
+            <td class="cell-data">{{ service.quantity }}</td>
+            <td class="cell-data">{{ service.amount }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+     </table><br>
+     <div class="heading-space"><b> Tax(In percentage): {{ invoice.tax }}</b> </div>
+     <div class="heading-space"><b> Discount(In percentage): {{ invoice.discount }}</b> </div>
+     <div class="heading-space"><b> Total: {{ invoice.final_amount }}</b> </div>
+     <div class="heading-space"><b> Creadits: {{ invoice.credits }}</b> </div>
+     <div class="heading-space"><b> Balance: {{ invoice.balance }}</b> </div>
+  <div style="text-align: right; padding-right: 1px;"><b> From </b> </div>
+  <div class="heading-space" style="text-align: right;"><b> Triveni IT Consultency </b> </div>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block body %}
+       <div class="page-title">
+            <div class="title_left">
+                <h3>Invoices</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="">
+                            <ul class="list-inline pull-right controls">
+                                <li>
+                                    <a class="btn btn-primary download-excel" href="{% url 'add_invoice' %}"> <i class="fa fa-plus"></i> Create New Invoice</a>
+                                </li>
+                                <!--<li>-->
+                                    <!--<a class="btn btn-primary download-excel" href="{% url 'add_generic_timesheet' %}"> <i class="fa fa-plus"></i> Create New For Multiple Dates</a>-->
+                                <!--</li>-->
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="box-header" >
+                                {% if messages %}
+                                  <ul>
+                                    {% for message in messages %}
+                                      <li class="alert alert-danger">{{ message }}</li>
+                                    {% endfor %}
+                                  </ul>
+                                {% endif %}
+                        </div>
+                        <div class="x_content">
+                            <br />
+                            <div class="table-responsive">
+                                <table id="invoices_table" class="cell-border hover row-border order-column">
+                                    <thead>
+                                    <tr>
+                                      <th>Client</th>
+                                      <th>Due Date</th>
+                                      <th>Amount</th>
+                                      <th>Status</th>
+                                      <th class="no-sort">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for invoice in invoice_list %}
+                                      <tr>
+                                        <td>{{ invoice.client.full_name }}</td>
+                                        <td>{{ invoice.due_date }}</td>
+                                        <td>{{ invoice.final_amount }}</td>
+                                        <td>{{ invoice.status }}</td>
+                                        <td>
+                                          <a class="fa fa-pencil-square-o" href="{% url 'update_invoice' invoice.id %}"></a>
+                                          <a class="fa fa-times client_delete_icon" href="{% url 'delete_invoice' invoice.id %}" obj_name='' style="padding-left:50px;"></a>
+                                        </td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block static %}
+<script>
+  $(document).ready(function(){
+  $('#invoices_table').DataTable();
+  });
+</script>
+{% endblock %}

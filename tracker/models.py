@@ -438,47 +438,53 @@ class Assignment(models.Model):
         self.save()
 
 
-class InvoiceItem(models.Model):
-    """
-    InvoiceItem model
-    """
-    service_name = models.CharField(max_length=128, blank=True, null=True)
-    pay_rate = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
-    quantity = models.PositiveIntegerField(blank=False, null=False)
-    status = models.CharField(max_length=10, choices=settings.STATUS_CHOICES, default='Active')
-
-    def __str__(self):
-        return self.service_name
-
-    def delete(self):
-        """
-        Delete InvoiceItem
-        """
-        self.status = 'Delete'
-        self.save()
-
-
 class Invoice(models.Model):
     """
     Invoice model
     """
     client = models.ForeignKey('Client', related_name='invoice', blank=False, null=False, on_delete=models.CASCADE)
     due_date = models.DateField('Due Date', blank=False, null=False)
-    services = models.ManyToManyField('InvoiceItem', related_name='invoice', blank=False)
     total_amount = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     tax = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     discount = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
-    remark = models.TextField(null=True, blank=True)
+    final_amount = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
+    credits = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
+    balance = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     document = models.FileField('Document', upload_to='upload_docs/invoice/', null=True, blank=True)
+    remark = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.INVOICE_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.id
+        return '%s(%s)' % (self.client.full_name, self.id)
 
     def delete(self):
         """
         Delete Invoice
+        """
+        self.status = 'Delete'
+        self.save()
+
+
+class InvoiceItem(models.Model):
+    """
+    InvoiceItem model
+    """
+    invoice = models.ForeignKey('Invoice', related_name='invoice_item', blank=False, null=False, on_delete=models.CASCADE)
+    service_name = models.CharField(max_length=128, blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    pay_rate = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    quantity = models.PositiveIntegerField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '%s(%s)' % (self.service_name, self.invoice.id)
+        return
+
+    def delete(self):
+        """
+        Delete InvoiceItem
         """
         self.status = 'Delete'
         self.save()
@@ -677,4 +683,3 @@ def add_user(sender, instance, created, **kwargs):
             [instance.user.email],
             fail_silently=False,
         )
-

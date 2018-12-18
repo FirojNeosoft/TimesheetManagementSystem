@@ -1538,3 +1538,101 @@ class DeleteProjectExpenseView(LoginRequiredMixin, View):
         obj.save()
         return HttpResponseRedirect(reverse('list_project_expenses',  kwargs={'project_id':project_id}))
 
+
+class ListInvoicesView(LoginRequiredMixin, ListView):
+    """
+    List Invoices
+    """
+    model = Invoice
+    queryset = Invoice.objects.exclude(status='Delete')
+    template_name = 'invoice_list.html'
+
+
+class CreateInvoiceView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    """
+    Create new invoice
+    """
+    model = Invoice
+    fields = ['client', 'due_date', 'tax', 'discount', 'final_amount', 'document', 'remark', 'status', 'credits', 'balance']
+    template_name = 'invoice_form.html'
+    success_message = "Invoice was created successfully"
+    success_url = reverse_lazy('list_invoices')
+
+    def get_context_data(self, **kwargs):
+        data = super(CreateInvoiceView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['items'] = InvoiceItemFormSet(self.request.POST)
+        else:
+            data['items'] = InvoiceItemFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        items = context['items']
+        with transaction.atomic():
+            self.object = form.save()
+            if items.is_valid():
+                items.instance = self.object
+                items.save()
+            else:
+                logger.error(items.errors)
+                messages.error(self.request, items.errors)
+                return redirect('add_invoice')
+        return super(CreateInvoiceView, self).form_valid(form)
+
+
+class UpdateInvoiceView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """
+    Update existing invoice
+    """
+    model = Invoice
+    fields =  ['client', 'due_date', 'tax', 'discount', 'final_amount', 'document', 'remark', 'status', 'credits', 'balance']
+    template_name = 'invoice_form.html'
+    success_message = "Invoice was updated successfully"
+    success_url = reverse_lazy('list_invoices')
+
+    def get_context_data(self, **kwargs):
+        data = super(UpdateInvoiceView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['items'] = InvoiceItemFormSet(self.request.POST, instance=self.object)
+            data['items'].full_clean()
+        else:
+            data['items'] = InvoiceItemFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        items = context['items']
+        with transaction.atomic():
+            self.object = form.save()
+            if items.is_valid():
+                items.instance = self.object
+                items.save()
+            else:
+                logger.error(items.errors)
+                messages.error(self.request, items.errors)
+                return redirect('update_invoice', self.object.id)
+        return super(UpdateInvoiceView, self).form_valid(form)
+
+
+class DeleteInvoiceView(LoginRequiredMixin, DeleteView):
+    """
+    Delete existing invoice
+    """
+    model = Invoice
+    template_name = 'invoice_confirm_delete.html'
+    success_url = reverse_lazy('list_invoices')
+
+
+class SendInvoiceView(LoginRequiredMixin, View):
+    """
+    Send invoice to a client
+    """
+    def get(self, request, pk):
+        invoice = Invoice.objects.get(id=pk)
+        services = InvoiceItem.objects.filter(invoice=invoice)
+        if Render.send_invoice('client_invoice.html', {'invoice': invoice, 'services':services }, invoice.client.email, str(invoice.document)):
+            messages.success(request, "Invoice sucessfully sent to a client's email.")
+        else:
+            messages.error(request, "Error occured while sending invoice.")
+        return redirect('update_invoice', pk)

@@ -102,4 +102,10 @@ urlpatterns = [
     path('task/add/', CreateTaskView.as_view(), name='add_task'),
     path('task/<int:pk>/edit/', UpdateTaskView.as_view(), name='update_task'),
     path('task/<int:pk>/delete/', DeleteTaskView.as_view(), name='delete_task'),
+
+    path('invoices/', ListInvoicesView.as_view(), name='list_invoices'),
+    path('invoice/add/', CreateInvoiceView.as_view(), name='add_invoice'),
+    path('invoice/<int:pk>/edit/', UpdateInvoiceView.as_view(), name='update_invoice'),
+    path('invoice/<int:pk>/delete/', DeleteInvoiceView.as_view(), name='delete_invoice'),
+    path('invoice/<int:pk>/send/', SendInvoiceView.as_view(), name='send_invoice'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
