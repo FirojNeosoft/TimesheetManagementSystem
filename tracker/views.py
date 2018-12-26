@@ -1262,7 +1262,7 @@ class InboxMessagesView(LoginRequiredMixin, View):
             queryset = Message.objects.all()
         else:
             queryset = Message.objects.filter(receiver=self.request.user)
-        return render(request, 'message_inbox.html', {'messages': queryset})
+        return render(request, 'message_inbox.html', {'inbox_messages': queryset})
 
 
 class CreateMessageView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

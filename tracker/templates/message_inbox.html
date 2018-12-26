@@ -21,18 +21,15 @@
                             {% endif %}
                             <div class="clearfix"></div>
                         </div>
-                        <!--<div class="box-header" >-->
-                          <!--{% if messages %}-->
-                            <!--<ul class="messages">-->
-                              <!--{% for message in messages %}-->
-                                <!--<div class="alert alert-{{ message.tags }} alert-dismissable">-->
-                                  <!--<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>-->
-                                <!--{{ message }}-->
-                                <!--</div>-->
-                              <!--{% endfor %}-->
-                            <!--</ul>-->
-                          <!--{% endif %}-->
-                        <!--</div>-->
+                        <div class="box-header" >
+                                {% if messages %}
+                                  <ul>
+                                    {% for message in messages %}
+                                      <li class="alert alert-success">{{ message }}</li>
+                                    {% endfor %}
+                                  </ul>
+                                {% endif %}
+                        </div>
                         <div class="x_content">
                             <br />
                             <div class="table-responsive">
@@ -46,7 +43,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for message in messages %}
+                                    {% for message in inbox_messages %}
                                       <tr>
                                         <td>{{ message.sender.username }}</td>
                                         <td>{{ message.note }}</td>
