@@ -290,9 +290,18 @@
 {% block static %}
 <script>
   $(document).ready(function(){
-$('#id_joined_date').datepicker({'dateFormat': 'yy-mm-dd'});
-
-$('#id_birth_date').datepicker({'dateFormat': 'yy-mm-dd'});
+     $('#id_joined_date').datepicker({'dateFormat': 'yy-mm-dd',
+       changeMonth: true,
+       changeYear: true,
+       yearRange: '-60y:c+nn',
+       maxDate: '0d'
+       });
+     $('#id_birth_date').datepicker({'dateFormat': 'yy-mm-dd',
+       changeMonth: true,
+       changeYear: true,
+       yearRange: '-60y:c+nn',
+       maxDate: '-1d'
+     });
     });
 $('#id_skills').tagsinput({
   tagClass: 'big',

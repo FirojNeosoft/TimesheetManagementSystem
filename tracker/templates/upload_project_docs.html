@@ -18,13 +18,14 @@
                         <div class="col-xs-12">
                           <div class="">
                             <div class="box-header">
-                              {% if messages %}
-                                <ul class="messages alert alert-danger">
-                                  {% for message in messages %}
-                                    {{ message }}
-                                  {% endfor %}
-                                </ul>
-                              {% endif %}
+                                {% if messages %}
+                                  <ul>
+                                    {% for message in messages %}
+                                      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                      <li class="alert alert-danger">{{ message }}</li>
+                                    {% endfor %}
+                                  </ul>
+                                {% endif %}
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
@@ -69,7 +70,16 @@
                                                         <th>Remove</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody></tbody>
+                                                <tbody>
+                                                {% for project_doc in document_list %}
+                                                  <tr>
+                                                      <td><a href='{{ project_doc.doc }}'><span class="glyphicon glyphicon-file"></span></a></td>
+                                                      <td>{{ project_doc.name }}</td>
+                                                      <td>{{ project_doc.description }}</td>
+                                                      <td><a class="delete_doc" id='{{ project_doc.pk }}' href="{% url 'delete_project_doc' project_doc.pk %}"><span class="glyphicon glyphicon-remove"></span></a>``</td>
+                                                  </tr>
+                                                {% endfor %}
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>

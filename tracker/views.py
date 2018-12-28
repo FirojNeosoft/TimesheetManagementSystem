@@ -481,7 +481,15 @@ class UploadEmployeeDocView(LoginRequiredMixin, View):
         form = EmployeeDocumentForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse('upload_emp_doc'))
+        emp_docs = EmployeeDocument.objects.filter(employee=request.POST['employee'])
+        document_list = []
+        for doc in emp_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return render(request, 'upload_employee_docs.html', {'form': form, 'document_list': document_list})
 
 
 class DeleteEmployeeDocument(View):
@@ -501,7 +509,16 @@ class DeleteEmployeeDocument(View):
         except Exception as e:
             logger.error("{}, error occured while deleting document of employee.".format(e))
             messages.error(request, "Error occured while deleting document of employee.")
-        return redirect('upload_emp_doc')
+        form = EmployeeDocumentForm()
+        emp_docs = EmployeeDocument.objects.filter(employee= emp_doc.employee)
+        document_list = []
+        for doc in emp_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return render(request, 'upload_employee_docs.html', {'form': form, 'document_list': document_list})
 
 
 class ListProjectsView(LoginRequiredMixin, ListView):
@@ -620,7 +637,15 @@ class UploadProjectDocView(LoginRequiredMixin, View):
         form = ProjectDocumentForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse('upload_project_doc'))
+        project_docs = ProjectDocument.objects.filter(project=request.POST['project'])
+        document_list = []
+        for doc in project_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return render(request, 'upload_project_docs.html', {'form': form, 'document_list': document_list})
 
 
 class DeleteProjectDocument(View):
@@ -640,7 +665,16 @@ class DeleteProjectDocument(View):
         except Exception as e:
             logger.error("{}, error occured while deleting document of project.".format(e))
             messages.error(request, "Error occured while deleting document of project.")
-        return redirect('upload_project_doc')
+        form = ProjectDocumentForm()
+        project_docs = ProjectDocument.objects.filter(project= project_doc.project)
+        document_list = []
+        for doc in project_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return render(request, 'upload_project_docs.html', {'form': form, 'document_list': document_list})
 
 
 class ListContractsView(LoginRequiredMixin, ListView):
@@ -1010,7 +1044,15 @@ class UploadVendorDocView(LoginRequiredMixin, View):
         form = VendorDocumentForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse('upload_vendor_doc'))
+        vendor_docs = VendorDocument.objects.filter(vendor=request.POST['vendor'])
+        document_list = []
+        for doc in vendor_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return render(request, 'upload_vendor_docs.html', {'form': form, 'document_list': document_list})
 
 
 class DeleteVendorDocument(View):
@@ -1030,7 +1072,16 @@ class DeleteVendorDocument(View):
         except Exception as e:
             logger.error("{}, error occured while deleting document of vendor.".format(e))
             messages.error(request, "Error occured while deleting document of vendor.")
-        return redirect('upload_vendor_doc')
+        form = VendorDocumentForm()
+        vendor_docs = VendorDocument.objects.filter(vendor= vendor_doc.vendor)
+        document_list = []
+        for doc in vendor_docs:
+            if doc.document:
+                document_list.append({'pk': doc.id,
+                                     'doc': str(request.build_absolute_uri('/')+'media/'+request.build_absolute_uri('/')[7:-6]+'/'+str(doc.document)),
+                                     'name': doc.name,
+                                      'description': doc.description})
+        return render(request, 'upload_vendor_docs.html', {'form': form, 'document_list': document_list})
 
 
 class ListReferralsView(LoginRequiredMixin, ListView):

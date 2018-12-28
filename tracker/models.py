@@ -163,8 +163,8 @@ class EmployeeDocument(models.Model):
     Documents of emp
     """
     employee = models.ForeignKey('Employee', related_name='emp_doc', blank=False, null=False, on_delete=models.CASCADE)
-    name = models.CharField('Document Name', max_length=128, blank=True, null=True)
-    document = models.FileField('Document', upload_to='upload_docs/employee/', null=True, blank=True)
+    name = models.CharField('Document Name', max_length=128, blank=False, null=False)
+    document = models.FileField('Document', upload_to='upload_docs/employee/', null=False, blank=False)
     description = models.TextField(null=True, blank=True)
     is_private = models.BooleanField('Is Private', default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -291,8 +291,8 @@ class ProjectDocument(models.Model):
     Documents of project
     """
     project = models.ForeignKey('Project', related_name='project_doc', blank=False, null=False, on_delete=models.CASCADE)
-    name = models.CharField('Document Name', max_length=128, blank=True, null=True)
-    document = models.FileField('Document', upload_to='upload_docs/project/', null=True, blank=True)
+    name = models.CharField('Document Name', max_length=128, blank=False, null=False)
+    document = models.FileField('Document', upload_to='upload_docs/project/', null=False, blank=False)
     description = models.TextField(null=True, blank=True)
     is_private = models.BooleanField('Is Private', default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -527,8 +527,8 @@ class VendorDocument(models.Model):
     Documents of vendor
     """
     vendor = models.ForeignKey('Vendor', related_name='vendor_document', blank=False, null=False, on_delete=models.CASCADE)
-    name = models.CharField('Document Name', max_length=128, blank=True, null=True)
-    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=True, blank=True)
+    name = models.CharField('Document Name', max_length=128, blank=False, null=False)
+    document = models.FileField('Document', upload_to='upload_docs/vendor/', null=False, blank=False)
     description = models.TextField(null=True, blank=True)
     is_private = models.BooleanField('Is Private', default=True)
     created_at = models.DateTimeField(default=timezone.now)
