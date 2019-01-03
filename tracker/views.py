@@ -839,7 +839,8 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                 tasks.save()
             else:
                 logger.error(tasks.errors)
-                messages.error(self.request, tasks.errors)
+                messages.error(self.request, "For every task, mandatory fields are project, activity, note,\
+                                                                                     duration or (start_time & end_time)")
                 return redirect('add_timesheet')
         return super(CreateTimesheetView, self).form_valid(form)
 
@@ -873,7 +874,8 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
                 tasks.save()
             else:
                 logger.error(tasks.errors)
-                messages.error(self.request, tasks.errors)
+                messages.error(self.request, "For every task, mandatory fields are project, activity, note,\
+                                                                                   duration or (start_time & end_time)")
                 return redirect('update_timesheet', self.object.id)
         return super(UpdateTimesheetView, self).form_valid(form)
 
