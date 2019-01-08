@@ -196,7 +196,7 @@
    $('body').removeClass( "nav-md" ).addClass( "nav-sm" );
    $("#id_client").addClass( "form-control" );
    $("#id_due_date").addClass( "form-control" );
-   $('#id_due_date').datepicker({format: 'yyyy-mm-dd'});
+   $('#id_due_date').datepicker({'dateFormat': 'yy-mm-dd', changeMonth: true, changeYear: true});
    $("#id_tax").addClass( "form-control" );
    $("label[for*='id_tax']").text("Tax (In percentage)");
    $("#id_discount").addClass( "form-control" );

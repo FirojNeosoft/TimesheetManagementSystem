@@ -82,7 +82,7 @@
    $('select[name="emps"]').bootstrapDualListbox();
    $("label[for='id_emps']").html("Employees");
    $("#id_due_date").addClass( "form-control" );
-   $('#id_due_date').datepicker({'dateFormat': 'yy-mm-dd'});
+   $('#id_due_date').datepicker({'dateFormat': 'yy-mm-dd', changeMonth: true, changeYear: true});
    $("#id_task_name").addClass( "form-control" );
    $("#id_description").addClass( "form-control" );
    $("#id_description").attr( "cols", 40 );

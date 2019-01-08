@@ -155,8 +155,21 @@
 <script>
   $(document).ready(function(){
   <!--$('#report_table').DataTable();-->
-   $('#id_from_date').datepicker({'dateFormat': 'mm/dd/yy'});
-   $('#id_to_date').datepicker({'dateFormat': 'mm/dd/yy'});
+   $('#id_from_date').datepicker({'dateFormat': 'yy-mm-dd',
+       changeMonth: true,
+       changeYear: true,
+       onSelect: function(selected) {
+          $("#id_to_date").datepicker("option","minDate", selected)
+        }
+   });
+   $('#id_to_date').datepicker({'dateFormat': 'yy-mm-dd',
+       changeMonth: true,
+       changeYear: true,
+       'maxDate': 3650,
+        onSelect: function(selected) {
+           $("#id_from_date").datepicker("option","maxDate", selected)
+        }
+   });
     });
 </script>
 <style>
