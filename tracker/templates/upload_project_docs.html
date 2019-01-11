@@ -17,16 +17,20 @@
                       <div class="row">
                         <div class="col-xs-12">
                           <div class="">
-                            <div class="box-header">
-                                {% if messages %}
-                                  <ul>
-                                    {% for message in messages %}
-                                      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                                      <li class="alert alert-danger">{{ message }}</li>
+                              {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
                                     {% endfor %}
-                                  </ul>
-                                {% endif %}
-                            </div>
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                             <!-- /.box-header -->
                             <div class="box-body">
                               <form id="client-form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data" method="post">
@@ -50,7 +54,7 @@
                                   <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                   <a href="{% url 'list_projects' %}" class='btn btn-primary' >Cancel</a>
-                                  <button class="btn btn-primary" type="reset">Reset</button>
+                                  <button class="btn btn-primary" id="id_reset_btn" type="reset">Reset</button>
                                   <input type="submit" class="btn btn-success"/>
                                 </div>
                               </div>
@@ -109,6 +113,11 @@
    $("#id_name").addClass( "form-control" );
    $("#id_description").addClass( "form-control" );
     });
+
+    $("#id_reset_btn").click(function(){
+          $('#docs > tbody').empty();
+    });
+
     $("#id_project").change(function(){
        if($( "#id_project option:selected" ).val()){
            $.ajax({

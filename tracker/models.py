@@ -172,6 +172,9 @@ class EmployeeDocument(models.Model):
     def __str__(self):
         return '%s(%s)' % (self.name, self.employee.full_name)
 
+    class Meta:
+        unique_together = ('employee', 'name',)
+
 
 class EmployeeExpense(models.Model):
     """
@@ -299,6 +302,9 @@ class ProjectDocument(models.Model):
 
     def __str__(self):
         return '%s(%s)' % (self.name, self.project.name)
+
+    class Meta:
+        unique_together = ('project', 'name',)
 
 
 class ProjectExpense(models.Model):
@@ -535,6 +541,9 @@ class VendorDocument(models.Model):
 
     def __str__(self):
         return '%s(%s)' % (self.name, self.vendor.organization_name)
+
+    class Meta:
+        unique_together = ('vendor', 'name',)
 
 
 class VendorExpense(models.Model):
