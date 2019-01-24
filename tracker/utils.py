@@ -233,7 +233,7 @@ def export_emps_xls(request):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    rows = Employee.objects.all().values_list('first_name', 'last_name', 'gender', 'email', 'mobile','department', 'designation', 'is_manager', 'status')
+    rows = Employee.objects.exclude(status='Delete').values_list('first_name', 'last_name', 'gender', 'email', 'mobile','department', 'designation', 'is_manager', 'status')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):

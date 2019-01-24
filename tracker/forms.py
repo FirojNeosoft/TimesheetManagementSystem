@@ -32,6 +32,23 @@ class VendorExpenseForm(ModelForm):
         model = VendorExpense
         exclude = ('created_at', 'status',)
 
+
+class TimesheetForm(ModelForm):
+
+    class Meta:
+        model = Timesheet
+        exclude = ('created_at',)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        sign_in = cleaned_data.get("sign_in")
+        sign_out = cleaned_data.get("sign_out")
+        if sign_in > sign_out:
+            msg = u"Sign out should be greater than sign in."
+            self.add_error('sign_out', msg)
+            # self._errors["sign_out"] = self.error_class([msg])
+
+
 class TimesheetTaskForm(ModelForm):
     duration = forms.DurationField(required=False, widget = forms.TextInput(attrs={'size': 5, 'class': 'clock'}))
     class Meta:

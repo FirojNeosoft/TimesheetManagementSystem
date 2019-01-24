@@ -816,7 +816,7 @@ class CreateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     Create new timesheet
     """
     model = Timesheet
-    fields = ['contract', 'remark', 'sign_in', 'sign_out', 'document', 'status']
+    form_class = TimesheetForm
     template_name = 'timesheet_form.html'
     success_message = "timesheet was created successfully"
     success_url = reverse_lazy('list_timesheets')
@@ -850,7 +850,7 @@ class UpdateTimesheetView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing timesheet
     """
     model = Timesheet
-    fields = ['contract', 'remark', 'sign_in', 'sign_out', 'document', 'status']
+    form_class = TimesheetForm
     template_name = 'timesheet_form.html'
     success_message = "timesheet was updated successfully"
     success_url = reverse_lazy('list_timesheets')

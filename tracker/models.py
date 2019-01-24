@@ -2,6 +2,7 @@ import tagulous
 import random, string
 
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
@@ -162,7 +163,8 @@ class EmployeeDocument(models.Model):
     """
     Documents of emp
     """
-    employee = models.ForeignKey('Employee', related_name='emp_doc', blank=False, null=False, on_delete=models.CASCADE)
+    employee = models.ForeignKey('Employee',  limit_choices_to=Q(status='Available') | Q(status='Unavailable')| Q(status='Vacation'),\
+                                 related_name='emp_doc', blank=False, null=False, on_delete=models.CASCADE)
     name = models.CharField('Document Name', max_length=128, blank=False, null=False)
     document = models.FileField('Document', upload_to='upload_docs/employee/', null=False, blank=False)
     description = models.TextField(null=True, blank=True)
@@ -293,7 +295,8 @@ class ProjectDocument(models.Model):
     """
     Documents of project
     """
-    project = models.ForeignKey('Project', related_name='project_doc', blank=False, null=False, on_delete=models.CASCADE)
+    project = models.ForeignKey('Project',  limit_choices_to=Q(status='In progress') | Q(status='Complete')| Q(status='On Hold'),\
+                                related_name='project_doc', blank=False, null=False, on_delete=models.CASCADE)
     name = models.CharField('Document Name', max_length=128, blank=False, null=False)
     document = models.FileField('Document', upload_to='upload_docs/project/', null=False, blank=False)
     description = models.TextField(null=True, blank=True)
@@ -370,10 +373,10 @@ class Timesheet(models.Model):
     Timesheet model
     """
     contract = models.ForeignKey('Contract', related_name='timesheet', blank=False, null=False, on_delete=models.CASCADE)
+    remark = models.TextField(null=True, blank=True)
     sign_in = models.DateTimeField('Sign In')
     sign_out = models.DateTimeField('Sign Out')
     document = models.FileField('Document', upload_to='upload_docs/timesheet/', null=True, blank=True)
-    remark = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=settings.TIMESHEET_STATUS, default='Pending')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -532,7 +535,7 @@ class VendorDocument(models.Model):
     """
     Documents of vendor
     """
-    vendor = models.ForeignKey('Vendor', related_name='vendor_document', blank=False, null=False, on_delete=models.CASCADE)
+    vendor = models.ForeignKey('Vendor', limit_choices_to={'status':'Active'}, related_name='vendor_document', blank=False, null=False, on_delete=models.CASCADE)
     name = models.CharField('Document Name', max_length=128, blank=False, null=False)
     document = models.FileField('Document', upload_to='upload_docs/vendor/', null=False, blank=False)
     description = models.TextField(null=True, blank=True)

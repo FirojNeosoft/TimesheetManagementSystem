@@ -40,7 +40,7 @@
                                  <div class="form-row">
                                   <div class="form-group col-md-6">
                                     {{ field.label_tag }}
-                                      {{ field.errors }}
+                                      <span style="color:red;">{{ field.errors }}</span>
                                       {{ field }}
                                       {{ field.help_text }}
                                   </div>
@@ -119,6 +119,15 @@
    $('#id_sign_in').datetimepicker({format: 'yyyy-mm-dd hh:ii', minuteStep: 15 });
    $("#id_sign_out").addClass( "form-control" );
    $('#id_sign_out').datetimepicker({format: 'yyyy-mm-dd hh:ii', minuteStep: 15});
+
+    <!--var start_time = $('#id_sign_in').val();-->
+
+    <!--var end_time = $('#id_sign_out').val();-->
+
+    <!--if (Date.parse(start_time) > Date.parse(end_time)) {-->
+      <!--alert('start time should be smaller');-->
+    <!--}-->
+
    $("#id_remark").addClass( "form-control" );
    $("#id_remark").attr( "cols", 40 );
    $("#id_remark").attr( "rows", 1 );
