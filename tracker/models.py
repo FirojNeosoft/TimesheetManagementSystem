@@ -255,7 +255,7 @@ class Project(models.Model):
     name = models.CharField('Project Name', max_length=128, blank=False, null=False)
     description = models.TextField(null=True, blank=True)
     located_at = models.ForeignKey('Address', related_name='project', blank=True, null=True, on_delete=models.SET_NULL)
-    owner = models.ForeignKey('Client', related_name='project', blank=False, null=True, on_delete=models.CASCADE)
+    owner = models.ForeignKey('Client', limit_choices_to={'status':'Active'}, related_name='project', blank=False, null=True, on_delete=models.CASCADE)
     project_members = models.ManyToManyField('Employee', related_name='project', blank=False, through='ProjectMembership')
     project_activities = models.ManyToManyField('ProjectActivity', related_name='project', blank=True)
     note = models.TextField(null=True, blank=True)
@@ -336,7 +336,7 @@ class Contract(models.Model):
     Contract model
     """
     representative = models.ForeignKey('Employee', related_name='contract_representative', blank=False, null=False, on_delete=models.CASCADE)
-    client = models.ForeignKey('Client', related_name='contract', blank=False, null=False,
+    client = models.ForeignKey('Client', limit_choices_to={'status':'Active'}, related_name='contract', blank=False, null=False,
                                        on_delete=models.CASCADE)
     employee = models.ForeignKey('Employee', related_name='contract_emp', blank=False, null=False, on_delete=models.CASCADE)
     role = models.CharField('Role', max_length=128, blank=False, null=False)
@@ -451,7 +451,7 @@ class Invoice(models.Model):
     """
     Invoice model
     """
-    client = models.ForeignKey('Client', related_name='invoice', blank=False, null=False, on_delete=models.CASCADE)
+    client = models.ForeignKey('Client', limit_choices_to={'status':'Active'}, related_name='invoice', blank=False, null=False, on_delete=models.CASCADE)
     due_date = models.DateField('Due Date', blank=False, null=False)
     total_amount = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
     tax = models.DecimalField(max_digits=7, decimal_places=2, blank=False, null=False, default=0)
