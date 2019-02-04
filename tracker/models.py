@@ -13,6 +13,8 @@ from django.core.mail import send_mail
 
 from datetime import datetime, date
 
+from social_django.models import UserSocialAuth
+
 
 class Address(models.Model):
     """
@@ -648,6 +650,13 @@ class Message(models.Model):
 
     # def __str__(self):
     #     return self.note
+
+
+@receiver(post_save, sender=UserSocialAuth)
+def set_inactive_to_social_user(sender, instance, created, **kwargs):
+    if created:
+        instance.user.is_active = False
+        instance.user.save()
 
 
 @receiver(post_save, sender=Contract)

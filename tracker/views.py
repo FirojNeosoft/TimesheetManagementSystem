@@ -238,7 +238,7 @@ class UpdateUserView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     Update existing user
     """
     model = User
-    fields = ['username', 'password', 'email', 'is_staff']
+    fields = ['username', 'password', 'email', 'is_staff', 'is_active']
     template_name = 'user_form.html'
     success_message = "%(username)s was updated successfully"
     success_url = reverse_lazy('list_users')
