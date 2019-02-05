@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load extra_tags %}
 
 {% block body %}
 <div class="page-title">
@@ -105,6 +106,7 @@
          </div>
      {% endif %}
          <div class="ln_solid"></div>
+     {% if is_employee %}
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-bar-chart-o fa-fw"></i> Timesheet Summary
@@ -146,6 +148,7 @@
                     <!-- /.row -->
                 </div>
                 <!-- /.panel-body -->
+                {% endif %}
             {% endif %}
      </div>
 </div>
