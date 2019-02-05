@@ -2,6 +2,7 @@
 <html lang="en">
 {% load i18n %}
 {% load static %}
+{% load extra_tags %}
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -80,6 +81,7 @@
                         </ul>
                     </li>
                   {% endif %}
+                  {% if is_employee %}
                     <li><a><i class="fa fa-cog fa-fw"></i> Tracker <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'list_projects' %}">Projects</a></li>
@@ -89,6 +91,7 @@
                             <li><a href="{% url 'list_tasks' %}">Tasks</a></li>
                         </ul>
                     </li>
+                  {% endif %}
                   {% if request.user.is_staff %}
                      <li><a><i class="fa fa-search"></i><span class="fa fa-chevron-down"></span>Search Report</a>
                             <ul class="nav child_menu">
@@ -97,7 +100,9 @@
                             </ul>
                      <!--<li><a href="{% url 'get_defaulters' %}"><i class="fa fa-book"></i> Search Defaulters</a>-->
                   {% endif %}
+                  {% if is_employee %}
                   <li><a href="{% url 'inbox_messages' %}"><i class="fa fa-envelope"></i>Inbox Messages</a>
+                  {% endif %}
                   {% if request.user.is_staff %}
                   <li><a href="{% url 'list_invoices' %}"><i class="fa fa-file"></i>Invoices</a></li>
                   {% endif %}
@@ -147,7 +152,7 @@
 
         <!-- footer content -->
         <footer>
-          <div class="pull-right">
+          <div class="pull-center">
             Developed By <a href="#">Triveni</a>
           </div>
           <div class="clearfix"></div>
